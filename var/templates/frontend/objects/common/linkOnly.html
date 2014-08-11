@@ -1,0 +1,12 @@
+<o2 use O2CMS::Publisher />
+
+<o2 ifFrontend>
+  <o2 setVar "$url"><o2 objectUrl objectId="$object->getId()" /></o2:setVar>
+  <o2 openingTag a href="$url" />
+</o2:ifFrontend>
+
+<font style="margin-right:15px; font-size:11px; font-weight:normal; color:#6f6f6f;"><o2 slotString field="metaName" editable="yes"/></font>
+
+<o2 ifFrontend>
+  <o2 closingTag a />
+</o2:ifFrontend>

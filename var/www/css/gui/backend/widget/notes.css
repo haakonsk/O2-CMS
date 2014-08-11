@@ -1,0 +1,50 @@
+body {
+  height:90%;
+  background: transparent;
+}
+
+.notes {
+  margin: 0 auto;
+  font-size: 14px;
+  background: transparent url("/images/widget/notes/postit.png") no-repeat 0 0;
+  width: 210px;
+  height: 205px;
+  position: relative;
+}
+
+.notes .text {
+  margin: 20px 0 0 20px;
+  height: 150px;
+  width: 170px;
+  font-size: 14px;
+  line-height: 180%;
+  border: 0;
+  background: transparent;
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+ul.notesNav {
+  position: absolute;
+  top: 168px;
+  left: 14px;
+  margin: 0;
+  padding: 0;
+}
+
+ul.notesNav li { display: inline; float: left; }
+
+ul.notesNav li#statusLabel { width: 24px; color: #666; line-height: 18px; text-align:center; }
+
+ul.notesNav li a { background: transparent url("/images/widget/notes/navigation.png") no-repeat; display: block; height: 20px; }
+
+ul.notesNav li a span { display: none; }
+
+ul.notesNav li a#prevBtn{ background-position: 0 0; width: 29px; }
+ul.notesNav li a#nextBtn { background-position: -53px 0; width: 28px; margin-right: 12px; }
+ul.notesNav li a#deleteBtn { background-position: -93px 0; width: 17px; margin-right: 12px; }
+ul.notesNav li a#newBtn { background-position: -122px 0; width: 19px; }
+      
+ul.notesNav li a#prevBtn:hover { background-position: 0 -20px; }
+ul.notesNav li a#nextBtn:hover { background-position: -53px -20px; }
+ul.notesNav li a#deleteBtn:hover { background-position: -93px -20px; }
+ul.notesNav li a#newBtn:hover { background-position: -122px -20px; }

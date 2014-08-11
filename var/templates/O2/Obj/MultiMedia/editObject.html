@@ -1,0 +1,26 @@
+<o2 use Html::Form />
+<o2 multilingualController object="$object" />
+
+
+<b>$lang->getString('o2.file.edit.title'):</b><br>
+<o2 input name="object.title" value="$object->getTitle()" rule="" ruleMsg="$lang->getString('o2.file.edit.titleError')" size="30" multilingual="1" /><br>
+
+<b>$lang->getString('o2.file.edit.metaName'):</b><br>
+<o2 input name="metaName" value="$object->getMetaName()" rule="required" ruleMsg="$lang->getString('o2.file.edit.metaNameError')" size="30" onchange="setMetaName(this.value);"/><br>
+
+<b>$lang->getString('o2.file.edit.description')</b><br>
+<o2 textarea name="object.description" multilingual="1" value="$object->getDescription()" />
+<br>
+
+  <center>
+  <o2 use Html::MediaPlayer/>
+  <o2 MediaPlayer url="$object->getFileUrl()" autoStart="0" width="360" height="280" autoStart="1"/>
+  </center>
+
+<!--
+<img src="<o2 iconUrl class="$object->getMetaClassName()" size="32"/>">
+<a href="/o2/File-Download/download?objectId=$object->getId()">$lang->getString('o2.file.edit.downloadFile')</a>
+<a target="_blank" href="$object->getFileUrl()">$lang->getString('o2.file.edit.viewFile')</a>
+<br>
+-->
+

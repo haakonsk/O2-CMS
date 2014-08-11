@@ -1,0 +1,27 @@
+<o2 use Html />
+<o2 use O2CMS::Publisher />
+<o2 addJsFile file="/js/jquery.js" />
+<o2 addJsFile file="/js/jquery/plugins/o2/fadeCarousel/fadeCarousel.js" />
+<o2 addJs>
+  $(document).ready(function() {
+    $("#fadeCarousel300$slot->getSlotId").children().fadeCarousel();
+  });
+</o2:addJs>
+<o2 addCss>
+  .fadeCarousel div {
+    width:296px;
+    padding:1px;
+    border:1px solid #EDEDED;
+  }
+  .fadeCarousel img {
+    border:10px solid white;
+  }
+</o2:addCss>
+
+<o2 setVar "$url"><o2 objectUrl objectId='$object->getId()'/></o2:setVar>
+<div class="fadeCarouselTitle">$object->getTitle</div>
+<div id="fadeCarousel300$slot->getSlotId" class="fadeCarousel">
+  <o2 foreach "$image in $object->getImages()">
+    <div><a href="$url"><o2 img id="$image->getId" width="276" height="192" onTooBig="crop" onTooSmall="resize"/></a></div>
+  </o2:for>
+</div>

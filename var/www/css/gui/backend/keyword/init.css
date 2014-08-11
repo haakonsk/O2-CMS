@@ -1,0 +1,75 @@
+fieldset { 
+  margin-left:4px;
+  width:270px;
+}
+
+#keywordField { 
+  float:left;
+  margin-bottom:5px;
+  height:75px;
+}
+
+#objectInfo { 
+  float:left;
+  margin-bottom:5px;
+  height:75px;
+}
+
+#objectInfo div { 
+  margin:0px;
+  padding:2px;
+}
+
+#searchList { 
+  clear: both;
+  float:left;
+  height:240px;
+}
+
+#searchKeywordList { 
+  overflow:auto;
+  height:238px;          
+}
+
+#objectKeyword{ 
+  float:left;
+  height:240px;
+}
+
+#objectKeywordList { 
+  overflow:auto;    
+  height:238px;  
+}
+
+#keywordSearchActive, #objectWorkingActive, #objectKeywordListEmpty { 
+  width:100%;
+  height:100%; 
+}
+
+#missingKeywordError { 
+  color: red;
+  display: none;
+} 
+
+select#searchForm_keywordPath {
+  width: 250px;
+}
+
+#keywordField label {
+  width: auto;
+}
+
+.toolIcon { 
+  float: right;
+  margin: 0px; 
+}
+
+.loadingImage { 
+  background: url("/images/bigrotation2.gif") center center no-repeat;
+}
+
+.informationImage { 
+  background: url("/images/system/sinfo_32.gif") top left no-repeat;
+  padding-left:40px;
+  height:50px;
+}

@@ -1,0 +1,9 @@
+<o2 use Html::Ajax />
+
+<o2 ajaxForm setMethod="search" target="generalSearchResult">
+  <o2 input type="text" name="query" />
+  <o2 input type="hidden" name="frame" value="resultFrame" />
+  <o2 input type="submit" value="$lang->getString('ShopManager.btnSearch')" />
+</o2:ajaxForm>
+
+<div id="generalSearchResult"></div>

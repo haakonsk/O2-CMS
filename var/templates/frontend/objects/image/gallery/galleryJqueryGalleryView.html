@@ -1,0 +1,39 @@
+<o2 use Html />
+<o2 use O2CMS::Publisher />
+
+<o2 addCssFile file="/js/jquery/plugins/galleryview-2.1.1/galleryview.css"/>
+<o2 addJsFile file="/js/jquery.js"/> 
+<o2 addJsFile file="/js/jquery/plugins/galleryview-2.1.1/jquery.easing.1.3.js"/> 
+<o2 addJsFile file="/js/jquery/plugins/galleryview-2.1.1/jquery.galleryview-2.1.1.js"/> 
+<o2 addJsFile file="/js/jquery/plugins/galleryview-2.1.1/jquery.timers-1.2.js"/> 
+<o2 addJs> 
+  $(document).ready(function(){
+    $('#gallery').galleryView({
+      panel_width: 600,
+      panel_height: 400,
+      frame_width: 100,
+      frame_height: 100,
+      pause_on_hover: true
+    });
+  });
+</o2:addJs>
+<o2 addCss>
+  .panelOverlay {
+  }
+</o2:addCss>
+
+<div class="galleryHeader">$object->getTitle</div>
+<ul id="gallery">
+  <o2 foreach "$image in $object->getImages()">
+    <li>
+      <o2 img id="$image->getId" width="100" height="100" onTooSmall="resize" onTooBig="crop"/>
+      <div class="panel-content">
+        <o2 img id="$image->getId" width="600" height="400" onTooSmall="resize" onTooBig="crop"/>
+        <div class="panel-overlay">
+          <h2>$image->getTitle</h2><p>$image->getDescription</p>
+        </div>
+      </div>
+    </li> 
+  </o2:foreach>
+</ul>
+<div class="galleryDescription"><o2 encodeEntities off>$object->getDescription</o2:encodeEntities></div>

@@ -1,0 +1,13 @@
+<o2 use O2CMS::Publisher/>
+<o2 use Html />
+
+<o2 addCssFile file="article/article" />
+
+<div class="article linkOnly">
+  <o2 ifFrontend>
+    <a href="<o2 objectUrl objectId='$object->getId()'/>"><o2 slotString field="metaName" editable="yes"/></a>
+  </o2:ifFrontend>
+  <o2 ifBackend>
+    <o2 slotString field="metaName" editable="yes"/>
+  </o2:ifBackend>
+</div>

@@ -1,0 +1,30 @@
+<div>
+  <!-- Label -->
+  <o2 setVar "$fieldName">$criterionName<o2 if "$criterionName =~ m{ in | notIn | likeAny \z }xms" then="[]" /></o2:setVar>
+  <label>$lang->getString( $conf->{langKey} ):</label><br>
+  
+  <!-- Input field -->
+  <o2 if "$conf->{type} eq 'input' || !$conf->{type}">
+    <o2 if "$fieldName =~ m{ like }xmsi">
+      <o2 setVar "$value"><o2 substitute from="%" to="*">$value</o2:substitute></o2:setVar>
+    </o2:if>
+    <input type="text" name="$fieldName" value="$value" rule="$conf->{rule}">
+  </o2:if>
+  <o2 elsif "$conf->{type} eq 'dropdown'">
+    <o2 select name="$fieldName" value="$value">
+      <o2 if "$conf->{options}">
+        <o2 foreach "$option in $conf->{options}">
+          <o2 option value="$option->{value}"><o2 if "$option->{name}" then="$option->{name}" else="$lang->getString( $option->{langKey} )" /></o2:option>
+        </o2:foreach>
+      </o2:if>
+      <o2 elsif "$conf->{type} eq 'dropdown' && $conf->{optionsMethod}">
+        <o2 setVar "$method">$conf->{optionsMethod}</o2:setVar>
+        <o2 foreach "$option in $gui->$method()">
+          <o2 option value="$option->{value}"><o2 if "$option->{name}" then="$option->{name}" else="$lang->getString( $option->{langKey} )" /></o2:option>
+        </o2:foreach>
+      </o2:elsif>
+    </o2:select>
+  </o2:elsif>
+  
+  <img title="$lang->getString('helpTextRemoveCriteria')" src="/images/system/remov_16.gif" onClick="this.parentNode.parentNode.removeChild( this.parentNode );">
+</div>

@@ -1,0 +1,34 @@
+<o2 use Html/>
+<o2 use Html::Form/>
+
+<o2 header />
+
+<o2 form action="/o2cms/System-Desktop/saveWidget">
+  <o2 input type="hidden" name="widgetId" value="$widget->getId()"/>
+  <table border="1">
+    <tr>
+      <td>Widget name:</td>
+      <td><o2 input type="text" name="widgetName" rule='required' /></td> 
+    </tr>
+    <tr>
+      <td>Widget src:</td>
+      <td>
+        <o2 input type="radio" name="widgetSrc" value="url" checked="1">Url</o2:input>
+        <o2 input type="radio" name="widgetSrc" value="code">Code</o2:input>
+      </td> 
+    </tr>
+    <tr>
+      <td colspan="2">
+        Url/Code:<br>
+        <o2 textarea name="widgetCodeOrUrl" rule="required" />
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" align="right">
+        <o2 input type="submit">Save</o2:input>
+      </td>
+    </tr>
+  </table>
+</o2:form>
+
+<o2 footer/>

@@ -1,0 +1,26 @@
+<o2 use Html::Form/>
+
+<o2 setVar "$definition">$property->getDefinition()</o2:setVar>
+<o2 setVar "$name">property_<o2 out>$property->getObjectId()</o2:out>_<o2 out>$property->getName()</o2:out></o2:setVar>
+<o2 if "$definition->getInputType() eq 'input'">
+  <input name="$name" value="$property->getValue()">
+</o2:if>
+
+<o2 elsif "$definition->getInputType() eq 'textarea'">
+  <textarea name="$name">$property->getValue()</textarea>
+</o2:if>
+
+<o2 elsif "$definition->getInputType() eq 'select'">
+  <o2 select name="$name" value="$property->getValue()">
+    <o2 foreach "$option in $definition->getOptions($property)">
+      <o2 option value="$option->{value}">$option->{name}</o2:option>
+    </o2:foreach>
+  </o2:select>
+</o2:if>
+
+<o2 else>
+  Unknown input type: $definition->getInputType()
+</o2:else>
+
+
+

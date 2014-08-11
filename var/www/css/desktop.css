@@ -1,0 +1,93 @@
+html {
+  height : 100%;
+  width  : 100%;
+}
+
+body {
+  padding     : 0;
+  font-family : Verdana, Helvetica, Arial, sans-serif;
+  font-size   : 11px;
+  color       : #333;
+  height      : 100%;
+}
+
+#desktopPanel {
+  border:0px solid red;
+  height:100%;
+}
+
+.desktopShortcut {
+  width: 100px;
+  max-width: 100px;
+  height: 95px;
+  max-height: 95px;
+  text-align: center;
+  float: left; 
+  margin: 5px 10px 10px 10px;
+  border: 0px solid red;
+  overflow: hidden;
+}
+
+.desktopShortcut .icon {
+  background: no-repeat center center; 
+  cursor: move;
+  max-heigth: 48px;
+  max-width: 48px;
+}
+
+.desktopShortcut  .label {
+  cursor: pointer;
+  font-weight:bold;
+}
+
+.desktopFlowLayout {
+  float:left;
+}
+
+.desktopUserLayout {
+  position:absolute;
+}
+
+#editShortcutName {
+  width:64px;
+  border:1px dotted black;
+}
+
+.testResizable {
+  border:1px solid red;
+  height:100px;
+  width:100px;
+  position:absolute;
+  top:100px;
+  left:100px;
+}
+
+.widget {
+  position:absolute;
+}
+
+.moving {
+  border:1px dotted lightgray;
+}
+
+.widget .toolbar {
+  height:20px;
+  width:60px;
+  position:absolute;
+  right:0px;
+  top:-11px;
+}
+
+.widget .toolbar .container {
+  /*  display:none; */
+  height:100%;
+  width:100%;
+}
+
+.widget .toolbar img {
+  padding: 2px;
+}
+
+.widget .resizableBottomRight:hover{
+  background:url("/images/icons/o2default/O2/action/resize/O2-action-resize-16.png") no-repeat center center;
+}

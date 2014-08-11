@@ -1,0 +1,200 @@
+<o2 use Html/>
+
+<o2 addJsFile file="ajax"/>
+<o2 addJsFile file="o2escape"/>
+<o2 addCssFile file="gui/backend/widget/notes"/>
+
+<o2 header omitBgColor/>
+
+<o2 addJs where="onLoad">
+  o2.addEvent( document.getElementById("noteText"), "keypress",    updateTimeout                );
+  o2.addEvent( document,                            "contextmenu", function() { return false; } );
+</o2:addJs>
+
+<div class="notes">
+  <form><textarea id="noteText" name="noteText" class="text" onChange="saveCurrentNote();"></textarea></form>
+  
+  <ul class="notesNav">
+    <li><a id="prevBtn"   onClick="prevNote()"  ><span>$lang->getString( "o2.gui.backend.widget.notes.lblPreviousNote" )</span></a></li>
+    <li id="statusLabel"></li>
+    <li><a id="nextBtn"   onClick="nextNote()"  ><span>$lang->getString( "o2.gui.backend.widget.notes.lblNextNote"     )</span></a></li>
+    <li><a id="deleteBtn" onClick="deleteNote()"><span>$lang->getString( "o2.gui.backend.widget.notes.lblDeleteNote"   )</span></a></li>
+    <li><a id="newBtn"    onClick="newNote()"   ><span>$lang->getString( "o2.gui.backend.widget.notes.lblNewNote"      )</span></a></li>
+  </ul>
+</div>
+
+<script type="text/javascript">
+
+  var notes = new Array();
+  <o2 foreach "$note in $notes">
+    notes.push({
+      noteId : "$note->{noteId}",
+      note   : "$note->{note}"
+    });
+  </o2:foreach>
+
+  var newNoteText    = '$lang->getString("o2.gui.backend.widget.notes.msgNewNote")';
+  var currentNoteId  = null;
+  var noteTextRef    = document.getElementById('noteText');
+  var hasUnSavedNote = false;
+  var isWriting      = false;
+
+  if (notes.length == 0) {
+    setNoteText('$lang->getString("o2.gui.backend.widget.notes.msgNoNotes")');
+  }
+  else {
+    setNoteTextByIdx(0);   
+  }
+  updateStatusLabel();
+
+  function updateTimeout() {
+    hasUnSavedNote = true;
+    isWriting      = true;
+    setTimeout('needToSaveCurrentNote()', 2000);
+  }
+
+  function needToSaveCurrentNote() {
+    if (hasUnSavedNote && !isWriting) {
+      saveCurrentNote();
+    }
+    isWriting = false;
+  }
+
+  function nextNote() {
+    if (notes.length == 0) {
+      return;
+    }
+
+    currentNoteId++;       
+    if (currentNoteId >= notes.length) {
+      currentNoteId = 0;
+    }
+    setNoteTextByIdx(currentNoteId);   
+  }
+
+  function prevNote() {
+    if (notes.length == 0) {
+      return;
+    }
+    currentNoteId--;           
+    if (currentNoteId < 0) {
+      currentNoteId = notes.length-1;
+    }
+    setNoteTextByIdx(currentNoteId);   
+  }
+
+  function setNoteTextByIdx(id) {
+    currentNoteId = id;
+    updateStatusLabel();
+    setNoteText( notes[currentNoteId].note );                              
+  }
+
+  function setNoteText(text) {
+    text = text.replace( /<br>/g, "\n" );
+    text = text.replace( /\\"/g,  '"'  );
+    text = text.replace( /\\'/g,  "'"  );
+    noteTextRef.value=text;
+  }
+
+  function updateStatusLabel() {
+    if (currentNoteId != null) {
+      document.getElementById('statusLabel').innerHTML = (currentNoteId+1) + "/" + notes.length;
+    }
+    else {
+      document.getElementById('statusLabel').innerHTML = '0/0';
+    }
+  }
+
+  function saveCurrentNote() {
+    saveNoteText(currentNoteId, noteTextRef.value);      
+  }
+
+  function newNote() {
+    noteTextRef.value = newNoteText;
+    noteTextRef.select();
+    noteTextRef.focus();
+    currentNoteId = null;
+  }
+
+  function saveNoteText(id,text) {
+    if (id != null && notes[id] == text || text == 'newNoteText' || !hasUnSavedNote) {
+      return true; //no change needed to save
+    }
+    hasUnSavedNote = false;
+    try {
+      var noteId = id != null ? notes[id].noteId : 'new';
+      o2.ajax.call({
+        setMethod : "saveNote",
+        setParams : { noteId : noteId, note : text },
+        handler   : "handleSaveNoteResponse",
+        method    : "post"
+      });
+    }
+    catch (e) {
+      alert( "Could not save note, reason: " + o2.getExceptionMessage(e) );
+    }
+  }
+
+  function handleSaveNoteResponse(data) {
+    var isExistingNote = false;
+    for (var i=0; i < notes.length;i++) {
+      if (notes[i].noteId == data.noteId) {
+        notes[i].note = data.note;
+        isExistingNote = true;
+        continue;
+      }
+    }
+    if (!isExistingNote) {
+      notes.push({
+        noteId : data.noteId,
+        note   : data.note
+      });
+      currentNoteId = notes.length-1;
+    }
+
+    hasUnSavedNote = false;
+    updateStatusLabel();
+  }
+
+  function deleteNote() {
+    if (currentNoteId == null) {
+      return false;
+    }
+    try {
+      var noteId = notes[currentNoteId].noteId;
+      if (noteId == null) {
+        return;
+      }
+      o2.ajax.call({
+        setMethod : "deleteNote",
+        setParams : { noteId : noteId },
+        handler   : "handleDeleteNoteResponse",
+        method    : "post"
+      });
+    }
+    catch (e) {
+      alert("Could not delete note, reason: " + o2.getExceptionMessage(e));
+    }
+  }
+
+  function handleDeleteNoteResponse(data) {
+    var tmp = new Array();
+    for (var i in notes) {
+      if (notes[i].noteId != data.noteId) {
+        tmp.push(notes[i]);
+      }
+    }
+    notes = tmp;
+    if (notes.length == 0) {
+      currentNoteId = null;
+      setNoteText('$lang->getString("o2.gui.backend.widget.notes.msgNoNotes")');
+      updateStatusLabel();
+    }
+    else {
+      currentNoteId--;
+      nextNote();
+    }
+  }
+</script>
+
+<o2 footer/>

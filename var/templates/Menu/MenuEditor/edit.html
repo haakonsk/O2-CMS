@@ -1,0 +1,125 @@
+<o2 use O2CMS::Html::TreeMenu />
+<o2 use O2CMS::Html::Form::DragList />
+<o2 use Html::Form />
+<o2 use O2CMS::Html::ToolBarMenu />
+<o2 use StringFormat />
+<o2 use Js::Lang />
+
+<o2 addJsLangFile file="o2/menuEditor" />
+
+<o2 header/>
+
+<o2 addCss>
+  .treeItemPopup {
+    border-style: solid;
+    border-width: 10px;
+    margin-left:8;
+    display:none;
+  }
+  .treeItemVisible {
+    color: #000000;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .treeItemHidden {
+    color: #808080;
+    text-decoration: line-through;
+    cursor: pointer;
+  }
+</o2:addCss>
+
+<o2 addJsFile file="datadumper"/>
+<o2 addJsFile file="openwindow"/>
+
+
+<o2 addJs where="onLoad">
+  <o2 foreach "$locale in $locales">
+    <o2 setVar "$variableJustToAvoidOutputFromSetCurrentLocale">$menu->setCurrentLocale($locale)</o2:setVar>
+    var menuTree = getComponentById('menuTree_$locale');
+    menuTree.setTopLevelId($menu->getTopLevelId());
+    <o2 foreach "$item in $menu->getMenuItems()">
+      menuTree.addObjectFolder({id:$item->getTargetId(), name:'<o2 substitute from="'" to="\'">$item->getTargetName()</o2:substitute>', className:'$item->getTargetClassName()', iconUrl:top.getIconUrl('$item->getTargetClassName()'), position:'$item->getPosition()', parentId: $item->getParentId() , expandable:$item->getExpandable(), visible:$item->getVisible(), description:'<o2 substitute from="'" to="\'">$item->getDescription()</o2:substitute>' });
+    </o2:foreach>
+  </o2:foreach>
+</o2:addJs>
+
+<o2 addJs>
+  function packAndSubmitForm(form) {
+    if (form.name.value && form.parentId.value) { // name and folder given
+      var menuItems = {};
+      <o2 foreach "$locale in $locales">
+        var menuTree = getComponentById('menuTree_$locale');
+        menuItems['$locale'] = menuTree.getItems();
+      </o2:foreach>
+      form.menuItems.value = o2.dumpXml(menuItems);
+      form.submit();    
+    }
+    else {
+      o2.openWindow.openWindow({url:'<o2 urlMod setClass="System-FileDialog" setMethod="saveAsDialog" setParams=""/>?folderId=' + $menu->getTopLevelId() + '&filename=menu', width:480, height:350});
+    }
+  }
+
+  function saveAsDialogCallback(folderId, filename, objectId) {
+    var form = document.forms.menuForm;
+    form.parentId.value = folderId;
+    form.name.value = filename;
+    packAndSubmitForm(form);
+    return true;
+  }
+
+  // display MenuTreeEditor component corresponding to locale (and hide other)
+  function setMenuLocale(newLocale) {
+    for (var i=0; i < o2LocalesAvailable.length; i++) {
+      var locale = o2LocalesAvailable[i].localeCode;
+      document.getElementById('menuTreeHider_'+locale).style.display = (locale==newLocale) ? 'block' : 'none';
+    }
+  }
+
+  function getIconUrl(e){ // hack for debugging outside of o2 framework
+    return '/images/system/classIcons/O2CMS-Obj-WebCategory.gif';
+  }
+</o2:addJs>
+
+<o2 use O2CMS::ApplicationFrame />
+<o2 if "$menu->getId()">
+  <o2 setVar "$menuId">$menu->getId()</o2:setVar>
+</o2:if>
+<o2 else>
+  <o2 setVar "$menuId"   >$menu->getTopLevelId()</o2:setVar>
+  <o2 setVar "$extraPath">$lang->getString("o2.menuEditor.newMenu")</o2:setVar>
+</o2:else>
+<o2 ApplicationFrameHeader frameTitle="$lang->getString('o2.menuEditor.frameTitle')" showCloseButton="1" useCloseAction="confirmClose" disableScrollBar="1" showSettingsButton="0"
+                           objectId="$menuId" extraPath="$extraPath" />
+
+<o2 toolBarMenu>
+  <o2 addCell><o2 multilingualController object="$menu" onSwitchPost="setMenuLocale(o2.multilingualController.currentActiveLocaleCode)"/></o2:addCell>
+</o2:toolBarMenu>
+
+<o2 form method="post" setMethod="save" name="menuForm">
+
+  <input type="hidden" name="topLevelId" value="$menu->getTopLevelId()">
+  <input type="hidden" name="menuItems"  value="">
+  <input type="hidden" name="name"       value="$menu->getMetaName()">
+  <input type="hidden" name="objectId"   value="$menu->getId()">
+  <input type="hidden" name="parentId"   value="$menu->getMetaParentId()">
+
+  <o2 foreach "$locale in $locales">
+    <div id="menuTreeHider_$locale" style="display:none">
+      <table cellpadding="0" cellspacing="0" border="0" width="600" style="padding:10px;">
+        <tr valign="top">
+          <td width="50%"><o2 TreeMenu id="menuTree_$locale" type="MenuEditorTree"/></td>
+          <td width="50%"><div id="itemInfo_menuTree_$locale"></div></td>
+        </tr>
+      </table>
+    </div>
+  </o2:foreach>
+  <input type="button" onclick="packAndSubmitForm(this.form)" value="$lang->getString('o2.menuEditor.btnSave')">
+
+  <!--<div id="debug"></div>
+  <input type="button" onclick="window.location=window.location" value="reload">-->
+
+</o2:form>
+
+<o2 footer/>
+
+<!--<iframe name="debugIframe" width="400" heigth="400"></iframe>-->

@@ -1,0 +1,20 @@
+<o2 use Html::Form/>
+
+
+Name <o2 input id="name" name="name" value="$object->getMetaName()" rule="required" ruleMsg="$lang->getString('errorInName')" onchange="setMetaName(this.value)"/><br>
+
+contentId <o2 input name="object.contentId" value="$object->getContentId()" rule="required" ruleMsg="" />
+
+<!--
+<o2 if "$object->getContentId()">
+ $object->getContent->getMetaName() <br>
+</o2:if>
+
+
+<o2 if "$object->getId()">
+ Index name $object->getIndexName()<br>
+</o2:if>
+-->
+<br>
+
+

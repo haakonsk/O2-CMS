@@ -1,0 +1,209 @@
+<o2 use Html::Form />
+
+<o2 use I18N />
+<o2 setResourcePath>User.MemberManager</o2:setResourcePath>
+
+<o2 header bgColor="#f3f3f3" />
+
+<o2 addCss>
+  .cell {
+    background-color:;
+  }
+  body {
+    margin  : 0;
+    padding : 0;
+  }
+  #activateButtonForm,
+  #deactivateButtonForm {
+    display : inline;
+  }
+  #activateEditDeactivateButtons {
+    margin-top    : 8px;
+    margin-bottom : 8px;
+  }
+</o2:addCss>
+
+<o2 addJsFile file="util/urlMod" />
+
+<o2 addJs where="pre">
+
+  var currentMemberId = "$member->getId()";
+
+  function getCurrentMemberId() {
+    if (!currentMemberId) {
+      return false;
+    }
+    return currentMemberId;
+  }
+
+  function addCanLoginAsMember(memberId) {
+    if (memberId == currentMemberId) {
+      return top.displayError("$lang->getString('cantAddLoginAsMember')");
+    }
+    var url = o2.urlMod.urlMod({
+      "setMethod" : "addCanLoginAsMemberId",
+      "setParams" : "masterUserId=" + currentMemberId + "&userId=" + memberId + "&memberId=" + currentMemberId
+    });
+    window.location = url;
+  }
+
+  function deleteCanLoginAs(masterUserId, userId) {
+    var url = o2.urlMod.urlMod({
+      "setMethod" : "deleteCanLoginAsMember",
+      "setParams" : "masterUserId=" + masterUserId + "&userId=" + userId + "&memberId=" + currentMemberId
+    });
+    window.location = url;
+  }
+
+  function setCanLoginAsAll(masterUserId) {
+    if (!confirm('$lang->getString("confirmAddCanLoginAsMember")')) {
+      return;
+    }
+    var url = o2.urlMod.urlMod({
+      "setMethod" : "setCanLoginAsAll",
+      "setParams" : "masterUserId=" + masterUserId + "&memberId=" + masterUserId
+    });
+    window.location = url;
+  }
+
+</o2:addJs>
+
+<div class="memberInfo">
+  <table cellpadding="4" cellspacing="1" border="0" class="memberInfo" style="background-color:#e2e2e2;">
+    <tr>
+      <td colspan="2" class="tblHeader">$lang->getString("memberInfoTitle")</td>
+    </tr>
+    <tr>
+      <td class="cell">$lang->getString("memberId")</td>
+      <td class="cell">$member->getId()</td>
+    </tr>
+    <tr>
+      <td class="cell">$lang->getString("username")</td>
+      <td class="cell">$member->getUsername()</td>
+    </tr>
+    <tr>
+      <td class="cell">$lang->getString("email")</td>
+      <td class="cell">$member->getEmail()</td>
+    </tr>
+    <tr>
+      <td class="cell">$lang->getString("firstname")</td>
+      <td class="cell">$member->getFirstName()</td>
+    </tr>
+    <tr>
+      <td class="cell">$lang->getString("middlename")</td>
+      <td class="cell">$member->getMiddleName()</td>
+    </tr>
+    <tr>
+      <td class="cell">$lang->getString("lastname")</td>
+      <td class="cell">$member->getLastName()</td>
+    </tr>
+    <tr>
+      <td class="cell">$lang->getString("address")</td>
+      <td class="cell">$member->getAddress()</td>
+    </tr>
+    <tr>
+      <td class="cell">$lang->getString("postalCode")</td>
+      <td class="cell">$member->getPostalCode()</td>
+    </tr>
+    <tr>
+      <td class="cell">$lang->getString("postalPlace")</td>
+      <td class="cell">$member->getPostalPlace()</td>
+    </tr>
+    <tr>
+      <td class="cell">$lang->getString("country")</td>
+      <td class="cell">$member->getCountry()</td>
+    </tr>
+    <tr>
+      <td class="cell">$lang->getString("phone")</td>
+      <td class="cell">$member->getPhone()</td>
+    </tr>
+    <tr>
+      <td class="cell">$lang->getString("cellPhone")</td>
+      <td class="cell">$member->getCellPhone()</td>
+    </tr>
+    <tr>
+      <td class="cell">$lang->getString("birthDate")</td>
+      <td class="cell">$member->getBirthDate('yyyyMMdd')</td>
+    </tr>
+    <tr>
+      <td class="cell">$lang->getString("status")</td>
+      <td class="cell">$member->getMetaStatus()</td>
+    </tr>
+    <tr>
+      <td class="cell">$lang->getString("password")</td>
+      <td class="cell">$member->getPassword('N/A')</td>
+    </tr>
+  </table>
+
+  <br><br>
+
+  <table class="memberAttributes" id="memberAttributes" cellspacing="1" border="0" style="padding-top:10px;background-color:#e2e2e2;">
+    <tr>
+      <td class="tblHeader">$lang->getString("attributeName")</td>
+      <td class="tblHeader">$lang->getString("attributeValue")</td>
+    </tr>
+    <o2 foreach "$name => $value in $memberAttributes">
+      <tr>
+        <td class="cell">$name</td>
+        <td class="cell">$value</td>
+      </tr>
+    </o2:foreach>
+  </table>
+
+  <div id="activateEditDeactivateButtons">
+    <o2 setVar "$editUrl"><o2 urlMod setMethod="edit"   setParams="memberId=$member->getId()" /></o2:setVar>
+    <o2 button href="$editUrl">$lang->getString('btnEditMember')</o2:button>
+    <o2 if "$member->getMetaStatus() eq 'active'">
+      <o2 form method="post" setMethod="deactivate" id="deactivateButtonForm" >
+        <o2 input type="hidden" name="memberId" value="$member->getId()" />
+        <o2 input type="submit" value="$lang->getString('btnDeactivateMember')" class="defaultButton" />
+      </o2:form>
+    </o2:if>
+    <o2 else>
+      <o2 form method="post" setMethod="activate" id="activateButtonForm" >
+        <o2 input type="hidden" name="memberId" value="$member->getId()" />
+        <o2 input type="submit" value="$lang->getString('btnActivateMember')" class="defaultButton" />
+      </o2:form>
+    </o2:else>
+    <o2 button setMethod="editUsername" setParams="oldUsername=$member->getUsername()">$lang->getString('btnChangeUsername')</o2:button>
+  </div>
+
+  <b>$lang->getString("loginOnBehalfTitle")</b><br>
+
+  <o2 if "$canLoginAsMembers ne 'all'">
+    <o2 input type="button" value='$lang->getString("allowLoginAsAllButton")' onclick="setCanLoginAsAll(currentMemberId);" class="defaultButton" />
+  </o2:if>
+
+
+  <o2 if "(ref($canLoginAsMembers) && @{$canLoginAsMembers})  ||  $canLoginAsMembers eq 'all'">
+    <table class="loginAsMembers" id="loginAsMembers" cellspacing="1" border="0" style="padding-top:10px;">
+      <tr>
+        <td class="tblHeader">$lang->getString("username")</td>
+        <td class="tblHeader">$lang->getString("fullName")</td>
+        <td class="tblHeader">$lang->getString("delete")</td>
+      </tr>
+      <o2 if "$canLoginAsMembers eq 'all'">
+        <tr>
+          <td class="cell">$lang->getString("allUsers")</td>
+          <td class="cell"></td>
+          <td class="cell"><input type="button" value="$lang->getString('btnRemoveLoginOnBehalf')" onClick="deleteCanLoginAs(currentMemberId, -1)" class="defaultButton"></td>
+        </tr>
+      </o2:if>
+      <o2 else>
+        <o2 foreach "$user in $canLoginAsMembers">
+          <tr>
+            <td class="cell">$user->getUsername()</td>
+            <td class="cell">$user->getFullName()</td>
+            <td class="cell"><input type="button" value="$lang->getString('btnDeleteFromCanLoginAsUsers')" onclick="deleteCanLoginAs(currentMemberId, '$user->getId()')" class="submCal"></td>
+          </tr>
+        </o2:foreach>
+      </o2:else>
+    </table>
+  </o2:if>
+  <o2 else>
+    <p>$lang->getString("noLoginOnBehalfUsers")</p>
+  </o2:else>
+
+</div>
+
+<o2 footer />

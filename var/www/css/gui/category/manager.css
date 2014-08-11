@@ -1,0 +1,190 @@
+body {
+  height : 100% !important;
+}
+#categoryBrowser .cell { /* Removing default formatting from defaultStyle.css */
+  font-size   : inherit;
+  color       : inherit;
+  font-weight : inherit;
+}
+#categoryIsEmptyMessage {
+  clear       : left;
+  font-weight : bold;
+  color       : #700;
+  margin      : 0;
+  padding     : 0;
+}
+/* List view */
+.listView img {
+  cursor : auto;
+}
+.header span {
+  background   : url("/images/system/genericbar_bg.png") repeat-x;
+  border       : 1px solid;
+  border-color : ButtonHighlight ButtonShadow ButtonShadow ButtonHighlight;
+  position     : relative;
+}
+.header span:hover {
+  background : url("/images/system/genericbar_active_bg.png") repeat-x;
+}
+.header .drag {
+  background : url("/images/system/genericbar_active_bg.png") repeat-x;
+  opacity    : 0.5;
+}
+.isDragging * {
+  cursor : move;
+}
+.listView .row {
+  float : left;
+  clear : left;
+}
+.listView .selectedItem span {
+  background-color : #cce;
+}
+.listView {
+  border-collapse : collapse;
+}
+.listView a {
+  text-decoration : none;
+}
+.listView div {
+  cursor  : pointer;
+  height  : 23px;
+  display : inline;
+}
+.listView .thumbView {
+  display : none;
+}
+.listView .categoryBrowserItem:hover span {
+  background-color : #ddf;
+}
+.listView .selectedItem:hover span {
+  background-color : #cce;
+}
+.listView .categoryBrowserItem:hover span,
+.listView .activeItem span {
+  border-top     : 1px dashed black;
+  border-bottom  : 1px dashed black;
+  height         : 17px;
+  padding-top    : 1px;
+  padding-bottom : 1px;
+}
+.listView .categoryBrowserItem:hover span:first-child,
+.listView .activeItem span:first-child {
+  border-left  : 1px dashed black;
+  padding-left : 5px;
+}
+.listView .categoryBrowserItem:hover span:last-child,
+.listView .activeItem span:last-child {
+  border-right : 1px dashed black;
+}
+.listView span {
+  display          : block;
+  float            : left;
+  white-space      : nowrap;
+  overflow         : hidden;
+  border-right     : 1px solid #ddd;
+  padding          : 2px 6px 0;
+  height           : 19px;
+  background-color : #f3f3f3;
+}
+.listView .header span:first-child,
+.listView .categoryBrowserItem span:first-child {
+  /* clear : left; */
+}
+.listView .smallIcon {
+  border-right : 0;
+}
+.listView .header .bigIcon,
+.listView .bigIcon { /* Doing this instead of display:none because of a redraw bug in Firefox. It was triggered when the first column was moved to the right. */
+  visibility : hidden;
+  width      : 0;
+  height     : 0;
+  padding    : 0;
+  margin     : 0;
+  border     : 0;
+}
+.listView .resizerLeft,
+.listView .resizerRight {
+  position   : absolute;
+  width      : 5px;
+  height     : 100%;
+  cursor     : e-resize;
+}
+.listView .resizerLeft {
+  left : 0;
+}
+.listView .resizerRight {
+  right : 0;
+}
+
+/* Thumb view */
+.thumbView .listView {
+  display : none;
+}
+.thumbView .header {
+  display : none;
+}
+.thumbView img {
+  cursor : move;
+}
+.thumbView .selectedItem .thumbView {
+  border : 1px solid #777;
+}
+.thumbView .selectedItem .thumbView *,
+.thumbView .selectedItem .thumbView {
+  background-color : #cce;
+}
+.thumbView .activeItem .thumbView {
+  border   : 1px solid black;
+  overflow : visible;
+}
+.thumbView div.thumbView {
+  float              : left;
+  width              : 138px;
+  height             : 118px;
+  overflow           : hidden;
+  text-align         : center;
+  margin             : 6px;
+  padding            : 4px;
+  cursor             : pointer;
+  border             : 1px solid white;
+  -moz-border-radius : 4px;
+}
+.thumbView div.thumbView:hover * {
+  background-color : #ddf;
+}
+.thumbView div.thumbView:hover {
+  background-color : #ddf;
+  border           : 1px solid #777;
+  overflow         : visible;
+}
+.thumbView .selectedItem .thumbView:hover * {
+  background-color : #cce;
+}
+.thumbView .selectedItem .thumbView:hover {
+  background-color : #cce;
+  border-color     : black;
+  overflow         : visible;
+}
+.thumbView span {
+  background-color : #f3f3f3;
+}
+.thumbView .thumbViewName {
+  display    : block;
+  clear      : left;
+  margin-top : 10px;
+}
+.thumbView .bigIcon img {
+  width  : 64px;
+  height : 64px;
+}
+#categoryBrowser #loadingIcon {
+  position : absolute;
+  right    : 10px;
+  top      : 60px;
+}
+#categoryBrowser #loadMoreLink {
+  display : block;
+  width   : 100%;
+  float   : left;
+}

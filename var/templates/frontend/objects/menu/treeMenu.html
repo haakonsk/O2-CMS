@@ -1,0 +1,47 @@
+<o2 use Html />
+<o2 use O2CMS::Publisher />
+
+<o2 calc> $object->setPage($page) </o2:calc>
+
+<o2 addCss>
+  .o2menuItemOpen {
+    display:block;
+    padding-left: 18px;
+  }
+  .o2menuItemClosed {
+    display:none;
+  }
+  .o2menu {
+  }
+</o2:addCss>
+
+<o2 addJs>
+  function o2MenuExpand(img, categoryId) {
+    var expand = img.src.indexOf('expand') > 0;
+    img.src = '/images/system/tree/'+ (expand ? 'collapseFolder.gif' : 'expandFolder.gif');
+    document.getElementById('o2menuItem'+categoryId).className = (expand ? 'o2menuItemOpen' : 'o2menuItemClosed');
+  }
+</o2:addJs>
+
+<o2 function renderMenuLevel>
+  <o2 setVar "$class"><o2 if "$menuItem && $menuItem->getExpanded()">o2menuItemOpen</o2:if><o2 else>o2MenuItemClosed</o2:else></o2:setVar>
+  <o2 if "$object->getTopLevelId() == $levelId"> <o2 setVar "$class">o2Menu</o2:setVar> </o2:if>
+
+  <div id="o2menuItem$levelId" class="$class">
+    <o2 foreach "$item in $object->getMenuItemsAt($levelId)">
+      <o2 if "$item->getVisible()">
+        <o2 if "$item->getExpandable()">
+          <o2 setVar "$src">/images/system/tree/<o2 if "$item->getExpanded()" then="collapseFolder.gif" else="expandFolder.gif" /></o2:setVar>
+          <img src="$src" onclick="o2MenuExpand(this, $item->getTargetId() )"><a href="<o2 objectUrl objectId='$item->getTargetId()'/>">$item->getTargetName()</a><br>
+          <o2 call renderMenuLevel levelId="$item->getTargetId()" menuItem="$item" />
+        </o2:if>
+        <o2 else> <!-- title="$item->getDescription()" -->
+          <img src="/images/system/tree/vertline.gif"><a href="<o2 objectUrl objectId='$item->getTargetId()'/>">$item->getTargetName()</a><br>
+        </o2:else>
+      </o2:if>
+    </o2:foreach>
+  </div>
+</o2:function>
+
+<o2 call renderMenuLevel levelId="$object->getTopLevelId()" />
+

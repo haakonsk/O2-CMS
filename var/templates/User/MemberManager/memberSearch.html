@@ -1,0 +1,95 @@
+<o2 use Html::Form />
+<o2 use O2CMS::ApplicationFrame />
+
+<o2 use I18N />
+<o2 setResourcePath>User.MemberManager</o2:setResourcePath>
+
+<o2 header bgColor="#f3f3f3" />
+
+<o2 addCss>
+  #editObjectWrapper .memberManagerForm .textInput {
+    width : 230px;
+  }
+  #editObjectWrapper .memberManagerForm input#objectId {
+    width : 100px;
+  }
+</o2:addCss>
+
+<o2 ApplicationFrameHeader frameTitle="$lang->getString('searchTitleMemberManager')" showCloseButton="1" useCloseAction="" disableScrollBar="1" showSettingsButton="0" path="Tools, O2 Applications, Member Manager" />
+
+<div id="editObjectWrapper">
+
+  <o2 form target="searchResultsFrame" setMethod="search" class="memberManagerForm">
+    <o2 input type="hidden" name="page" value="1" />
+    
+    <o2 formTable>
+      <o2 input type="text" name="objectId"   label="$lang->getString('objectId')"   id="objectId"   value="$q->{objectId}"   />
+      <o2 input type="text" name="username"   label="$lang->getString('username')"   id="username"   value="$q->{username}"   />
+      <o2 input type="text" name="email"      label="$lang->getString('email')"      id="email"      value="$q->{email}"      />
+      <o2 input type="text" name="firstName"  label="$lang->getString('firstname')"  id="firstName"  value="$q->{firstName}"  />
+      <o2 input type="text" name="middleName" label="$lang->getString('middlename')" id="middleName" value="$q->{middleName}" />
+      <o2 input type="text" name="lastName"   label="$lang->getString('lastname')"   id="lastName"   value="$q->{lastName}"   />
+      
+      <o2 select name="status" label="$lang->getString('status')" value="$q->{status}">
+        <o2 option value="">$lang->getString("statusAll")</o2:option>
+        <o2 foreach "$status in $statuses">
+          <o2 option value="$status">$status</o2:option>
+        </o2:foreach>
+      </o2:select>
+      
+      <o2 tr>
+        <td colspan="4">
+          <o2 select name="orderBy" label="$lang->getString('orderBy')" id="orderBy" value="$q->{orderBy}">
+            <o2 option value="objectId"  >$lang->getString("objectId")</o2:option>
+            <o2 option value="username"  >$lang->getString("username")</o2:option>
+            <o2 option value="email"     >$lang->getString("email")</o2:option>
+            <o2 option value="firstName" >$lang->getString("firstname")</o2:option>
+            <o2 option value="middleName">$lang->getString("middlename")</o2:option>
+            <o2 option value="lastName"  >$lang->getString("lastname")</o2:option>
+          </o2:select>
+          
+          <span class="radioButtons">
+            <o2 input type="radio" name="sortDirection" id="sortDirectionAsc"  value="asc"  /> <label for="sortDirectionAsc">$lang->getString('ascending')</label> 
+            <o2 input type="radio" name="sortDirection" id="sortDirectionDesc" value="desc" /> <label for="sortDirectionDesc">$lang->getString('descending')</label> 
+          </span>
+        </td>
+      </o2:tr>
+      
+      <o2 select name="resultsPrPage" label="$lang->getString('resultsPrPage')" id="resultsPrPage" value="$q->{resultsPrPage}">
+        <o2 option value="">$lang->getString("numResultsNoLimit")</o2:option>
+        <o2 option value="10">10</o2:option>
+        <o2 option value="25">25</o2:option>
+        <o2 option value="50">50</o2:option>
+        <o2 option value="100">100</o2:option>
+      </o2:select>
+    </o2:formTable>
+
+    <p class="buttons">
+      <o2 input type="submit" value="$lang->getString('btnSubmitSearch')" />
+      <o2 input type="reset"  value="$lang->getString('btnResetSearch')"  />
+      <o2 input type="button" value="$lang->getString('btnClearSearch')"  />
+    </p>
+  </o2:form>
+</div>
+
+
+<table cellpadding="0" cellspacing="0" border="0" style="clear:both;">
+  <tr>
+    <td valign="top">
+      <div class="searchResultsFrame">
+        <iframe width="800" height="300" frameborder="0" name="searchResultsFrame"></iframe>
+      </div>
+    </td>
+    <td>&nbsp;&nbsp;</td>
+    <td valign="top">
+      <div class="memberInfoFrame">
+        <iframe width="500" height="580" name="memberInfoFrame" frameBorder="0"></iframe>
+      </div>
+    </td>
+  </tr>
+</table>
+
+
+<o2 ApplicationFrameFooter />
+
+<o2 footer/>

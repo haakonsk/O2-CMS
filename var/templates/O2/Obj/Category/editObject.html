@@ -1,0 +1,32 @@
+<o2 use Html::Form/>
+
+<o2 use I18N />
+<o2 setResourcePath>o2.Category.editCategory</o2:setResourcePath>
+
+<o2 setVar "$icon"><o2 iconUrl action="O2CMS-Obj-Category" size="48" /></o2:setVar>
+
+<o2 addCss>
+  #editObjectWrapper h2 {
+    background-image: url("/images/icons/o2default/O2CMS/Obj/Category/O2CMS-Obj-Category-48.png");
+  }
+</o2:addCss>
+
+<o2 multilingualController object="$object"/>
+<h2>$lang->getString('hdrEditCategory')</h2>
+
+<p class="helpText">$lang->getString('helpText')</p>
+
+<p>
+  <label for="object.title">$lang->getString('lblCategoryTitle'):</label>
+  <o2 input id="object.title" name="object.title" value="$object->getTitle()" rule="" ruleMsg="$lang->getString('errorInTitle')" multilingual="1" />
+  <span>$lang->getString('msgCategoryTitle')</span>
+</p>
+
+<p>
+  <label for="name">$lang->getString("lblCategoryTreeName"):</label>
+  <o2 input id="name" name="name" value="$object->getMetaName()" rule="required" ruleMsg="$lang->getString('errorInCategoryTreeName')" onchange="setMetaName(this.value)"/>
+  <span>$lang->getString("msgCategoryTreeName")</span>
+</p>
+    
+
+

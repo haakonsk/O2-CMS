@@ -1,0 +1,18 @@
+<o2 use O2Doc::Tutorial />
+
+<o2 docSection title="IconUrl">
+  Returns the url for the icon associated with the given class.
+  <o2 docSection title="Syntax">
+    <o2 docCode lang="o2ml">
+      <o2 setVar "$url"><o2 iconUrl size="32">O2CMS::Obj::Site::Sitemap</o2:iconUrl></o2:setVar>
+      <img src="$url">
+    </o2:docCode>
+    <o2 docCodeResult useModule="O2CMS::Objects" />
+  </o2:docSection>
+  <o2 docSection title="Attributes">
+    <o2 docList class="attributes">
+      <o2 docListItem class="optional">size            - width and height in pixels. Must be one of {16, 24, 32}.</o2:docListItem>
+      <o2 docListItem class="required content">content - the class name</o2:docListItem>
+    </o2:docList>
+  </o2:docSection>
+</o2:docSection>

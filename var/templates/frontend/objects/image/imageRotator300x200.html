@@ -1,0 +1,16 @@
+<o2 use O2CMS::Publisher/>
+<o2 use Html::ImageRotator/>
+<o2 ifBackend>
+    <div style="height: 200px;width:300px;">Please select preview to see imageRotator</div><o2 comment>Make room for slot toolbar</o2:comment>
+</o2:ifBackend>
+<o2 ifFrontend>    
+<o2 ImageRotator id="player" height="200" width="300">
+  <o2 foreach "$o in $object->getChildren()">
+      <o2 if "$o->getMetaClassName() eq 'O2::Obj::Image'">
+        <o2 setVar "$title"><o2 if "$o->can('getTitle') && $o->getTitle()">$o->getTitle()</o2:if><o2 else>$o->getMetaName()</o2:else></o2:setVar>
+          <o2 addImage url="$o->getScaledUrl(300,200,undef)" title="$title"/>
+       </o2:if>
+  </o2:for>
+</o2:ImageRotator>
+</o2:ifFrontend>    
+

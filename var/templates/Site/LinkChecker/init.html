@@ -1,0 +1,52 @@
+<o2 use O2CMS::ApplicationFrame />
+
+<o2 use I18N />
+<o2 setResourcePath>o2.Site.LinkChecker</o2:setResourcePath>
+
+<o2 header />
+
+<o2 addCss>
+  #iframe {
+    width  : 99.7%;
+    height : 800px;
+    border : none;
+  }
+</o2:addCss>
+
+<o2 addJs where="pre">
+  function runLinkChecker()
+  {
+    document.getElementById("iframe").src = "<o2 urlMod setMethod='checkLinks' />";
+  }
+  function resizeIframe()
+  {
+    var iframe = document.getElementById("iframe");
+    if (document.body.clientHeight) {
+      iframe.style.height = (document.body.clientHeight - 28) + "px";
+    }
+    else {
+      iframe.style.height = (document.documentElement.clientHeight - 28) + "px";
+    }
+    iframe.style.border = "1px solid transparent"; // Try to force the browser to actually set the new height...
+  }
+</o2:addJs>
+
+<o2 addJs where="onLoad">
+  resizeIframe();
+</o2:addJs>
+
+<o2 setVar "$domain">$site->getMetaName()</o2:setVar>
+<o2 ApplicationFrameHeader frameTitle="$lang->getString('frameTitle', domain => $domain)" showCloseButton="1" useCloseAction="" disableScrollBar="0" showSettingsButton="0"
+                           objectId="$site->getId()" extraPath="$lang->getString('extraPathLinkChecker')">
+  <o2 addHeaderButton id="runCheckButton" icon="/images/system/find_16.gif" action="runLinkChecker();" width="120">$lang->getString('runLinkChecker')</o2:addHeaderButton>
+</o2:ApplicationFrameHeader>
+
+<o2 if "$hasRunBefore">
+  <o2 setVar "$src"><o2 urlMod setMethod="showPreviousCheck" /></o2:setVar>
+  <iframe id="iframe" src="$src"></iframe>
+</o2:if>
+<o2 else>
+  <iframe id="iframe"></iframe>
+</o2:else>
+
+<o2 footer />

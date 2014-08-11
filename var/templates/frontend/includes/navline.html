@@ -1,0 +1,33 @@
+<o2 use O2CMS::Publisher/>
+
+<o2 if "$page->isa('O2CMS::Obj::Template::Grid')">
+  This grid contains a navigation menu. It will produce meaningful content when placed on a page.
+</o2:if>
+<o2 else>
+  <o2 if "$page">
+    <o2 setVar "$path">$page->getCategoryPath()</o2:setVar>
+    <o2 foreach "$pathIx (1..@{$path})">
+      <o2 setVar $object>$path->[$pathIx-1]</o2:setVar>
+      <o2 if "$pathIx==1">
+        <!-- KN8 First -->
+        <o2 comment>This is the first category</o2:comment>
+        <a href="<o2 objectUrl objectId='$object->getId()' path='$path'/>">$object->getTitle()</a>
+      </o2:if>
+      <o2 elsif "$pathIx==@{$path} && $page->getResolvedUrl() && $page->getResolvedUrl->getUrl() !~ m{ \.o2 \z }xms">
+        <!-- KN8 Last -->
+        <o2 comment>This is the last category</o2:comment>
+        &gt; <b><a style="text-decoration:none" href="<o2 objectUrl objectId='$object->getId()' path='$path'/>">$object->getTitle()</a></b>
+      </o2:elsif>
+      <o2 else>
+        <!-- KN8 Middle -->
+        <o2 comment>This is rendered for all between first and last category</o2:comment>
+        &gt; <a href="<o2 objectUrl objectId='$object->getId()' path='$path'/>">$object->getTitle()</a> 
+      </o2:else>
+      <!--      ($object->getId())-->
+    </o2:foreach>
+  </o2:if>
+  <o2 else>
+    <i>Navline will appear when page is saved</i>
+  </o2:else>
+</o2:else>
+<br>

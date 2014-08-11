@@ -1,0 +1,27 @@
+<o2 use O2CMS::Publisher />
+
+<o2 ifBackend>
+  Flash ikke synlig i o2cms
+</o2:ifBackend>
+
+<o2 comment>Make room for slot toolbar</o2:comment>
+<o2 comment>
+  <o2 ifBackend><div style="height: 35px;"></div></o2:ifBackend>
+</o2:comment>
+
+<o2 ifFrontend> 
+  <div>
+    <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
+      codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0"
+      width="100%"
+      id="flash_$object->getId()">
+      <param name="movie"   value="$object->getFileUrl()">
+      <param name="quality" value="high">
+      <param name="bgcolor" value="#ffffff">
+      <embed src="$object->getFileUrl()" quality="high" bgcolor="#ffffff" width="100%"
+        name="flash_$object->getId()" align="" type="application/x-shockwave-flash"
+        pluginspage="http://www.macromedia.com/go/getflashplayer">
+      </embed>
+    </object>
+  </div>
+</o2:ifFrontend> 

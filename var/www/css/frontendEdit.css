@@ -1,0 +1,14 @@
+.o2_activeElement {
+  background-color: lightyellow;
+}
+.o2_controller {
+  background-color : rgba(0,0,0,0.5);
+  position         : absolute;
+  padding          : 2px;
+  cursor           : pointer;
+  color: white;
+}
+.o2_controller a {
+  text-decoration : none;
+  color: white;
+}

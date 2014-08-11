@@ -1,0 +1,18 @@
+{
+ labelMonthNames => 'Month name',
+ labelUseThisLanguage => 'Try to show this page in choosen language',
+ testALocale => 'Test a locale',
+ introText => 'User:  and user\'s locale is: O2::Lang::Locale=HASH(0x18f1524) and active locale: ',
+ labelTerritories => 'Territories:',
+ naString => 'n/a',
+ labelDateMedium => 'dateformat medium:',
+ labelDateDefault => 'dateformat default:',
+ labelWeekDayNames => 'Weekday name',
+ labelCurrencies => 'Currencies:',
+ buttonTestLabel => ' test this locale ',
+ labelScripts => 'Scripts:',
+ labelDateFull => 'dateformat full:',
+ labelDateShort => 'dateformat short:',
+ labelDateLong => 'dateformat long:',
+ title => 'Locale and I18N test page',
+};

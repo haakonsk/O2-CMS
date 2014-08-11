@@ -1,0 +1,11 @@
+<o2 use Html::Form/>
+
+
+
+<b>Name:</b><br>
+<o2 input name="metaName" value="$object->getMetaName()" rule="required" ruleMsg="$lang->getString('o2.file.edit.metaNameError')" size="30" onchange="setMetaName(this.value);"/><br>
+
+
+<b>Url:</b><br>
+<o2 input name="object.url" value="$object->getUrl()" rule="" ruleMsg="Error in url" size="80"/><br>
+

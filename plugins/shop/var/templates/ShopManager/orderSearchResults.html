@@ -1,0 +1,91 @@
+<o2 use NumberFormat />
+<o2 use DateFormat />
+
+<o2 use I18N />
+<o2 setResourcePath>ShopManager</o2:setResourcePath>
+
+<o2 header noStyle />
+
+<o2 setVar "$expandIconUrl"  ><o2 iconUrl action="O2-action-expand"   /></o2:setVar>
+<o2 setVar "$collapseIconUrl"><o2 iconUrl action="O2-action-collapse" /></o2:setVar>
+
+<o2 addCssFile file="gui/shopManager" />
+
+<o2 addCss>
+  td {
+    vertical-align : top;
+  }
+  .serialized {
+    display : none;
+  }
+  .order img {
+    cursor : pointer;
+  }
+</o2:addCss>
+
+<o2 addJs>
+  var numExpandedObjects = 0;
+  function toggleSerializedObject(toggleExpandElm, orderId) {
+    var elm = document.getElementById("serialized_" + orderId);
+    var display = !elm.style.display || elm.style.display === "none" ? "table-cell" : "none";
+    if (display === "none") {
+      numExpandedObjects--;
+      if (numExpandedObjects == 0) {
+        document.getElementById("serializedObjectHeader").style.display = "none";
+      }
+    }
+    else {
+      numExpandedObjects++;
+      if (numExpandedObjects == 1) {
+        document.getElementById("serializedObjectHeader").style.display = "table-cell";
+      }
+    }
+    elm.style.display = display;
+    var img = toggleExpandElm.childNodes[0];
+    img.src = img.src === "$expandIconUrl" ? "$collapseIconUrl" : "$expandIconUrl";
+  }
+</o2:addJs>
+
+<o2 include "includes/backLink.html" />
+
+<o2 pagination numPerPage="15" totalNumResults="$gui->getTotalNumOrderSearchResults()" elements="$gui->getOrderSearchResults($skip, $limit)">
+
+  <o2 if "@{$paginationResults}">
+    <p>$lang->getString("paginationResultsFromTo", from => $paginationFirstIndex, to => $paginationLastIndex, total => $gui->getTotalNumOrderSearchResults())</p>
+    <o2 paginationNavigation />
+    <table>
+      <tr>
+        <th></th>
+        <th>$lang->getString("lblOrderId")</th>
+        <th>$lang->getString("lblCustomerName")</th>
+        <th>$lang->getString("lblTypeOfSale")</th>
+        <th>$lang->getString("lblOrderType")</th>
+        <th>$lang->getString("lblAmountIncVat")</th>
+        <th id="serializedObjectHeader" class="serialized">$lang->getString("lblSerializedObject")</th>
+        <th>$lang->getString("lblOrderStatus")</th>
+        <th>$lang->getString("lblDateTime")</th>
+      </tr>
+      <o2 foreach "$order in $paginationResults">
+        <tr class="order">
+          <td onClick="toggleSerializedObject(this, $order->getId())"><img src="$expandIconUrl"></td>
+          <td><o2 link setMethod="search" setParam="query=$order->getId()">$order->getId()</o2:link></td>
+          <td>^$order->getCustomerFullName()</td>
+          <td>$order->getTypeOfSale()</td>
+          <td>$order->getOrderType()->getMetaName()</td>
+          <td class="price"><o2 numberFormat "#,##0.00">$order->getPriceIncVat()</o2:numberFormat></td>
+          <td class="serialized" id="serialized_$order->getId()"><pre>$order->serialize()</pre></td>
+          <td><o2 if "$order->getStatus()">$order->getStatus()</o2:if><o2 else>-</o2:else></td>
+          <td><o2 dateFormat format="yyyy.MM.dd HH:mm.ss">$order->getMetaCreateTime()</o2:dateFormat></td>
+        </tr>
+      </o2:foreach>
+    </table>
+    <o2 paginationNavigation />
+  </o2:if>
+
+  <o2 else>
+    <o2 include "noResults.html" />
+  </o2:else>
+
+</o2:pagination>
+
+<o2 footer />

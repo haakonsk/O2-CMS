@@ -1,0 +1,24 @@
+<o2 use O2CMS::Publisher />
+<o2 use Html />
+
+<o2 addCssFile file="article/article" />
+
+<div class="article objectTemplateArticle">
+
+  <h1>$object->getTitle()</h1>
+
+  <div class="articleText"><o2 encodeEntities off>$object->getText("section_articleText")</o2:encodeEntities></div>
+
+  <o2 setVar "$relatedArticles">$object->getRelatedArticles()</o2:setVar>
+
+  <o2 if "@{$relatedArticles}">
+    <hr>
+    <ul class="relatedArticles">
+      <h2>$lang->getString("o2.article.general.titleRelatedArticles")</h2>
+      <o2 foreach "$obj in $relatedArticles">
+        <li><a href="<o2 objectUrl objectId='$obj->getId()'/>">$obj->getMetaName()</a></li>
+      </o2:foreach>
+    </ul>
+  </o2:if>
+
+</div>

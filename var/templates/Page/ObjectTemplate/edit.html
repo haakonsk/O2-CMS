@@ -1,0 +1,69 @@
+<o2 use Html::Ajax />
+<o2 use O2CMS::ApplicationFrame />
+
+<o2 use I18N />
+<o2 setResourcePath>o2.Page.objectTemplate</o2:setResourcePath>
+
+<o2 header />
+
+<o2 setVar "$templateName">$template->getMetaName()</o2:setVar>
+<o2 ApplicationFrameHeader frameTitle="$lang->getString('frameTitle', templateName => $templateName)" showCloseButton="1" useCloseAction="confirmCloseIfChanged"
+  disableScrollBar="1" showSettingsButton="0" objectId="$objectId" />
+
+<o2 setVar "$successMsg">$lang->getString('msgTemplateInfoSaved')</o2:setVar>
+<o2 addJs>
+  function onTemplateInfoSaved(result) {
+    top.displayMessage("$successMsg");
+    <o2 if "!$template->getId()">
+      top.reloadTreeFolder('$q->{parentId}');
+      document.location.href = o2.urlMod.urlMod({
+        setParams : "objectId=" + result.objectId,
+      });
+    </o2:if>
+  }
+</o2:addJs>
+
+<o2 addCss class="editTemplate">
+  border     : 1px solid black;
+  background : black;
+  color      : #FFFF00;
+</o2:addCss>
+
+<o2 include "o2://var/templates/Page/EditableTemplate/editForm.html" template="$template" templateType="object" />
+
+<o2 ajaxForm method="post" setMethod="save" style="padding:5px;" handler="onTemplateInfoSaved">
+  <table border="0" cellspacing="1" cellpadding="3" border="0" bgcolor="#999999">
+    <tr bgcolor="#FFFFFF">
+      <td colspan="2" class="genericBar">
+        <b><o2 if "$template->getId()">$lang->getString("headerEditingTemplateFor", templateName => $templateName)</o2:if><o2 else>$lang->getString("headerEditingNewTemplate")</o2:else></b>
+      </td>
+    </tr>
+    <tr bgcolor="#FFFFFF">
+      <td><b>$lang->getString("lblName")</b></td>
+      <td><o2 input name="name" value="$template->getMetaName()" rule="required" ruleMsg="Name must be supplied!"/></td>
+    </tr>
+    <tr bgcolor="#FFFFFF">
+      <td><b>$lang->getString("lblRelativePath")</b></td>
+      <td>$template->getPath()</td>
+    </tr>
+    <tr bgcolor="#FFFFFF" valign="top">
+      <td><b>$lang->getString("lblUsableFor")</b></td>
+      <td>
+        <o2 foreach "$class in $classNames">
+          <input name="usableClasses" type="checkbox" value="$class" <o2 if "$usableClasses->{$class}">checked</o2:if> >$class <br>
+        </o2:foreach>
+      </td>
+    </tr>
+
+    <o2 if "$template->getId()">
+      <tr bgcolor="#FFFFFF">
+        <td colspan="2">
+          <o2 link onClick="o2.popupDialog.display('editTemplatePopup'); return false;"><b>$lang->getString("headerEditTemplate")</b></o2:link>
+        </td>
+      </tr>
+    </o2:if>
+  </table>
+  <o2 input type="submit" value="$lang->getString('btnSave')" />
+</o2:ajaxForm>
+
+<o2 footer/>

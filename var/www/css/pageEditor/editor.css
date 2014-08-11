@@ -1,0 +1,112 @@
+.gridSelector,.includeSelector {
+  max-height : 150px;
+  overflow   : scroll;
+  display    : relative !important;
+}
+
+.o2Slot {
+  border: 1px dotted #AAAAAA;
+  padding: 0px;
+  position: relative;
+  min-height: 20px;
+}
+
+.o2Slot:hover {
+  border          : 1px solid black !important;
+  background-color: #fff4c5;
+}
+
+.notPublishable {
+  background : black;
+  opacity    : 0.5;
+}
+
+.o2SlotHeader {
+  border: 1px solid #AAAAAA;
+  position: relative;
+  top: 0;
+  left: 0;
+  background: url("/images/system/topbar_bg.png") repeat-x;
+  padding: 2px;
+  display: none;
+  z-index: 10;
+}
+
+.o2InheritedSlotHeader {
+  border: 1px solid #00AA00;
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  background: url("/images/system/topbar_bg.png") repeat-x;
+  padding: 2px;
+  display: none;
+  z-index: 10;
+}
+
+.o2StaticSlotHeader {
+  border: 1px solid #AAAAAA;
+  position: absolute;
+  top: -20px;
+  left: -1px;
+  background: url("/images/system/topbar_bg.png") repeat-x;
+  padding: 2px;
+  display: none;
+  z-index: 10;
+}
+
+.o2FPEditorSlotFont {
+  font-family: verdana,arial,helvetica; 
+  font-size: 10px;
+  font-weight: bold;
+}
+
+
+.o2PageControlsOn {
+  border: 1px dotted #AAAAAA;
+  background: #FFFFFF;
+  display: block;
+  margin: 4px;
+  padding: 4px;
+}
+
+.o2PageControlsOff {
+  display: none;
+}
+
+.emptySlotMsg,
+.emptySlotId {
+  float  : left;
+  width  : 50%;
+}
+.emptySlotId {
+  text-align    : right;
+}
+
+.o2SlotDropdown {
+  background-color:#fff;
+  font-family: verdana, sans-serif; 
+  font-size:10px; 
+  position: absolute; 
+  left: 0px; 
+  top: 20px;
+  border: 1px solid #ccc;
+}
+
+.o2DropdownHeader {
+  font-family:verdana, sans-serif; 
+  font-size:10px; 
+  font-weight: bold; 
+  text-align: left; 
+  white-space: nowrap;
+}
+
+.templateDropdown {
+  border: none; 
+  border-top: 1px solid #ccc; 
+  font-family:verdana, sans-serif; 
+  font-size:10px;
+}
+
+.templateDropdown option {
+  font-size: 10px;
+}

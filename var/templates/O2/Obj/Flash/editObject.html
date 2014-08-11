@@ -1,0 +1,5 @@
+<o2 use Html::Form />
+
+<b>$lang->getString('o2.file.edit.metaName'):</b><br>
+<o2 input name="metaName" value="$object->getMetaName()" rule="required" ruleMsg="$lang->getString('o2.file.edit.metaNameError')" size="30" onchange="setMetaName(this.value);"/><br>
+

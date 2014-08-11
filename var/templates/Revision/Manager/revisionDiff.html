@@ -1,0 +1,36 @@
+<o2 use Html />
+<o2 use O2CMS::ApplicationFrame />
+<o2 use DateFormat />
+
+<o2 header />
+
+<o2 addCssFile file="gui/revision/manager" />
+
+<o2 ApplicationFrameHeader frameTitle="$lang->getString('o2.revisionManager.diffApplicationName', name => $srcObject->getMetaName)" showCloseButton="1"
+  useCloseAction="" disableScrollBar="" showSettingsButton="1" objectId="$srcObject->getId()" />
+
+<p>$lang->getString("o2.revisionManager.infoAboutDiff")</p>
+
+<table class="diff">
+
+  <tr>
+    <th>$lang->getString('o2.revisionManager.lblNameDateRevisionId')</th>
+    <th>$lang->getString('o2.revisionManager.lblSerializedObject')</th>
+  </tr>
+
+  <tr>
+    <td>
+      $revision->getMetaName()<br>
+      <span class="date"><o2 dateFormat format="Y-MM-dd HH:mm:ss">$revision->getMetaChangeTime()</o2:dateFormat></span><br>
+      $revision->getId()
+    </td>
+    <o2 if "'Strange hack'">
+      <td class="serializedObject"><o2 encodeEntities on>$guiModule->getValueAsDiff($srcObject, $revision)</o2:encodeEntities></td>
+    </o2:if>
+  </tr>
+
+</table>
+
+<o2 ApplicationFrameFooter />
+
+<o2 footer />

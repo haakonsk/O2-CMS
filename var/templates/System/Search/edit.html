@@ -1,0 +1,154 @@
+<o2 use Html />
+<o2 use Html::Form />
+<o2 use Html::Ajax />
+
+<o2 use I18N />
+<o2 setResourcePath>o2.System.Search</o2:setResourcePath>
+
+<o2 addJsFile file="componentBase" />
+<o2 addJsFile file="List" />
+<o2 addJsFile file="DragList" />
+
+<o2 addCss>
+  form[name="showResultForm"] *, .results * {
+    font-size : 12px;
+  }
+  form[name="showResultForm"], .results {
+    padding : 3px;
+  }
+  .itemName {
+    cursor : pointer;
+  }
+  .results {
+    padding-top:10px;
+  }
+  .activeAjaxTarget {
+    background : url("/images/system/ajaxLoaders/wheelThrobber_bg_transp_fg_black.gif") no-repeat center center white;
+    opacity    : 0.6;
+    z-index    : 2;
+  }
+  input[type="text"], select {
+    width        : 190px;
+    border-style : solid;
+    border-width : 1px;
+    border-color : #404040;
+    margin       : 0 2px 2px 0;
+  }
+  label {
+    font-weight : bold;
+    font-size   : 11px;
+  }
+  img {
+    margin-left : 4px;
+  }
+  .buttons {
+    text-align     : center;
+    border-bottom  : 1px solid grey;
+    padding        : 5px 0 10px 0;
+  }
+  input[type="submit"] {
+    width      : 0;
+    height     : 0;
+    visibility : hidden;
+  }
+</o2:addCss>
+
+<o2 addJs>
+  window.search = function() {
+    var form = document.forms.showResultForm;
+    form.setAttribute( "onSubmit", document.forms.searchForm.getAttribute("onSubmit") );
+    submitForm();
+  }
+  
+  window.saveAs = function() {
+    var form = document.forms.showResultForm;
+    var id   = form.id.value;
+    if (id > 0) { // Already saved
+      form.setAttribute( "onSubmit", document.forms.saveForm.getAttribute("onSubmit") );
+      return submitForm();
+    }
+    
+    // New object - open filedialog first
+    var url = o2.urlMod.urlMod({
+      setClass     : "System-FileDialog",
+      setMethod    : "saveAsDialog",
+      removeParams : 1
+    });
+    window.open(url, "saveSearch", "width=400,height=400");
+  }
+
+  // Callback from file dialog window
+  window.saveAsDialogCallback = function(folderId, filename) {
+    var form = document.forms.showResultForm;
+    form.folderId.value = folderId;
+    form.filename.value = filename;
+    form.setAttribute( "onSubmit", document.forms.saveForm.getAttribute("onSubmit") );
+    submitForm();
+    return true;
+  }
+  
+  window.submitForm = function() {
+    document.getElementById("submitBtn").click();    
+  }
+  
+  window.saveDone = function(result) {
+    alert("Saved " + result.filename);
+    top.reloadTreeFolder(result.parentId);
+  }
+  
+  window.addSearchCriterion = function() {
+    var criterionName = document.forms.showResultForm.searchCriterionName.value;
+    o2.ajax.call({
+      setClass  : "System-Search",
+      setMethod : "addSearchCriterion",
+      setParams : { criterionName : criterionName },
+      target    : "searchConditions",
+      where     : "bottom"
+    });
+  }
+</o2:addJs>
+
+
+<o2 ajaxForm name="searchForm" setClass="System-Search" setMethod="search" target="searchResults" where="replace" />
+<o2 ajaxForm name="saveForm"   setClass="System-Search" setMethod="save" handler="saveDone" method="post" />
+
+<o2 ajaxForm name="showResultForm" setClass="System-Search" setMethod="search" target="searchResults" where="replace">
+  <o2 input type="hidden" name="id"       value="^$query->getId()" />
+  <o2 input type="hidden" name="filename" value="" />
+  <o2 input type="hidden" name="folderId" value="" />
+
+  <div id="searchConditions">
+    <o2 include "o2://var/templates/System/Search/includes/searchForm.html" query="$query" />
+  </div>
+
+  <label for="addCriteriacriteriaEditor">$lang->getString('lblAddCriteria'):</label><br>
+  <select name="searchCriterionName" onChange="addSearchCriterion()">
+    <option value="className_likeAny"   > $lang->getString("optionClass")               </option>
+    <option value="name_likeAny"        > $lang->getString("lblName")                   </option>
+    <option value="status_in"           > $lang->getString("optionStatus")              </option>
+    <option value="createTime_ge"       > $lang->getString("optionCreatedLastXDays")    </option>
+    <option value="objectId_in"         > $lang->getString("optionObjectId")            </option>
+    <option value="ownerId_notIn"       > $lang->getString("optionNotOwnedBy")          </option>
+    <option value="changeTime_le"       > $lang->getString("optionChangedBeforeXDays")  </option>
+    <option value="className_in"        > $lang->getString("optionDocumentType")        </option>
+    <option value="changeTime_ge"       > $lang->getString("optionChangedLastXDays")    </option>
+    <option value="parentId_in"         > $lang->getString("optionInFolder")            </option>
+    <option value="className_notIn"     > $lang->getString("optionNotDocumentType")     </option>
+    <option value="orderBy"             > $lang->getString("optionSort")                </option>
+    <option value="createTime_le"       > $lang->getString("optionCreatedBeforeXDays")  </option>
+    <option value="ownerId_in"          > $lang->getString("optionOwnedBy")             </option>
+    <option value="parentIdRecursive_in"> $lang->getString("optionInFolderOrSubFolder") </option>
+    <option value="limit"               > $lang->getString("optionMaxDocuments")        </option>
+  </select>
+  <img title="$lang->getString('lblAddCriteria')" src="/images/system/add_16.gif" onClick="addSearchCriterion()">
+  
+  <div class="buttons">
+    <o2 input type="button" value="$lang->getString('btnSearch')" onClick="search()" />
+    <o2 input type="button" value="$lang->getString('btnSave')"   onClick="saveAs()" />
+    <o2 input type="button" ajaxEvent="onClick" setClass="System-Search" setMethod="edit" target="searchDiv" where="replace" value="$lang->getString('btnNew')" />
+    <o2 input type="submit" id="submitBtn" />
+  </div>
+</o2:ajaxForm>
+
+
+<o2 include "o2://var/templates/System/Search/includes/searchResults.html" results="$results" />

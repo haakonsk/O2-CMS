@@ -1,0 +1,114 @@
+<o2 use Html::Ajax />
+
+<o2 header onLoad="fixHeight()" />
+
+<o2 use Js::Lang />
+<o2 addJsLangFile file="o2/System/Search" />
+
+<o2 addJsFile file="DOMUtil"       />
+<o2 addJsFile file="componentBase" />
+<o2 addJsFile file="Tree"          />
+<o2 addJsFile file="dragDrop"      />
+<o2 addJsFile file="ExpandTree"    />
+<o2 addJsFile file="system/tree"   />
+<o2 addJsFile file="List"          />
+<o2 addJsFile file="DragList"      />
+
+<o2 addCss>
+  html {
+    overflow : hidden;
+  }
+  #searchDiv {
+    margin-top : 21px;
+    display    : none;
+  }
+  #documentsDiv {
+    margin-top : 21px;
+  }
+  .genericBar {
+    position : fixed;
+    top      : 0;
+  }
+  #documentsTab img,
+  #searchTab img {
+    margin-left : 4px;
+  }
+  #documentsTab b,
+  #searchTab b {
+    position : relative;
+    top      : -3px;
+  }
+  #documentsTab b {
+    padding-left: 20px;
+  }
+  #searchTab b {
+    padding-left: 10px;
+  }
+  #searchDiv, #documentsDiv {
+    height   : 100%;
+    overflow : auto;
+  }
+  .separator {
+    width     : 1px;
+    max-width : 1px;
+  }
+</o2:addCss>
+
+<o2 addJs>
+  o2.addEvent(window, "resize", fixHeight);
+
+  function doSwitch(id, noAjaxCall) {
+    if (!document.getElementById("searchDiv").innerHTML && !noAjaxCall) {
+      o2.ajax.call({
+        setClass  : "System-Search",
+        setMethod : "edit",
+        target    : "searchDiv",
+        where     : "replace"
+      });
+    }
+    var otherId = id === "documentsDiv" ? "searchDiv" : "documentsDiv";
+    document.getElementById( id      ).style.display = "block";
+    document.getElementById( otherId ).style.display = "none";
+
+    var activeTab   = document.getElementById( id.replace(      /Div/, "Tab" ) );
+    var inactiveTab = document.getElementById( otherId.replace( /Div/, "Tab" ) );
+    o2.addClassName(    activeTab,   "genericBarActive" );
+    o2.removeClassName( inactiveTab, "genericBarActive" );
+  }
+
+  function fixHeight() {
+    var height = parseInt( o2.getComputedStyle(parent.document.body, "height") );
+    document.getElementById( "documentsDiv" ).style.height = (height-21) + "px";
+    document.getElementById( "searchDiv"    ).style.height = (height-21) + "px";
+  }
+</o2:addJs>
+
+<table class="genericBar" width="100%" cellspacing="0" cellpadding="0" border="0">
+  <tr>
+    <td class="genericBarActive" name="documentsTab" id="documentsTab" onClick="doSwitch('documentsDiv');">
+      <img src='<o2 iconUrl action="O2-action-edit" size="16"/>'>
+      <b>$lang->getString("o2.desktop.lblDocuments")</b>
+    </td>
+    <td class="separator">&nbsp;</td>
+    <td name="searchTab" id="searchTab" onClick="doSwitch('searchDiv');">
+      <img src="<o2 iconUrl action='O2-action-search' size='16'/>">
+      <b>$lang->getString("o2.desktop.lblSearch")</b>
+    </td>
+    <td class="separator">&nbsp;</td>
+    <td align="center" onClick="parent.toggleMenuFrame(false)">
+      <img src="<o2 iconUrl action='O2-action-back' size='16'/>">&nbsp;
+    </td>
+  </tr>
+</table>
+
+<div id="documentsDiv">
+  <div id="top" onMouseMove="autoScrollUp()" onMouseOut="cancelAutoScroll()"></div>
+  <div id="documentsDivMain"></div>
+  <div id="bottom" onMouseMove="autoScrollDown()" onMouseOut="cancelAutoScroll()"></div>
+</div>
+
+<div id="searchDiv"></div>
+
+<o2 ajaxCall setClass="System-Tree" setMethod="showTree" target="documentsDivMain" where="replace" />
+
+<o2 footer />

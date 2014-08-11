@@ -1,0 +1,16 @@
+<o2 use Html::Ajax />
+
+<p>
+  $comment->getName() said:<br>
+  $comment->getComment()
+</p>
+
+<o2 form method="post" setMethod="saveReply" removeParams="1">
+  <o2 input type="hidden" name="commentId" value="$comment->getId()" />
+  <o2 formTable>
+    <o2 input type="text"  name="name"    label="Name*"    rule="required" ruleMsg="Name is required" />
+    <o2 input type="email" name="email"   label="E-mail"   />
+    <o2 input type="url"   name="webSite" label="Web site" />
+    <o2 textarea           name="comment" label="Comment*" rule="required" ruleMsg="Comment is required" />
+  </o2:formTable>
+</o2:form>

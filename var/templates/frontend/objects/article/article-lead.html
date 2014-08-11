@@ -1,0 +1,16 @@
+<o2 use O2CMS::Publisher/>
+<o2 use Html />
+
+<o2 addCssFile file="article/article" />
+
+<div class="article articleLead">
+  <h1>$object->getTitle()</h1>
+
+  <div class="frontpageText"><o2 encodeEntities off>$object->getText("section_frontPageText")</o2:encodeEntities></div>
+
+  <o2 if "$object->getText('section_articleText')">
+    <div class="readMoreLink">
+      <a href="<o2 objectUrl objectId='$object->getId()'/>" class="readMore">$lang->getString("o2.article.general.readMore")</a>
+    </div>
+  </o2:if>
+</div>

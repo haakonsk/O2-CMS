@@ -1,0 +1,24 @@
+<o2 use Html />
+<o2 use DateFormat />
+
+<o2 use I18N />
+<o2 setResourcePath>o2.article.editor.revisions</o2:setResourcePath>
+
+<o2 header disableScrollbars="0" />
+
+<table border="1" width="100%" class="listTable">
+  <tr>
+    <td width="16px">&nbsp;</td>
+    <td width="50px">$lang->getString("lblRevisionDate")</td>
+    <td>$lang->getString("lblRevisionName")</td>
+  </tr>
+  <o2 foreach "$revObj in $articleRevisions">
+    <tr>
+      <td><a href="javascript:void(parent.restoreToRevisionedObject($revObj->getId()))"><img   border="0" src="/images/system/checkin_16.gif" title="$lang->getString("txtRestoreToThisRevision")"></a></td>
+      <td  align="middle"><o2 dateFormat format="y-MM-dd<br>HH:MM:ss">$revObj->getMetaCreateTime()</o2:dateFormat></td>
+      <td>$revObj->getUnserializedObject->getTitle() (r.$revObj->getId())</td>
+    </tr>
+  </o2:foreach>
+</table>
+
+<o2 footer/>

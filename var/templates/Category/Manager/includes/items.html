@@ -1,0 +1,39 @@
+<o2 use Html::Ajax />
+
+<o2 foreach "$object in $objects">
+  <!-- Item -->
+  <o2 setVar "$isTrashed"><o2 if "$object->getMetaStatus() eq 'trashed'" then="1" else="" /></o2:setVar>
+  <div id="$object->getId()" package="$object->getMetaClassName()" folderCode="$guiModule->getFolderCode($object)" isWebCategory="$object->isa('O2CMS::Obj::WebCategory')"
+    metaName="$object->getMetaName()" isTrashed="$isTrashed" isRestorable="^$object->getParent()->isa('O2CMS::Obj::Trashcan')" class="categoryBrowserItem row">
+
+    <!-- Thumb view -->
+    <div class="thumbView">
+      <span type="bigIcon"       class="bigIcon"       id="bigIcon$object->getId()"      ><img class="categoryBrowserItemIcon" src="$object->getIconUrl(64)"></span>
+      <span type="thumbViewName" class="thumbViewName" id="thumbViewName$object->getId()">$object->getMetaName()</span>
+    </div>
+
+    <!-- List view -->
+    <div class="listView">
+      <o2 foreach "$column in $columns">
+        <o2 setVar "$name">$column->{name}</o2:setVar>
+        <o2 setVar "$id"><o2 out>$name</o2:out><o2 out>$object->getId()</o2:out></o2:setVar>
+
+        <o2 encodeEntities off "because getCellValue returns an img tag for smallIcon">
+          <span type="$name" class="cell $name" id="$id">^$guiModule->getCellValue($object, $name)</span>
+        </o2:encodeEntities>
+
+      </o2:foreach>
+    </div>
+
+  </div>
+</o2:foreach>
+
+<o2 if "$numObjects > 0">
+  <o2 setVar "$skip"><o2 calc>$skipped + $numObjects</o2:calc></o2:setVar>
+  <o2 ajaxCall setMethod="getMoreResults" setParam="skip=$skip&catId=$category->getId()" target="categoryBrowserItems" where="bottom" />
+</o2:if>
+<o2 else>
+  <o2 addJs where="here">
+    initCategoryBrowser();
+  </o2:addJs>
+</o2:else>

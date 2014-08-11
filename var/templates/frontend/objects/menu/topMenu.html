@@ -1,0 +1,42 @@
+<o2 use O2CMS::Publisher/>
+
+<o2 function renderMenuLevel>
+  <tr>
+    <o2 foreach "$item in $object->getMenuItemsAt($levelId)">
+      <o2 if "$item->getVisible()">
+        <o2 setVar "$activeOrInactive"><o2 if '$page->isDescendentOf($item)' then='active' else='inactive' /></o2:setVar>
+        <td class="menuTextOff $activeOrInactive" name="topMenu" onClick="document.location.href='$item->getUrl()'" style="width:10%">
+          <a class="subMenu" href="<o2 objectUrl objectId='$item->getTargetId()' />">$item->getTargetName()</a>
+        </td>
+      </o2:if>
+    </o2:foreach>
+  </tr>
+</o2:function>
+
+<table cellspacing="0" cellpadding="0" border="0" width="100%">
+  <tr>
+    <td>
+
+      <div class="topMenu">
+        <table cellspacing="0" cellpadding="0" border="0" width="100%">
+          <o2 call renderMenuLevel levelId="$object->getTopLevelId()" topLevelId="$object->getTopLevelId()" />
+        </table>
+      </div>
+
+      <o2 comment>
+        <o2 if "$page && $page->can('getCategoryPath')">
+          <o2 foreach "$category in $page->getCategoryPath()">
+            <o2 if "$category->getId() != $object->getTopLevelId()">
+              <div id="subMenu_$item->getObjectId()" class="menu subMenu" name="subMenu">
+                <table width="1%">
+                  <o2 call renderMenuLevel levelId="$category->getId()" />
+                </table>
+              </div>
+            </o2:if>
+          </o2:foreach>
+        </o2:if>
+      </o2:comment>
+
+    </td>
+  </tr>
+</table>

@@ -1,0 +1,14 @@
+.list {
+  width      : 200;
+  height     : 200;
+  cursor     : default;
+  background : white;
+  overflow   : auto;
+  border     : inset;
+}
+.listSelected {
+  background : #8080FF;
+}
+.listUnselected {
+  background : white;
+}

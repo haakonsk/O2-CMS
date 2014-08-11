@@ -1,0 +1,67 @@
+<o2 use Html/>
+<o2 use O2CMS::Publisher/>
+<o2 addJs> 
+  function viewImage (url) {
+    var viewer = document.getElementById("viewer");
+    viewer.innerHTML = '<div><img id="viewerImg" src="'+url+'" onClick="document.getElementById(\'viewer\').style.display=\'none\';"></'+'div>';
+    viewer.style.display = 'block';
+
+    var scroll = 0;
+    if( document.body && ( document.body.scrollTop ) ) {
+      scroll = document.body.scrollTop;
+    } else if( document.documentElement && ( document.documentElement.scrollTop ) ) {
+      scroll = document.documentElement.scrollTop;
+    }
+    
+    var img = document.getElementById('viewerImg');
+    img.style.top = scroll + 80 + "px";
+  }
+</o2:addJs>
+<o2 addCss>
+  html, body{
+    height: 100%;
+    width: 100%;
+  }
+  #gallery img {
+    border:1px solid #ccc;
+    padding:6px;
+    margin:3px;
+    float:left;
+    cursor:pointer;
+  }
+  .galleryDescription {
+    clear:both;
+  }
+  #viewer {
+    display:none;
+    background: url(/images/galleryBackground.png) repeat 0px 0px;
+    position: absolute;
+    top:0px;
+    left:0px;
+    bottom:0px;
+    right:0px;
+    width:100%;
+    height:400%;
+  }
+  #viewer div {
+    width:900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  #viewer img {
+    border:1px solid #999;
+    padding:10px;
+    background-color:#fff;
+    position:relative;
+  }
+</o2:addCss>
+
+
+<div class="galleryHeader">$object->getTitle</div>
+<div id="gallery">
+  <o2 foreach "$image in $object->getImages()">
+    <o2 img id="$image->getId" width="180" height="120" onTooSmall="resize" onTooBig="crop" alt="$image->getTitle" title="$image->getTitle" onClick="viewImage('$image->getScaledUrl(880,880)')"/>
+  </o2:foreach>
+  <div class="galleryDescription"><o2 encodeEntities off>$object->getDescription</o2:encodeEntities></div>
+</div>
+<div id="viewer"><div></div></div>

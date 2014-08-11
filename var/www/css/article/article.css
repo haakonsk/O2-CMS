@@ -1,0 +1,19 @@
+.article hr {
+  border        : 0;
+  border-bottom : 1px solid lightgray;
+}
+
+.article h1 {
+  font-size : 12px;
+}
+
+.article div.readMoreLink {
+  text-align : right;
+}
+
+.article a {
+  margin-right : 15px;
+  font-size    : 11px;
+  font-weight  : normal;
+  color        : #6f6f6f;
+}

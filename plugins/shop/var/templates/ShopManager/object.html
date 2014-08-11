@@ -1,0 +1,41 @@
+<o2 use DateFormat />
+<o2 use NumberFormat />
+
+<o2 use I18N />
+<o2 setResourcePath>ShopManager</o2:setResourcePath>
+
+<o2 header noStyle />
+
+<o2 addCssFile file="gui/shopManager" />
+
+<o2 include "includes/backLink.html" />
+
+<h1>$object->getMetaClassName()</h1>
+
+<table>
+  <tr>
+    <td>$lang->getString("lblId")</td>
+    <td>$object->getId()</td>
+  </tr>
+  <tr>
+    <td>$lang->getString("lblName")</td>
+    <td>$object->getMetaName()</td>
+  </tr>
+  <tr>
+    <td>$lang->getString("lblCreatedTime")</td>
+    <td><o2 dateFormat format="yyyy.MM.dd HH:mm:ss">$object->getMetaCreateTime()</o2:dateFormat></td>
+  </tr>
+  <tr>
+    <td>$lang->getString("lblModifiedTime")</td>
+    <td><o2 dateFormat format="yyyy.MM.dd HH:mm:ss">$object->getMetaChangeTime()</o2:dateFormat></td>
+  </tr>
+</table>
+
+<o2 if "$object->isSerializable()">
+  <h2>$lang->getString("hdrSerializedObject")</h2>
+  <p>
+    <pre>$object->serialize()</pre>
+  </p>
+</o2:if>
+
+<o2 footer />

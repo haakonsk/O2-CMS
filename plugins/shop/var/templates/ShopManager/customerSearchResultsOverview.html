@@ -1,0 +1,95 @@
+<o2 use NumberFormat />
+<o2 use Html::Form />
+
+<o2 use I18N />
+<o2 setResourcePath>ShopManager</o2:setResourcePath>
+
+<o2 header noStyle />
+
+<o2 addCssFile file="gui/shopManager" />
+
+<o2 addJsFile file="openwindow"  />
+<o2 addJsFile file="util/urlMod" />
+
+<o2 addJs>
+  function toggleAll() {
+    for (var i = 0; i < document.customerList.customer.length; i++) {
+      document.customerList.customer[i].checked = document.customerList.customer[i].checked ? false : true;
+    }
+  }
+
+  function sendMail() {
+    var params = "";
+    for (var i = 0; i < document.customerList.customer.length; i++) {
+      var customer = document.customerList.customer[i];
+      if (customer.checked && customer.value) {
+        params += customer.value + ",";
+      }
+    }
+    if (!params) {
+      alert("You have to select at least one recipient");
+      return false;
+    }
+    var url = o2.urlMod.urlMod({
+      setClass  : "Mail-Send",
+      setMethod : "showMailForm",
+      setParams : "recipients=" + params
+    });
+    o2.openWindow.openWindow({
+      url    : url,
+      height : 700,
+      width  : 650
+    });
+  }
+</o2:addJs>
+
+<o2 include "includes/backLink.html" />
+
+<o2 if "@{$ordersOrOrderLines}">
+  <o2 form name="customerList">
+    <table>
+      <tr>
+        <th>$lang->getString("hdrLoggedInAs")</th>
+        <th>$lang->getString("hdrCustomerId")</th>
+        <th>$lang->getString("hdrName")</th>
+        <th>$lang->getString("hdrPhone")</th>
+        <th>$lang->getString("hdrEmail")</th>
+        <th>$lang->getString("hdrOrderId")</th>
+        <th>$lang->getString("hdrOrderLineId")</th>
+        <th>$lang->getString("hdrSelectCustomer")</th>
+      </tr>
+      <o2 foreach "$orderOrOrderLine in $ordersOrOrderLines">
+        <o2 setVar "$customer">$orderOrOrderLine->getCustomer()</o2:setVar>
+        <tr class="customer">
+          <td><o2 if "$customer->getMetaOwnerId()"><o2 link setMethod="search" setParam="query=$customer->getMetaOwnerId()">^$customer->getOwner()->getUsername()</o2:link></o2:if></td>
+          <td><o2 link setMethod="search" setParam="query=$customer->getId()">$customer->getId()</o2:link></td>
+          <td>$customer->getFullName()</td>
+          <td>$customer->getPhone()</td>
+          <td>$customer->getEmail()</td>
+          <td>
+            <o2 setVar "$orderId"><o2 if "$orderOrOrderLine->isa('O2Plugin::Shop::Obj::Order')" then="$orderOrOrderLine->getId()" else="$orderOrOrderLine->getOrderId()" /></o2:setVar>
+            <o2 link setMethod="search" setParam="query=$orderId">$orderId</o2:link>
+          </td>
+          <td>
+            <o2 if "$orderOrOrderLine->isa('O2Plugin::Shop::Obj::OrderLine')">
+              <o2 link setMethod="search" setParam="query=$orderOrOrderLine->getId()">$orderOrOrderLine->getId()</o2:link>
+            </o2:if>
+          </td>
+          <td><o2 input type="checkbox" name="customer" value="$customer->getEmail()" /></td>
+        </tr>
+      </o2:foreach>
+      <tr>
+        <td colspan="99" align="right">
+          <o2 input type="button" value="$lang->getString('btnToggleAll')" onClick="toggleAll()" />
+          <o2 input type="button" value="$lang->getString('btnSendMail')"  onClick="sendMail()"  />
+        </td>
+      </tr>
+    </table>
+  </o2:form>
+</o2:if>
+
+<o2 else>
+  <o2 include "noResults.html" />
+</o2:else>
+
+<o2 footer />

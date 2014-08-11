@@ -1,0 +1,31 @@
+<o2 use O2Doc::Tutorial />
+
+<o2 docSection title="richtextarea">
+  <o2 docSection title="Syntax">
+    A wysiwyg editor for textareas, written in Javascript. Uses <o2 docLink type="external" href="http://xinha.python-hosting.com/" title="Xinha" />.
+    <o2 docCode lang="o2ml">
+      <o2 form method="post" action="">
+        <o2 richtextarea name="message" loadPlugin="CharacterMap, ContextMenu, SpellChecker" value="Contents of the richtextarea here." />
+      </o2:form>
+    </o2:docCode>
+    <o2 docCodeResult useModule="O2CMS::Html::Form::RichTextArea" />
+  </o2:docSection>
+  <o2 docSection title="Attributes">
+    <o2 docList class="attributes">
+      <o2 docListItem class="required">name</o2:docListItem>
+      <o2 docListItem class="optional">value - the text in the richtextarea</o2:docListItem>
+      <o2 docListItem class="optional">lang [en]</o2:docListItem>
+      <o2 docListItem class="optional">loadPlugin - the plugins that should be loaded. None of the plugins are loaded by default. The plugins are Xinha-specific.</o2:docListItem>
+      <o2 docListItem class="optional">style</o2:docListItem>
+    </o2:docList>
+  </o2:docSection>
+  <o2 docNote>
+    &lt;o2 header&gt; or &lt;o2 incJavascript&gt; must be called on the same page as &lt;o2 richtextarea&gt; in order for the richtextarea tag to work.
+    &lt;o2 footer&gt; or &lt;o2 postJavascript&gt; must be called on the same page as well.
+  </o2:docNote>
+  <o2 docNote>
+    In Internet Explorer 7 Beta 2, richtextarea is incompatible with <o2 docLink type="tag" id="Html-BoxMenu-BoxMenu" />.
+  </o2:docNote>
+  See also <o2 docLink type="tag" id="textarea" />, <o2 docLink type="tag" id="Html-header" />, <o2 docLink type="tag" id="Html-incJavascript" />, <o2 docLink type="tag" id="Html-footer" />
+  and <o2 docLink type="tag" id="Html-postJavascript" />.
+</o2:docSection>

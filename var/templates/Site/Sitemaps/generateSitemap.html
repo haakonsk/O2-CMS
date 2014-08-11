@@ -1,0 +1,41 @@
+<o2 use O2CMS::ApplicationFrame/>
+
+<o2 header title="Sitemap generated" />
+
+<o2 addCss>
+  div.shell {
+    background: black;
+    color: #aaff88;
+    width: 600px;
+    padding: 15px;
+    margin: 15px;
+    border: 2px inset grey;
+  }
+  div.shellError {
+    color: red;
+  }
+</o2:addCss>
+
+<o2 ApplicationFrameHeader frameTitle="Sitemap generated" showCloseButton="0" useCloseAction="confirmClose" disableScrollBar="1" showSettingsButton="0" />
+
+<p>
+  Generating sitemap. Output from script:
+</p>
+
+<div class="shell">
+  $scriptOutput
+  <div class="shellError">
+    $scriptError
+  </div>
+</div>
+
+<p>
+  If the script succeeded, the sitemap can be found here:
+  <a href="http://$store_into">$store_into</a>
+</p>
+
+<o2 ApplicationFrameFooter statusBar>
+  <o2 addCell>Current path:<span id="statusUrl"></span></o2:addCell>
+</o2:ApplicationFrameFooter>
+
+<o2 footer />

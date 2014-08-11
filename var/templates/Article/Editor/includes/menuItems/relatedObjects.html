@@ -1,0 +1,9 @@
+<o2 use O2CMS::Html::Form::DragList />
+
+<div id="articleRelatedObjectsMenuItem" style="padding:3px;height:320px;">
+  <o2 dragList style="border:0px dotted #CCCCCC;height:100%;" id="articleRelations" allowClass="*" replace="no" reorganize="yes" unique="yes" removeOnDragEnd="yes">
+    <o2 foreach "$obj in $article->getRelatedArticles()">
+      <o2 objectItem>$obj</o2:objectItem>
+    </o2:foreach>
+  </o2:dragList>
+</div>

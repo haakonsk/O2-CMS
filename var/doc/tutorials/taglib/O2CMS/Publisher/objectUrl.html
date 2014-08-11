@@ -1,0 +1,31 @@
+<o2 use O2Doc::Tutorial />
+
+<o2 docSection title="objectUrl">
+  Prints the url to the O2 object with the given objectId.
+  <o2 docSection title="Syntax">
+
+    <o2 docCode lang="o2ml">
+      <o2 objectUrl objectId="472" />
+    </o2:docCode>
+    <o2 docCodeResult useModule="O2CMS::Publisher" seeGeneratedHtmlAsDisplayed="0" />
+
+    <o2 docCode lang="o2ml">
+      <o2 objectUrl objectId="472" absolute="1" />
+    </o2:docCode>
+    <o2 docCodeResult useModule="O2CMS::Publisher" seeGeneratedHtmlAsDisplayed="0" />
+
+  </o2:docSection>
+
+  <o2 docSection title="ApplicationFrameHeader attributes">
+    <o2 docList class="attributes">
+      <o2 docListItem class="optional">objectId - id of the object to which we want to find the url</o2:docListItem>
+      <o2 docListItem class="optional">absolute [0] - should the host name be included in the url?</o2:docListItem>
+      <o2 docListItem class="optional">path - ?</o2:docListItem>
+    </o2:docList>
+  </o2:docSection>
+
+  <o2 docSection>
+    See also: <o2 docLink type="tag" id="Html-urlMod" />
+  </o2:docSection>
+
+</o2:docSection>

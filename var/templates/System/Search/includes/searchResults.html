@@ -1,0 +1,29 @@
+<div class="results" id="searchResults">
+  <o2 if "$results">
+    <o2 use O2CMS::Html::Form::DragList />
+    <o2 dragList id="o2SearchResultList" reorganize="no">
+      <o2 foreach "$object in $results">
+        <o2 objectItem>$object</o2:objectItem>
+      </o2:foreach>
+    </o2:dragList>
+    
+    <o2 addJs where="here">
+      var o2SearchResultList = getComponentById('o2SearchResultList');
+      o2SearchResultList.onItemClick = function(ix) {
+        var item = this.getItemAt(ix);
+        top.openObject(item.className, item.id, item.name);
+      }
+      o2SearchResultList.onItemDown = function(event, ix) {
+        event = new O2Event(null, event);
+        var item = this.getItemAt(ix);
+        if (event.getButton() === 2) {
+          openContextMenuForSearchItem(event, item.className, item.id, item.name);
+        }
+      }
+      o2.replaceEvent( document.getElementById("o2SearchResultList"), "contextmenu", function(e) {
+        e.preventDefault();
+      });
+      o2SearchResultList.ondragend = function(source, target) {}
+    </o2:addJs>
+  </o2:if>
+</div>

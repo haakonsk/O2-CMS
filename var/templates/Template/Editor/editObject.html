@@ -1,0 +1,49 @@
+<o2 use Html::Form />
+<o2 use I18N />
+
+<o2 header />
+
+<o2 addCss>
+  #templateTable {
+    width: 100%;
+    height: 100%;
+  }
+  #templateSource {
+    width: 100%;
+    height: 100%;
+  }
+</o2:addCss>
+
+<o2 addJs>
+  function saveAndClose(f) {
+    top.closeFrame(window.name);
+    document.getElementById("submitBtn").click();
+  }
+</o2:addJs>
+
+<o2 setResourcePath>o2.Page.objectTemplate</o2:setResourcePath>
+  
+<o2 setVar "$templateName">$template->getMetaName()</o2:setVar>
+
+
+<table id="templateTable">
+  <o2 form action="save" method="post">
+    <o2 input type="hidden" name="objectId" value="$template->getId()" />
+    <tr bgcolor="#FFFFFF">
+      <td colspan="2">
+        <div class="genericBar" style="border:1px solid #999999; color: #444444; font-weight:bold; font-size:12px; padding:2px; height:16px;">$templateName</div>
+        <textarea class="templateSource" id="templateSource" name="templateSource" cols="80" rows="20"><o2 noExec>$template->getTemplateRef()</o2:noExec></textarea>
+      </td>
+    </tr>
+    <tr bgcolor="#FFFFFF" align="right" style="height:80px;">
+      <td colspan="2">
+        <o2 input type="submit" id="submitBtn" value="$lang->getString('btnSave')" />
+        <o2 input onClick="saveAndClose();" type="button" value="$lang->getString('btnSaveAndClose')" />
+      </td>
+    </tr>
+  </o2:form>
+</table>
+
+<o2 footer />
+
+

@@ -1,0 +1,12 @@
+#filterLine {
+  margin-top : 5px;
+}
+#filterLine div {
+  display : inline;
+}
+#console tr+tr:hover {
+  background-color : #bbf;
+}
+.o2ToolbarButton, .o2ToolbarButtonHover, .o2ToolbarButtonActive {
+  white-space : nowrap;
+}

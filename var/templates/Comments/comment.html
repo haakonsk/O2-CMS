@@ -1,0 +1,26 @@
+<o2 use DateFormat />
+
+<o2 addCssFile file="gui/comments" />
+
+<div class="comment">
+  <div class="author">
+    <img class="gravatar" src="$comment->getGravatarUrl(40)" width="40" height="40">
+    <span class="authorName">
+      <o2 if "$comment->getWebSite()">
+        <a href="$comment->getWebSite()" target="_blank">$comment->getName()</a>
+      </o2:if>
+      <o2 else>
+        $comment->getName()
+      </o2:else>
+    </span>
+  </div>
+  <div class="date">
+    <o2 dateFormat format="yyyy-MM-dd, HH:mm">$comment->getMetaCreateTime()</o2:dateFormat>
+  </div>
+  <div class="commentText">
+    <o2 encodeEntities off>$comment->getFormattedComment()</o2:encodeEntities>
+  </div>
+  <o2 foreach "$reply in $comment->getChildren()">
+    <o2 include "o2://var/templates/Comments/comment.html" comment="$reply" />
+  </o2:foreach>
+</div>

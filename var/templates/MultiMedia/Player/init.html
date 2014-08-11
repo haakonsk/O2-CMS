@@ -1,0 +1,14 @@
+<o2 use Html />
+
+<o2 header />
+
+<o2 use O2CMS::ApplicationFrame />
+<o2 ApplicationFrameHeader frameTitle="Media player - $mediaUrl" showCloseButton="1" useCloseAction="" disableScrollBar="1" showSettingsButton="0" />
+
+<o2 use Html::MediaPlayer />
+<br>
+<center>
+  <o2 MediaPlayer url="$mediaUrl" autoStart="0" />
+</center>
+
+<o2 footer/>

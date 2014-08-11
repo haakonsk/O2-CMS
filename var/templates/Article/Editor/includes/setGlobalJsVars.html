@@ -1,0 +1,8 @@
+<o2 addJs>
+  var DRAFT_ID          = "$draftId";
+  var ARTICLE_PARENT_ID = "$article->getMetaParentId()";
+  var ARTICLE_STATUS    = '<o2 if "!$article->getId()" then="draft" else="$article->getMetaStatus()" />';
+  var DRAFT_URL         = '<o2 urlMod setClass="Revision-Manager" setMethod="openDraft" setParams="objectId=$draftId" />';
+  var HAS_NEWER_DRAFT   = "$hasNewerDraft";
+  var IS_UNDO           = "$q->{isUndo}";
+</o2:addJs>

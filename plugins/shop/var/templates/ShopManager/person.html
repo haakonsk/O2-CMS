@@ -1,0 +1,90 @@
+<o2 use DateFormat />
+<o2 use NumberFormat />
+
+<o2 use I18N />
+<o2 setResourcePath>ShopManager</o2:setResourcePath>
+
+<o2 header noStyle />
+
+<o2 addCssFile file="gui/shopManager" />
+
+<o2 include "includes/backLink.html" />
+
+<h1>$object->getMetaClassName()</h1>
+
+<table>
+  <tr>
+    <td>$lang->getString("lblName")</td>
+    <td>$object->getFullName()</td>
+  </tr>
+  <tr>
+    <td>$lang->getString("lblGender")</td>
+    <td>$object->getGender()</td>
+  </tr>
+  <tr>
+    <td>$lang->getString("lblAddress")</td>
+    <td><o2 if "$object->getAddress()" then="$object->getAddress()" else="-" /></td>
+  </tr>
+
+  <o2 if "$object->isa('O2::Obj::Member')">
+    <tr>
+      <td>$lang->getString("lblUsername")</td>
+      <td>$object->getUsername()</td>
+    </tr>
+  </o2:if>
+
+  <tr>
+    <td></td>
+    <td>$object->getPostalCode() $object->getPostalPlace()</td>
+  </tr>
+  <tr>
+    <td>$lang->getString("lblEmail")</td>
+    <td>$object->getEmail()</td>
+  </tr>
+  <tr>
+    <td>$lang->getString("lblCellPhone")</td>
+    <td>$object->getCellPhone()</td>
+  </tr>
+  <tr>
+    <td>$lang->getString("lblPhone")</td>
+    <td>$object->getPhone()</td>
+  </tr>
+  <tr>
+    <td>$lang->getString("lblBirthDate")</td>
+    <td>$object->getBirthDate('yyyyMMdd')</td>
+  </tr>
+  <tr>
+    <td>$lang->getString("lblCountry")</td>
+    <td>$object->getCountry()</td>
+  </tr>
+  <o2 include "includes/metaInfo.html" />
+</table>
+
+<o2 setVar "$orders">$gui->getOrdersByPersonId( $object->getId() )</o2:setVar>
+<o2 if "@{$orders}">
+  <hr>
+  <h2>$lang->getString("hdrOrders")</h2>
+  <table>
+    <tr>
+      <th>$lang->getString("lblId")</th>
+      <th>$lang->getString("lblStatus")</th>
+      <th>$lang->getString("lblAmountIncVat")</th>
+      <th>$lang->getString("lblCreatedTime")</th>
+      <th>$lang->getString("lblTransactionId")</th>
+    </tr>
+    <o2 foreach "$order in $orders">
+      <tr>
+        <td class="objectId"     ><o2 link setParam="query=$order->getId()">$order->getId()</o2:link></td>
+        <td class="status"       >$order->getMetaStatus()</td>
+        <td class="price"        ><o2 numberFormat "#,##0.00">$order->getPriceIncVat()</o2:numberFormat></td>
+        <td class="date"         ><o2 dateFormat format="yyyy.MM.dd">$order->getMetaCreateTime()</o2:dateFormat></td>
+        <td class="transactionId"><o2 link setParam="query=$order->getTransactionId()">$order->getTransactionId()</o2:link></td>
+      </tr>
+    </o2:foreach>
+  </table>
+</o2:if>
+
+<o2 setVar "$orderLines" forceType="array">$gui->getOrderLinesByPersonId( $object->getId() )</o2:setVar>
+<o2 include "includes/orderLines.html" orderLines="$orderLines" />
+
+<o2 footer />

@@ -1,0 +1,30 @@
+<o2 use O2Doc::Tutorial />
+
+<o2 docSection title="slotString">
+  Display/edit a string based on a (possibly non-existing) field in the current object (\$object). So if field is "name", \$object->getName() is displayed. However if the
+  slotString is editable, this value can be overridden by editing the text. If virtual is "yes", "field" doesn't have to be an existing field in the object, and
+  <span class="content">content</span> will become the default value.
+  <o2 docSection title="Syntax">
+    <o2 docCode lang="o2ml">
+      <o2 slotString field="title">No title</o2:slotString>
+    </o2:docCode>
+    or
+    <o2 docCode lang="o2ml">
+      <o2 slotString field="title" editable="yes" />
+    </o2:docCode>
+    or
+    <o2 docCode lang="o2ml">
+      <o2 slotString field="title" editable="yes" virtual="yes" />
+    </o2:docCode>
+  </o2:docSection>
+
+  <o2 docSection title="Attributes">
+    <o2 docList class="attributes">
+      <o2 docListItem class="required">field           - the name of a field in the current object. If "virtual" is "yes", then "field" is just an identifying name.</o2:docListItem>
+      <o2 docListItem class="optional">editable [no]   - {yes, no}. Should it be possible to edit the slotString?</o2:docListItem>
+      <o2 docListItem class="optional">virtual [no]    - {yes, no}. If virtual is "yes", "field" doesn't have to be an existing field in the current object, and
+      <span class="content">content</span> will become the default value.</o2:docListItem>
+      <o2 docListItem class="optional content">content - the default value displayed.</o2:docListItem>
+    </o2:docList>
+  </o2:docSection>
+</o2:docSection>

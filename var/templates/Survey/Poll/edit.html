@@ -1,0 +1,173 @@
+<o2 use Html::Form />
+<o2 use O2CMS::ApplicationFrame />
+<o2 use Html::Ajax />
+
+<o2 use I18N />
+<o2 setResourcePath>Survey.Poll</o2:setResourcePath>
+
+<o2 addCss>
+  #editObjectWrapper h2 {
+    background-image: url("/images/icons/o2default/O2CMS/Obj/Survey/Poll/O2CMS-Obj-Survey-Poll-48.png");
+  }
+  form {
+    clear: both;
+  }
+  #editObjectWrapper .multiInput .textInput {
+    width: 300px;
+  }
+  #advancedOptions label {
+    width: auto;
+  }
+</o2:addCss>
+<o2 addCssFile file="gui/universal/editObject" />
+
+<o2 header title="Edit O2CMS::Obj::Survey::Poll" />
+
+<o2 addJs where="pre">
+  function handleServerResponse(result)
+  {
+    if (result.objectId) {
+      setApplicationFrameHeaderCurrentPath( result.objectId );
+    }
+    if ( "$q->{parentId}"  &&  top.reloadTreeFolder ) {
+      top.reloadTreeFolder( $q->{parentId} );
+    }
+    if (IS_SAVE_AND_CLOSE && top.closeFrame) {
+      top.closeFrame(window.name);
+    }
+    else {
+      document.getElementById("objectId").value = result.objectId;
+      o2.temporaryMessage.setMessage({
+        "id"      : "tmpMsg",
+        "message" : "$lang->getString('msgObjectSaved')",
+        "type"    : "info"
+      });
+      setFormChanged(false);
+    }
+  }
+  
+  var IS_SAVE_AND_CLOSE = false;
+
+  function saveAndClose()
+  {
+    IS_SAVE_AND_CLOSE = true;
+    document.getElementById("submitBtn").click();
+  }
+
+  function getParentId() {
+    return '$object->getMetaParentId()';
+  }
+
+  function setDisabled(elm, doSetDisabled) {
+    var color;
+    var disabled;
+    if (doSetDisabled) {
+      color    = "'gray'";
+      disabled = "'disabled'";
+    }
+    else {
+      color    = "''";
+      disabled = "''";
+    }
+    applyPropertyRecursive(elm, "style.color", color);
+    applyPropertyRecursive(elm, "disabled",    disabled);
+  }
+
+  function applyPropertyRecursive(elm, attr, value) {
+    try {
+      eval("elm." + attr + "=" + value + ";");
+    }
+    catch (e) {}
+    for (var i = 0; i < elm.childNodes.length; i++) {
+      applyPropertyRecursive(elm.childNodes[i], attr, value);
+    }
+  }
+
+  function toggleShowVoteRestrictionOptions() {
+    var checked = document.getElementById("allowMultipleVotesYes").checked ? true : false;
+    var elm     = document.getElementById("voteRestrictionOptions");
+    setDisabled(elm, checked);
+  }
+
+  function toggleShowVisibilityBeforeEndEpoch() {
+    var elm = document.getElementById("endDate");
+    setDisabled(document.getElementById("resultVisibleBeforeEndDateRow"), !elm.value);
+  }
+</o2:addJs>
+
+<o2 addJs where="onLoad">
+  toggleShowVoteRestrictionOptions();
+  toggleShowVisibilityBeforeEndEpoch();
+</o2:addJs>
+
+<o2 setVar "$objectId" ><o2 if " $object->getId()" then="$object->getId()" else="$q->{parentId}" /></o2:setVar>
+<o2 setVar "$extraPath"><o2 if "!$object->getId()" then="$lang->getString('newPoll')" /></o2:setVar>
+<o2 ApplicationFrameHeader frameTitle="$lang->getString('editPageHeader')" showCloseButton="1" useCloseAction="confirmCloseIfChanged" disableScrollBar="1" showSettingsButton="0"
+  objectId="$objectId" extraPath="$extraPath" />
+
+<div class="pollWrapper" id="editObjectWrapper">
+  <o2 multilingualController object="$object" />
+
+  <h2>$lang->getString("editPageTitle")</h2>
+  <p id="tmpMsg"></p>
+
+  <o2 ajaxForm method="post" setMethod="save" handler="handleServerResponse" ruleTitle="$lang->getString('ruleTitle')" onChange="setFormChanged();" debug="0">
+
+    <o2 input type="hidden" name="object.id"       value="$object->getId()" id="objectId" />
+    <o2 input type="hidden" name="object.parentId" value="$q->{parentId}" />
+
+    <o2 formTable>
+      <o2 input type="text" name="object.title"    value="$object->getTitle()"    label="$lang->getString('title')"    size="100" rule="required" ruleMsg="" multilingual="1" class="textInput long" />
+      <o2 input type="text" name="object.question" value="$object->getQuestion()" label="$lang->getString('question')" size="100" rule="required" ruleMsg="" multilingual="1" class="textInput long" />
+      <o2 multiInput type="text" name="object.answerAlternatives[]" label="$lang->getString('answerAlternatives')" rule="required" ruleMsg="" rearrangeable="1" resizable="1" minNumLines="2"
+        size="100" multilingual="1" values="$object->getAnswerAlternatives()" />
+    </o2:formTable>
+    <o2 contentGroup title="$lang->getString('advancedOptions')">
+      <o2 formTable id="advancedOptions">
+        <o2 radioGroup name="object.allowMultipleAnswersPerUser" label="$lang->getString('allowMultipleAnswersPerUser')" rule="" ruleMsg="">
+          <o2 setVar "$yesChecked"><o2 if "$isNewObject" then="1" else="$object->getAllowMultipleAnswersPerUser()" /></o2:setVar>
+          <o2 setVar "$noChecked" ><o2 if "$yesChecked"  then="0" else="1" /></o2:setVar>
+          <o2 radio value="1" label="$lang->getString('allowMultipleAnswersPerUser_yes')" checked="$yesChecked" onClick="toggleShowVoteRestrictionOptions()" id="allowMultipleVotesYes" />
+          <o2 radio value="0" label="$lang->getString('allowMultipleAnswersPerUser_no')"  checked="$noChecked"  onClick="toggleShowVoteRestrictionOptions()" id="allowMultipleVotesNo"  />
+        </o2:radioGroup>
+        <tbody id="voteRestrictionOptions">
+          <o2 select name="object.restrictAnswersBasedOn" label="$lang->getString('restrictAnswersBasedOn')" value="$object->getRestrictAnswersBasedOn()">
+            <o2 option value="cookie">$lang->getString('cookie')</o2:option>
+            <o2 option value="user"  >$lang->getString('user')</o2:option>
+            <o2 option value="ip"    >$lang->getString('ip')</o2:option>
+          </o2:select>
+          <o2 input type="text" name="object.userLockedDuration" value="$object->getUserLockedDuration()" label="$lang->getString('userLockedDuration')" size="10" rule="" ruleMsg="" class="textInput short" />
+        </tbody>
+        <o2 tr>
+          <td><label for="endDate">$lang->getString("endDate")</label></td>
+          <td>
+            <o2 setVar "$endDate"><o2 if "$object->getEndEpoch()" then="$object->getEndDateTime()->format('yyyy-MM-dd')" else=""      /></o2:setVar>
+            <o2 setVar "$endTime"><o2 if "$object->getEndEpoch()" then="$object->getEndDateTime()->format('HH:mm')"      else="00:00" /></o2:setVar>
+            <o2 dateSelect name="object.endDate" format="yyyy-MM-dd" inputStyle="width: 70px" id="endDate" value="$endDate" onChange="toggleShowVisibilityBeforeEndEpoch();" />
+            <o2 input name="object.endTime" label="$lang->getString('lblEndTime')" id="endTime" style="width: 40px" value="$endTime" rule="regex:/^([01]\d|2[0123]):[012345]\d$/" ruleMsg="$lang->getString('ruleMsgToTime')" />
+          </td>
+          <td><o2 button onClick="document.getElementById('endDate').value = ''; document.getElementById('endTime').value = '00:00'; toggleShowVisibilityBeforeEndEpoch(); return false;">$lang->getString("eraseEndDate")</o2:button></td>
+        </o2:tr>
+        <tbody id="resultVisibleBeforeEndDateRow">
+          <o2 checkboxGroup name="object.resultVisibleBeforeEndEpoch" label="$lang->getString('resultVisibleBeforeEndEpoch')">
+            <o2 setVar "$checked"><o2 if "$isNewObject" then="1" else="$object->getResultVisibleBeforeEndEpoch()" /></o2:setVar>
+            <o2 checkbox value="1" label="" checked="$checked" />
+          </o2:checkboxGroup>
+        </tbody>
+      </o2:formTable>
+    </o2:contentGroup>
+
+    <p>
+      <o2 input type="submit" value="$lang->getString('btnSubmit')" id="submitBtn" />
+      <o2 input type="button" value="$lang->getString('btnSaveAndClose')" onClick="saveAndClose();" />
+    </p>
+  </o2:ajaxForm>
+  
+  <o2 if "$object->getId()">
+    <p><o2 popupWindow href="/o2/Survey-Poll/showResultsPopup?pollId=$object->getId()">$lang->getString('seeVoteResults')</o2:popupWindow></p>
+  </o2:if>
+</div>
+
+<o2 ApplicationFrameFooter />
+
+<o2 footer />

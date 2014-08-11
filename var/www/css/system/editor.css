@@ -1,0 +1,29 @@
+#articleEditor {
+  height: 100%;
+  margin-top: 10px;
+}
+
+#articleBox {
+  float: right;
+  width: 230px;
+}
+
+#theArticle {
+  margin-right: 230px; 
+  height: 100%;
+}
+
+#articleBox .textInput {
+  width: 194px;
+}
+
+#articleBox input#simpleKeyword,
+#articleBox input#advancedKeyword {
+  width: 115px;
+}
+
+#articleBox #article_publishDateText,
+#articleBox #article_unPublishDateText,
+#articleBox #article_createDate {
+  width: 100px;
+}

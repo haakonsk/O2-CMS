@@ -1,0 +1,41 @@
+div.tellAFriend h1 {
+  font-size   : 14px;
+  font-weight : bold;
+}
+
+div.tellAFriend h2 {
+  font-size   : 12px;
+  font-weight : bold;
+}
+
+div.tellAFriend .emailFields,
+div.tellAFriend .commentField {
+  width : 350px;
+}
+
+div.tellAFriend .emailFields {
+  float : left;
+}
+
+div.tellAFriend .emailFields .o2Input,
+div.tellAFriend .commentField .o2Textarea {
+  width         : 350px;
+  margin-bottom : 4px;
+}
+
+div.tellAFriend .emailFields input,
+div.tellAFriend .commentField textarea {
+  width : 200px;
+}
+
+div.tellAFriend .emailFields label,
+div.tellAFriend .commentField label {
+  display : block;
+  float   : left;
+  clear   : none;
+  width   : 140px;
+}
+
+div.tellAFriend .o2TextareaLabel {
+  vertical-align : top;
+}

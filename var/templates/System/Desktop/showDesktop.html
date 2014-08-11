@@ -1,0 +1,116 @@
+<o2 use StringFormat />
+<o2 use O2CMS::Html::PopupMenu />
+<o2 use Html::PopupDialog />
+<o2 use StringFormat />
+
+<o2 addJsFile file="ajax" />
+<o2 addJsFile file="o2escape" />
+<o2 addJsFile file="dragDrop" />
+<o2 addJsFile file="resizable" />
+<o2 addJsFile file="datadumper" />
+<o2 addJsFile file="componentBase" />
+<o2 addJsFile file="gui/system/framework/desktop/DesktopDraggableObject" />
+<o2 addJsFile file="gui/system/framework/desktop/DesktopDragReceiver" />
+<o2 addJsFile file="gui/system/framework/desktop" />
+
+<o2 addCssFile file="desktop" />
+
+<o2 header noStyle="1" />
+
+<o2 addCss>
+  body { 
+    <o2 if "$desktop->getWallPaper()">
+      background-position : center center;
+      background-repeat   : no-repeat;
+      background-image    : url("$desktop->getWallPaper()");
+      height              : 100%;
+    </o2:if>
+    <o2 else>
+      background-color : $desktop->getWallColor();
+    </o2:else>
+  }
+</o2:addCss>
+
+<div id="desktopPanel">
+  
+  <o2 setVar "$desktopLayout"><o2 if "$desktop->getLayoutMode() eq 'userLayout'" then="desktopUserLayout" else="desktopFlowLayout" /></o2:setVar>
+  <o2 setVar "$sortBy">$desktop->getSortBy()</o2:setVar>
+  
+  <o2 foreach "$item in $desktop->getDesktopItems()">
+    <o2 if "$item->getMetaClassName() eq 'O2CMS::Obj::Desktop::Shortcut'">
+      <o2 setVar "$itemStyle">top:$item->getYPosition()px;left:$item->getXPosition()px;</o2:setVar>
+      <o2 setVar "$imageUrl">$item->getImageUrl()</o2:setVar>
+      <o2 setVar "$action">$item->getAction()</o2:setVar>
+      
+      <div id="shortcut_$item->getId()" class="desktopShortcut $desktopLayout" style="$itemStyle" shortcutId='$item->getId()' icon="$imageUrl" label='$item->getMetaName()' createTime='$item->getMetaCreateTime()' title="$item->getMetaName()" >
+        <img id="shortcutImage_$item->getId()" class="icon" src="$imageUrl"  onClick="$action">
+        <div id="label_$item->getId()" class="label"  onClick="$action"><o2 trim maxLength="22" trail="...">$item->getMetaName()</o2:trim></div>
+      </div>
+    </o2:if>
+    <o2 elsif "$item->getMetaClassName() eq 'O2CMS::Obj::Desktop::Widget'">
+      <o2 setVar "$widgetId">widget_$item->getId()</o2:setVar>
+      <o2 addJs where="onLoad">
+        desktop.addWidgetToDesktop({
+          widgetId    : '$item->getId()',
+          xPosition   : '$item->getXPosition()',
+          yPosition   : '$item->getYPosition()',
+          height      : '$item->getHeight()',
+          width       : '$item->getWidth()',
+          widgetUrl   : '$item->getWidgetUrl()',
+          widgetCode  : '<o2 encodeEntities off>$item->getWidgetCode()</o2:encodeEntities>',
+          isMinimized : '$item->getIsMinimized()'
+        });
+      </o2:addJs>
+      <o2 if "$item->getWidgetUrl()">
+      </o2:if>
+    </o2:elsif>
+  </o2:foreach>
+</div>
+
+<o2 setVar "$manualIcon"><o2 iconUrl action="O2-action-sort-manual"   size="16" /></o2:setVar>
+<o2 setVar "$nameIcon"  ><o2 iconUrl action="O2-action-sort-name-asc" size="16" /></o2:setVar>
+<o2 setVar "$typeIcon"  ><o2 iconUrl action="O2-action-sort-type"     size="16" /></o2:setVar>
+<o2 setVar "$dateIcon"  ><o2 iconUrl action="O2-action-sort-date"     size="16" /></o2:setVar>
+<o2 setVar "$reloadIcon"><o2 iconUrl action="O2-action-reload"        size="16" /></o2:setVar>
+<o2 setVar "$editIcon"  ><o2 iconUrl action="O2-action-edit"          size="16" /></o2:setVar>
+<o2 setVar "$deleteIcon"><o2 iconUrl action="O2-action-delete"        size="16" /></o2:setVar>
+
+<o2 PopupMenu menuId="shortCutContextMenu" element="">
+  <o2 addMenuItem name="$lang->getString('o2.desktop.shortcutContextMenu.lblChangeName')" icon="$editIcon"   action="desktop.editShortcutName();" />
+  <o2 addMenuItem name="$lang->getString('o2.desktop.shortcutContextMenu.lblDelete')"     icon="$deleteIcon" action="desktop.deleteShortcut();"   />
+</o2:PopupMenu>
+
+<o2 PopupMenu menuId="desktopMenu" element="contextmenu">
+  <o2 addMenuItem name="$lang->getString('o2.desktop.desktopContextMenu.lblLayoutMode')" icon="">
+    <o2 addMenuItem name="$lang->getString('o2.desktop.desktopContextMenu.layoutMode.manual')" icon="$manualIcon" action="desktop.setUserLayoutMode();"       />
+    <o2 addMenuItem name="$lang->getString('o2.desktop.desktopContextMenu.layoutMode.name')"   icon="$nameIcon"   action="desktop.setFlowLayoutMode('name');" />
+    <o2 addMenuItem name="$lang->getString('o2.desktop.desktopContextMenu.layoutMode.type')"   icon="$typeIcon"   action="desktop.setFlowLayoutMode('type');" />
+    <o2 addMenuItem name="$lang->getString('o2.desktop.desktopContextMenu.layoutMode.date')"   icon="$dateIcon"   action="desktop.setFlowLayoutMode('date');" />
+   </o2:addMenuItem>
+  <o2 addSeparator />
+  <o2 addMenuItem name="$lang->getString('o2.desktop.desktopContextMenu.lblAddNewWidget')"  icon="/images/system/down_16.gif" action="desktop.showWidgetDialog();" />
+  <o2 addMenuItem name="$lang->getString('o2.desktop.desktopContextMenu.lblReloadDesktop')" icon="$reloadIcon"                action="desktop.reloadDesktop();"    />
+</o2:PopupMenu>
+
+<o2 popupDialog id="addWidgetDialog" title="$lang->getString('o2.desktop.lblWidgetDialogWindow')" height="300" width="420">
+  <iframe frameBorder="0" id="addWidgetDialogIframe" style="margin: 0; padding: 0; width: 100%; height: 99%;"></iframe>
+</o2:popupDialog>
+
+<form id="editShortCutForm" style="display:none;">
+  <textarea id="editShortcutName" name="editShortcutName"></textarea>
+</form>
+
+<o2 addJs where="here">
+  var desktopCSSLayout = "$desktopLayout";
+  var desktopSortBy    = "$sortBy";
+</o2:addJs>
+
+<o2 addJs where="onLoad">
+  if (desktopCSSLayout == 'desktopFlowLayout'){
+    desktop.setFlowLayoutMode(desktopSortBy);
+  }
+  desktop.initShortcutContextMenu();
+  //setupResizeable
+</o2:addJs>
+
+<o2 footer />

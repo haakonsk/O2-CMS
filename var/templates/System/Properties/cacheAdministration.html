@@ -1,0 +1,186 @@
+<o2 use Html::Form />
+<o2 use Html::Ajax />
+<o2 use DateFormat />
+
+<o2 use I18N />
+<o2 setResourcePath>o2.propertiesDialog</o2:setResourcePath>
+
+<o2 addCss>
+  h1 img {
+    vertical-align : middle;
+    padding        : 5px;
+  }
+  h1 {
+    font-size : medium;
+    padding   : 5px;
+  }
+  #msgLabel {
+    color       : red;
+    font-weight : bold;
+    margin-left : 5px;
+  }
+  #deleteStatus {
+    display : none;
+  }
+  .progressbar {
+    background-color : Menu;
+    border           : 1px inset;
+    border-color     : ThreeDShadow ThreeDHighlight ThreeDHighlight ThreeDShadow;
+    width            : 99%;
+    height           : 14px;
+  }
+  .progressbar div {
+    background-Color : #ffc222;
+    text-align       : center;
+    color            : black;
+    vertical-align   : middle;
+  }
+  .deleteButtonForm {
+    margin-left : 10px;
+    display     : inline;
+  }
+</o2:addCss>
+<o2 incStylesheet />
+
+<h1>$lang->getString("cache.lblObjectName")<img src="$object->getIconUrl()"><b>$object->getMetaName()</b></h1>
+
+<o2 form name="container" onSubmit="return false;" disabled="$disableForm">
+  <p id="msgLabel"></p>
+  <o2 formTable>
+    <o2 tr>
+      <o2 radioGroup name="allowObjectPageCaching" label="$lang->getString('cache.lblObjectPagesAreCachable')" value="$allowObjectPageCaching" onChange="updateOptionValue(this)">
+        <o2 radio value="yes" label="$lang->getString('general.options.yes')" />
+        <o2 radio value="no"  label="$lang->getString('general.options.no')"  />
+      </o2:radioGroup>
+      <td>&nbsp;<span id="objectPageMessage">$lang->getString('cache.objectPagesAreCachable.description', totalObjectPagesInCache => $totalObjectPagesInCache)</span></td>
+    </o2:tr>
+    <o2 tr>
+      <o2 radioGroup name="allowFrontpageCaching" label="$lang->getString('cache.lblFrontpagesAreCachable')" value="$allowFrontpageCaching" onChange="updateOptionValue(this)">
+        <o2 radio value="yes" label="$lang->getString('general.options.yes')" />
+        <o2 radio value="no"  label="$lang->getString('general.options.no')"  />
+      </o2:radioGroup>
+      <td>&nbsp;<span id="frontpageMessage">$lang->getString("cache.frontpagesAreCachable.description", totalFrontpagesInCache => $totalFrontpagesInCache)</span></td>
+    </o2:tr>
+  </o2:formTable>
+</o2:form>
+
+<o2 ajaxForm setMethod="startRegeneratingObjectHtmlCache" setParams="objectId=$object->getId()&optionName=allowObjectPageCaching" handler="handleSaveOptionValue" class="deleteButtonForm" method="post">
+  <o2 input type="submit" value="$lang->getString('cache.btnRegenerateCachedObjectPages')" />
+</o2:ajaxForm>
+
+<o2 ajaxForm setMethod="startRegeneratingFrontpageCache" setParams="objectId=$object->getId()&optionName=allowFrontpageCaching" handler="handleSaveOptionValue" class="deleteButtonForm" method="post">
+  <o2 input type="submit" value="$lang->getString('cache.btnRegenerateCachedFrontpages')" />
+</o2:ajaxForm>
+
+<div id="deleteStatus" class="popupDelete">
+  <div id="statusMessage">$lang->getString("cache.lblRegeneratingCache") <span id="probarStatus"></span></div>
+  <div id="proBar"></div>
+  <div id="underBarMessage"><span class="warning">$lang->getString("cache.lblWarnDontClose")</span></div>
+</div>
+
+<o2 addJs where="here">
+
+  var allowObjectPageCachingPreviousValue = "$allowObjectPageCaching";
+  var allowFrontpageCachingPreviousValue  = "$allowFrontpageCaching";
+
+  var proBar = null;
+
+  function updateOptionValue(option) {
+    if (option.value === "no" && !confirm("$lang->getString('cache.questionDeleteCache')")) {
+      return document.getElementById( "container_" + option.name + "_yes" ).checked = true; // Revert back to yes
+    }
+    setMessage("$lang->getString('cache.msgSavingOption')");
+    saveOptionValue(option.name, option.value);
+  }
+
+  function saveOptionValue(optionName, optionValue) {
+    o2.ajax.call({
+      setMethod : "saveCacheOption",
+      setParams : {
+        objectId    : "$object->getId()",
+        optionName  : optionName,
+        optionValue : optionValue
+      },
+      handler : "handleSaveOptionValue",
+      method  : "post"
+    });
+  }
+
+  function handleSaveOptionValue(data) {
+    setMessage(data.message);
+    if (data.objectIdsToDelete && data.objectIdsToDelete.length > 0) {
+      deleteCachedIds(data);
+    }
+    else if (data.objectIdsToRegenerate && data.objectIdsToRegenerate.length > 0) {
+      regenerateCachedIds(data);
+    }
+    else {
+      setMessage(data.finalMessage);
+    }
+    document.getElementById( data.optionName == "allowObjectPageCaching" ? "objectPageMessage" : "frontpageMessage" ).innerHTML = "";
+  }
+
+  function setMessage(msg) {
+    document.getElementById("msgLabel").innerHTML = msg;
+  }
+
+  var cachedIdsArray = null;
+  var currentIndex = 0;
+  function deleteCachedIds(data) {
+    showProgressBar();
+    cachedIdsArray = data.objectIdsToDelete;
+    proBar.setRange(1, cachedIdsArray.length);
+    currentIndex = 0;
+    deleteNextCachedId(data);
+  }
+
+  function regenerateCachedIds(data) {
+    showProgressBar();
+    cachedIdsArray = data.objectIdsToRegenerate;
+    proBar.setRange(1, cachedIdsArray.length);
+    currentIndex = 0;
+    regenerateNextCachedId(data);
+  }
+
+  function showProgressBar() {
+    document.getElementById("deleteStatus").style.display = "block";
+    proBar = new ProgressBar("proBar");
+  }
+
+  function hideProgressBar() {
+    document.getElementById("deleteStatus").style.display = "none";
+  }
+
+  function deleteNextCachedId(data) {
+    handleNextCachedId(data, "Delete");
+  }
+
+  function regenerateNextCachedId(data) {
+    handleNextCachedId(data, "Regenerate");
+  }
+
+  function handleNextCachedId(data, type) {
+    if (cachedIdsArray == null  ||  cachedIdsArray.length == 0  ||  currentIndex >= cachedIdsArray.length) {
+      setMessage(data.finalMessage);
+      hideProgressBar();
+      return;
+    }
+    o2.ajax.call({
+      setMethod : "ajax" + type + "CachedObjectId",
+      setParams : "objectId=" + cachedIdsArray[currentIndex] + "&finalMessage=" + data.finalMessage,
+      handler   : "handleAjax" + type + "CachedObjectId",
+      method    : "post"
+    });
+    currentIndex++;
+    document.getElementById("probarStatus").innerHTML = "[" + currentIndex + "/" + cachedIdsArray.length + "]";
+    proBar.increment(currentIndex);
+  }
+
+  function handleAjaxDeleteCachedObjectId(data) {
+    deleteNextCachedId(data);
+  }
+
+  function handleAjaxRegenerateCachedObjectId(data) {
+    regenerateNextCachedId(data);
+  }
+</o2:addJs>

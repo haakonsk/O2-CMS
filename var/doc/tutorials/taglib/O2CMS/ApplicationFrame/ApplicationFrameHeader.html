@@ -1,0 +1,92 @@
+<o2 use O2Doc::Tutorial />
+
+<o2 docSection title="ApplicationFrameHeader, ApplicationFrameFooter, addHeaderButton, addCell, addCellSeparator">
+  ApplicationFrameHeader defines a header for an O2 frame - it must be used together with an ApplicationFrameFooter. The reason is that the footer
+  closes some of the tags that the header opens.
+  <o2 docSection title="Syntax">
+    <o2 docCode lang="o2ml">
+      <o2 ApplicationFrameHeader frameTitle="My O2 frame" showCloseButton="1" useCloseAction="alert('You tried to close me');" path="Tools, O2 System, My Application" />
+      <p>A paragraph</p>
+      <o2 ApplicationFrameFooter />
+    </o2:docCode>
+    <o2 docCodeResult useModule="O2CMS::ApplicationFrame" seeGeneratedHtmlAsDisplayed="1" />
+    or
+    <o2 docCode lang="o2ml">
+      <o2 ApplicationFrameHeader frameTitle="My O2 frame" url="/o2/System-Documentation-Taglibs/showDocumentation?module=Core" showCloseButton="1" useCloseAction="alert('You tried to close me');">
+        <o2 addHeaderButton id="settingsButton" icon="/images/system/confg_16.gif" width="80px" action="alert('You clicked on the settings button');">Settings</o2:addHeaderButton>
+        <o2 addCellSeparator width="100px" />
+        <o2 addCell width="80px">Some text</o2:addCell>
+      </o2:ApplicationFrameHeader>
+      <o2 ApplicationFrameFooter statusBar="1">
+        <o2 addCell>Status:</o2:addCell>
+      </o2:ApplicationFrameFooter>
+    </o2:docCode>
+    <o2 docCodeResult useModule="O2CMS::ApplicationFrame" seeGeneratedHtmlAsDisplayed="1" />
+  </o2:docSection>
+
+  <o2 docSection title="ApplicationFrameHeader attributes">
+    <o2 docList class="attributes">
+      <o2 docListItem class="optional">useCloseAction [_closeApplicationFrame()]</o2:docListItem>
+      <o2 docListItem class="optional">url - a url to the content of the frame</o2:docListItem>
+      <o2 docListItem class="optional">disableScrollBar [0]</o2:docListItem>
+      <o2 docListItem class="optional">showSettingsButton [0] - not sure if this works</o2:docListItem>
+      <o2 docListItem class="optional">showCloseButton [0]</o2:docListItem>
+      <o2 docListItem class="optional">objectId - the id of the object being edited (is used to find the path)</o2:docListItem>
+      <o2 docListItem class="optional">extraPath - a comma-separated list of strings that should be appeanded to the path calculated using "objectId"</o2:docListItem>
+      <o2 docListItem class="optional">path - a comma-separated list of strings making up the path to the application</o2:docListItem>
+      <o2 docListItem class="optional content">content - addCell, addHeaderButton or addSeparator tags</o2:docListItem>
+    </o2:docList>
+  </o2:docSection>
+
+  <o2 docSection title="ApplicationFrameFooter attributes">
+    <o2 docList class="attributes">
+      <o2 docListItem class="optional">statusBar [0]   - if a status bar should be included or not</o2:docListItem>
+      <o2 docListItem class="optional content">content - addCell or addCellSeparator tags</o2:docListItem>
+    </o2:docList>
+  </o2:docSection>
+
+  <o2 docSection title="addHeaderButton">
+    Adds a button in the header.
+    <o2 docSection title="attributes">
+      <o2 docList class="attributes">
+        <o2 docListItem class="optional">width  - the width of the cell</o2:docListItem>
+        <o2 docListItem class="optional">action - Javascript code to be executed when the button is clicked</o2:docListItem>
+        <o2 docListItem class="optional">id</o2:docListItem>
+        <o2 docListItem class="optional">icon</o2:docListItem>
+        <o2 docListItem class="optional content">content - the button text</o2:docListItem>
+      </o2:docList>
+      <o2 docNote>
+        The addHeaderButton tag is only available inside the ApplicationFrameHeader tag.
+      </o2:docNote>
+    </o2:docSection>
+  </o2:docSection>
+
+  <o2 docSection title="addCell">
+
+    <o2 docSection title="attributes">
+      <o2 docList class="attributes">
+        <o2 docListItem class="optional">width  - the width of the cell</o2:docListItem>
+        <o2 docListItem class="optional">action - Javascript code to be executed when the cell is clicked</o2:docListItem>
+        <o2 docListItem class="optional">id</o2:docListItem>
+        <o2 docListItem class="optional">icon</o2:docListItem>
+        <o2 docListItem class="optional content">content - the content you want to add to the header or footer</o2:docListItem>
+      </o2:docList>
+      <o2 docNote>
+        The addCell tag is only available inside ApplicationFrameHeader and ApplicationFrameFooter tags.
+      </o2:docNote>
+    </o2:docSection>
+  </o2:docSection>
+
+  <o2 docSection title="addCellSeparator">
+    Adds a little extra space between cells in the ApplicationFrameHeader or ApplicationFrameFooter.
+    <o2 docSection title="Attributes">
+      <o2 docList class="attributes">
+        <o2 docListItem class="optional">width - the extra distance between the cells (for example width="10px")</o2:docListItem>
+      </o2:docList>
+    </o2:docSection>
+    <o2 docNote>
+      The addCellSeparator tag is only available inside ApplicationFrameHeader and ApplicationFrameFooter tags.
+    </o2:docNote>
+  </o2:docSection>
+
+</o2:docSection>

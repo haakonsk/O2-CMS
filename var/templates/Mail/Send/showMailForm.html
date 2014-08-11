@@ -1,0 +1,226 @@
+<o2 use Html::Form/>
+
+<o2 use I18N />
+<o2 setResourcePath>o2.mail.send</o2:setResourcePath>
+
+<o2 addJsFile file="email"       />
+<o2 addJsFile file="util"        />
+<o2 addJsFile file="progressbar" />
+
+<o2 header disableScrollbars="1" onLoad="init()"/>
+
+<o2 use O2CMS::ApplicationFrame />
+<o2 ApplicationFrameHeader frameTitle="$lang->getString('applicationName')" showCloseButton="1" useCloseAction="confirmCloseIfChanged" showSettingsButton="0" disableScrollBar="0" />
+
+<o2 addCss>
+  body,td,input,textarea {
+    font-family:Verdana,Arial,Helvetica,sans-serif; font-size:11px; color:#000000; 
+  }
+  hr {
+    border:1px dotted #dedede;
+  }
+  .bodyText {
+    height:100%;
+    width:100%;
+    border:1px solid black;
+  }
+  .inputText {
+    /* width:100%; */
+    width:470px;
+    border:1px solid;
+  }
+  .popupSend {
+    visibility: hidden;
+    position:absolute;
+    top:100px;
+    left:100px;
+    background-color:#dedede;
+    width:360px;
+    height:100px;
+    border:1px outset black;
+  }
+  .progressbar {
+    /*   visibility: visisble;  */
+    background-color:Menu;
+    border:1px inset;
+    border-color:ThreeDShadow ThreeDHighlight        ThreeDHighlight ThreeDShadow; 
+    width:99%;
+    height:14px;
+  }
+  .progressbar div {
+    background-Color:#ffc222;
+    text-align:center; 
+    color:black;
+    vertical-align:middle;  
+  }
+  .warning {
+    color:red;
+  }
+</o2:addCss>
+
+<o2 addJs>
+  var errorColor="red";
+  var proBar=null;
+  var mailRecievers = new Array();
+  var currSendIdx = 0;
+
+  function confirmExit() {
+    if(confirm("$lang->getString('confirmExit')")) {
+      window.close();
+    }
+  }
+
+
+  function showStatus() {
+    var status= document.getElementById("sendStatus");
+    status.style.visibility="visible"; 
+    status.style.top  = (o2.getWindowHeight()/2) - (status.offsetHeight/2);
+    status.style.left = (o2.getWindowWidth()/2)  - (status.offsetWidth/2);
+  }
+
+  function send(f) {
+    var error="";
+    var recievers = f.to.value.split(",");
+    for(var i=0;i < recievers.length;i++) {
+      if (!chkEmailAdr(recievers[i]) && recievers[i] != '') {
+        error+="- Det er feil i til addressen '"+recievers[i]+"'\n";
+      }
+      else {         
+        mailRecievers[i]=recievers[i];
+      }
+    }
+    if (!chkEmailAdr(f.from.value)) {
+      error+="- Det er feil i fra addressen '"+f.from.value+"'\n";
+    }
+    //   alert(chkEmailAdr(recievers[0]));
+    if (f.subject.value=="") {
+      error+="- Emne mangler\n";
+    }
+    if (f.body.value=="") {
+      error+="- Meldingskropp mangler\n";
+    }
+    if (error) {
+      alert("Feilmelding:\n"+error); 
+      return ;
+    }
+    showStatus();
+    
+    var sf = document.forms['mailForm'];
+    f.to.disabled      = true;   
+    f.from.disabled    = true;
+    sf.from.value      = f.from.value;
+    sf.subject.value   = f.subject.value;
+    f.subject.disabled = true;
+    sf.body.value      = f.body.value;
+    f.body.disabled    = true;
+    f.sendBtn.disabled = true;
+    proBar.setRange(1,mailRecievers.length);
+    currSendIdx = 0;
+    sendNextMail();
+  }
+
+  function resetForm() {
+    var sf = document.forms['mailForm'];
+    var f = document.forms['email'];
+    f.to.disabled      = false;   
+    f.from.disabled    = false;
+    f.subject.disabled = false;
+    f.body.disabled    = false;
+    f.sendBtn.disabled = false;
+    sf.from.value      = '';
+    sf.subject.value   = '';
+    sf.body.value      = '';
+    currSendIdx = 0;
+    mailRecievers = new Array();
+    document.getElementById("sendStatus").style.visibility='hidden';
+    proBar = new ProgressBar("proBar");
+  }
+
+  function sendNextMail() {
+    var sf = document.forms['mailForm'];
+    if(mailRecievers.length<=0) {
+      document.getElementById("statusMessage").innerHTML="$lang->getString('finishedSending')";
+      document.getElementById("underBarMessage").innerHTML="<input type=button onclick='resetForm();' class=submI value='$lang->getString('newMessage')'>";
+    }
+    else {
+      sf.to.value=mailRecievers.shift();
+      document.getElementById("toAddress").innerHTML="$lang->getString('sendingTo') <b>"+sf.to.value+"</b>";
+      sf.submit();
+    }
+  }
+  function mailSent() {
+    proBar.increment(++currSendIdx);
+    sendNextMail();
+  }
+  function init() {    
+    proBar = new ProgressBar("proBar");
+    if (document.email.from.value=='') document.email.from.disabled=false;
+  }
+</o2:addJs>
+
+<o2 form method="post" name="email" setMethod="sendMail" removeParams="1">
+  <table width="100%" height="97%" cellpadding="1">
+    <tr class="tblHeader" height="20px"></tr>
+    <tr height="20px">
+      <td width="100px">$lang->getString('recipients')</td>
+      <td width="2px">:</td>
+      <td><input class="inputText" type="text" name="to" value="$recipients"></td>
+    </tr>
+    <tr height="20px">
+      <td>$lang->getString('sender')</td>
+      <td>:</td>
+      <td><input class="inputText"  type="text" name="from" value="$sender" disabled></td>
+    </tr>
+    <tr height="20px">
+      <td>$lang->getString('subject')</td>
+      <td>:</td>
+      <td><input class="inputText" type="text" name="subject" value=""></td>
+    </tr>
+    <tr height="3px">
+      <td colspan="3"><hr></td>
+    </tr>
+    <tr>
+      <td colspan="3">
+        <textarea name="body" class="bodyText"></textarea>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="3" align="right" height="25px">
+        <input name="sendBtn" type="button" class="submI" onclick="send(this.form)" value="$lang->getString('buttonSend')">
+      </td>
+    </tr>
+  </table>
+</o2:form>
+<div id="sendStatus" class="popupSend">
+  <table border="0" width="100%" height="100%" cellpadding="1">
+    <tr>
+      <td align="middle" id="statusMessage">
+        $lang->getString('msgSendingInProgress') <div id="toAddress"></div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <div id="proBar"></div>
+      </td>
+    </tr>
+    <tr>
+      <td align="middle" id="underBarMessage">
+        <font class="warning">
+          $lang->getString('warnDontClose')
+        </font>
+      </td>
+    </tr>
+  </table>
+</div> 
+
+<iframe src="about:blank" id="sendFrame" name="sendFrame" style="width:1px;height:1px;position:absolute; top:-100px;"></iframe>
+
+<o2 form method="post" name="mailForm" setMethod="sendMail" removeParams="1" target="sendFrame">
+  <o2 input type="hidden" name="action"  value="sendmail" />
+  <o2 input type="hidden" name="to"      value="" />
+  <o2 input type="hidden" name="from"    value="" />
+  <o2 input type="hidden" name="subject" value="" />
+  <o2 input type="hidden" name="body"    value="" />
+</o2:form>
+
+<o2 footer/>

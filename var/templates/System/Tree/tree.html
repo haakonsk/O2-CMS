@@ -1,0 +1,40 @@
+<o2 use Html::Ajax />
+
+<o2 addJsFile file="componentBase" />
+<o2 addJsFile file="Tree"          />
+<o2 addJsFile file="dragDrop"      />
+<o2 addJsFile file="ExpandTree"    />
+
+<o2 addJsFile  file="system/tree" />
+<o2 addCssFile file="system/tree" />
+
+<o2 addJs where="pre">
+  window.EXPAND_FOLDERS = <o2 encodeEntities off>$expandFolders</o2:encodeEntities>;
+</o2:addJs>
+
+<o2 ajaxForm setMethod="showTree" method="post" name="reloadForm" id="reloadForm" target="documentsDivMain" where="replace">
+  <o2 input type="hidden" name="expandFolders" />
+</o2:ajaxForm>
+
+<div id="tree" component="ExpandTree" class="tree"></div>
+
+<div class="belowTree">
+  <a href="javascript: reloadTree();">&nbsp; » $lang->getString("o2.desktop.lblReloadTree")</a> |
+  <a href="javascript: rememberTree();">$lang->getString("o2.desktop.lblRememberTree")</a>
+</div>
+
+<o2 comment>
+  <a href="javascript:void(top.reloadTreeFolder(59))">Reload Templates (59)</a><br>
+  <a href="javascript:void(window.location=window.location)">win=win</a>
+  <a href="javascript:void(document.getElementById('debug').innerHTML='')">clear debug</a>
+  <div id="debug"></div>
+</o2:comment>
+
+<o2 addJs where="post">
+  initTree();
+  o2.addEvent( document.getElementById("documentsDiv"), "contextmenu", function(e) { e.preventDefault(); e.stopPropagation(); } );
+  o2.addEvent( document.getElementById("searchDiv"),    "mousedown",   hidePopupMenu                                            );
+  window.currentItem = null;
+</o2:addJs>
+
+<img id="imagePreview" class="imagePreview" onmouseover="this.style.display='none'">

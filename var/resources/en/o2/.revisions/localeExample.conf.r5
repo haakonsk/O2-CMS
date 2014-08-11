@@ -1,0 +1,18 @@
+{
+    title => "Locale and I18N test page",
+    introText => 'User: $username and user\'s locale is: $locale, and active locale: $activeLocaleName',
+    testALocale=> 'Test a locale',
+    buttonTestLabel => ' test this locale ',
+    labelWeekDayNames => 'Weekday name\'s',
+    labelMonthNames => 'Month name\'s',
+    labelDateDefault => 'dateformat default:',
+    labelDateShort => 'dateformat short:',
+    labelDateMedium => 'dateformat medium:',
+    labelDateLong => 'dateformat long:',
+    labelDateFull => 'dateformat full:',
+    labelCurrencies      => 'Currencies:',
+    labelTerritories => 'Territories:',
+    labelScripts => 'Scripts:',
+    labelUseThisLanguage => 'Try to show this page in choosen language',
+    naString     => 'n/a',
+}

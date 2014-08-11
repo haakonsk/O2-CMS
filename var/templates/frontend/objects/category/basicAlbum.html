@@ -1,0 +1,16 @@
+<o2 use Html />
+
+<o2 addCssFile file="category/basicAlbum" />
+
+<div class="basicAlbum">
+
+  <h1>$lang->getString("File.Image.basicAlbumTitle", categoryName => $object->getTitle)</h1>
+
+  <o2 foreach "$o in $object->getChildren()">
+    <o2 if "$o->isa('O2::Obj::Image')">
+      <a href="/o2/File-Image/showImage?imageId=$o->getId()&categoryId=$object->getId()">
+        <o2 img id="$o->getId()" width="100" height="80" keepAspectRatio="0" />
+      </a>
+    </o2:if>
+  </o2:foreach>
+</div>

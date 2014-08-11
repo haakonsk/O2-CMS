@@ -1,0 +1,55 @@
+<o2 use Html::Form />
+<o2 header/>
+
+<o2 addCss>
+  .image {
+    clear:both;
+  }
+  .image img {
+    border:1px solid #CCCCCC;
+    float:left;
+    padding:10px;
+    margin:10px;
+  }
+  .image input {
+    width: 280px;
+    font-size:13px;
+  }
+  .image textarea {
+    width: 280px;
+    height: 152px;
+    font-size:13px;
+  }
+  h1 {
+    margin:10px;
+  }
+  .image h2, .image h3 {
+    font-size:13px;
+    margin-left:10px;
+    margin-top:5px;
+    margin-bottom:0px;
+  }
+  .image h2 {
+    font-size:15px;
+  }
+</o2:addCss>
+<o2 use I18N />
+<o2 setResourcePath>classes.o2.obj.image.gallery</o2:setResourcePath>
+
+<h1>$lang->getString('headerEditTitlesAndDescriptions')</h1><br>
+<o2 form setMethod="saveImages">
+  <o2 foreach "$image in $gallery->getImages">
+    <div class="image">
+      <h2>$lang->getString('lblImage'): <i>$image->getMetaName - $image->getTitle</i></h2>
+      <o2 img id="$image->getId" width="200" height="200" onTooSmall="resize" onTooBig="crop"/>
+      <o2 input type="hidden" name="images.id" value="$image->getId"/><br>
+      <h3>$lang->getString('lblTitle')</h3>
+      <o2 input type="text" name="images.imageTitle" value="$image->getTitle()"/><br>
+      <h3>$lang->getString('lblDescription')</h3>
+      <o2 textarea name="images.imageDescription" value="$image->getDescription()"/><br>
+    </div>
+  </o2:foreach>
+  <o2 input type="submit" value="$lang->getString('btnSave')"/>
+</o2:form>
+
+<o2 footer/>

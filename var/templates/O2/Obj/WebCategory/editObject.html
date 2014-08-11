@@ -1,0 +1,45 @@
+<o2 use Html::Form/>
+
+<o2 use I18N />
+<o2 setResourcePath>o2.Category.editWebCategory</o2:setResourcePath>
+
+<o2 addCss>
+  #editObjectWrapper h2 {
+    background-image: url("/images/icons/o2default/O2CMS/Obj/WebCategory/O2CMS-Obj-WebCategory-48.png");
+  }
+</o2:addCss>
+
+<o2 multilingualController object="$object"/>
+
+<script>
+  function generateWebName() {
+    if( document.forms.objectForm['object.directoryName'].value.length>0 ) return;
+    var name = document.forms.objectForm['metaName'].value;
+    var webName = name.replace(/[^a-z0-9\-\_]/ig, '');
+    document.forms.objectForm['object.directoryName'].value = webName.toLowerCase();
+  }
+</script>
+
+<h2>$lang->getString("hdrEditWebCategory")</h2>
+
+<p class="helpText">$lang->getString('helpText')</p>
+
+<p>
+  <label for="object.title">$lang->getString("lblCategoryTitle"):</label>
+  <o2 input id="object.title" name="object.title" value="$object->getTitle()" rule="" ruleMsg="$lang->getString('errorInTitle')" multilingual="1" />
+  <span>$lang->getString("msgCategoryTitle")</span>
+</p>
+
+<p>
+  <label for="metaName">$lang->getString("lblCategoryTreeName"):</label>
+  <o2 input name="metaName" value="$object->getMetaName()" rule="required" ruleMsg="$lang->getString('errorInCategoryTreeName')" onchange="setMetaName(this.value);generateWebName()"/>
+  <span>$lang->getString("msgCategoryTreeName")</span>
+</p>
+
+<p>
+  <label for="object.directoryName">$lang->getString("lblWebName"):</label>
+  <o2 input name="object.directoryName" value="$object->getDirectoryName()" rule="regex:/^[\w-_]+$/" ruleMsg="$lang->getString('errorInWebName')" />
+  <span>$lang->getString("msgWebName")</span>
+</p>
+
+

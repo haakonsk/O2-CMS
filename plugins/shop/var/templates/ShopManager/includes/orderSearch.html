@@ -1,0 +1,66 @@
+<o2 use Html::Ajax />
+
+<o2 use I18N />
+<o2 setResourcePath>ShopManager</o2:setResourcePath>
+
+<o2 addCss>
+  form.orderSearch input[type="text"],
+  form.orderSearch select {
+    width : 200px;
+  }
+  form.orderSearch input[name="fromDate"],
+  form.orderSearch input[name="toDate"] {
+    width : 180px;
+  }
+</o2:addCss>
+
+<o2 addJs>
+  var ORDER_SEARCH_FIELD_NAMES = new Array(
+    "firstName", "lastName", "email", "order.customerId", "orderLineId", "username", "orderId", "order.transactionId", "order.metaStatus",
+    "order.orderTypeId", "fromDate", "toDate"
+  );
+</o2:addJs>
+
+<o2 ajaxForm setMethod="orderSearch" target="orderSearchResult" class="orderSearch">
+  <o2 input type="hidden" name="frame" value="orderSearchResult" />
+  <o2 formTable>
+    <o2 tr>
+      <o2 input type="text" name="firstName" label="$lang->getString('lblFirstName')" />
+      <o2 input type="text" name="lastName"  label="$lang->getString('lblLastName')"  />
+    </o2:tr>
+    <o2 tr>
+      <o2 input type="text" name="email"            label="$lang->getString('lblEmail')" />
+      <o2 input type="text" name="order.customerId" label="$lang->getString('lblUserId')" onKeyUp="toggleDisableOtherFields(this, ORDER_SEARCH_FIELD_NAMES)" />
+    </o2:tr>
+    <o2 tr>
+      <o2 input type="text" name="orderLineId" label="$lang->getString('lblOrderLineId')" onKeyUp="toggleDisableOtherFields(this, ORDER_SEARCH_FIELD_NAMES)" />
+      <o2 input type="text" name="username"    label="$lang->getString('lblUsername')" />
+    </o2:tr>
+    <o2 tr>
+      <o2 input type="text" name="orderId"             label="$lang->getString('lblOrderId')"       onKeyUp="toggleDisableOtherFields(this, ORDER_SEARCH_FIELD_NAMES)" />
+      <o2 input type="text" name="order.transactionId" label="$lang->getString('lblTransactionId')" onKeyUp="toggleDisableOtherFields(this, ORDER_SEARCH_FIELD_NAMES)" />
+    </o2:tr>
+    <o2 tr>
+      <o2 select name="order.metaStatus" label="$lang->getString('lblOrderStatus')">
+        <o2 option value="">$lang->getString("optionAll")</o2:option>
+        <o2 foreach "$status => $visibleStatus in $orderStatuses">
+          <o2 option value="$status">$visibleStatus</o2:option>
+        </o2:foreach>
+      </o2:select>
+      <o2 select name="order.orderTypeId" label="$lang->getString('lblOrderType')">
+        <o2 option value="">$lang->getString("optionAll")</o2:option>
+        <o2 foreach "$type in $orderTypes">
+          <o2 option value="$type->getId()">$type->getMetaName()</o2:option>
+        </o2:foreach>
+      </o2:select>
+    </o2:tr>
+    <o2 tr>
+      <o2 dateSelect name="fromDate" label="$lang->getString('lblFromDate')" format="yyyy-MM-dd" value="$today" noObject="1" />
+      <o2 dateSelect name="toDate"   label="$lang->getString('lblToDate')"   format="yyyy-MM-dd" noObject="1" />
+    </o2:tr>
+  </o2:formTable>
+  <o2 input type="submit" value="$lang->getString('ShopManager.btnSearchOrders')" />
+  <o2 input type="reset"  value="$lang->getString('ShopManager.btnReset')" onClick="enableAllFields(this.form, ORDER_SEARCH_FIELD_NAMES)" />
+</o2:ajaxForm>
+
+<div id="orderSearchResult"></div>

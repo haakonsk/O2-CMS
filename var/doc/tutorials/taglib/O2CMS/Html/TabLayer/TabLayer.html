@@ -1,0 +1,52 @@
+<o2 use O2Doc::Tutorial />
+
+<!-- START this code is here to make it work in the doc mode -->
+<div id="docTabLayer" style="position:absolute;right:0px;height:100px;width:400px;"></div>
+<div id="tab1Content" style="display:none;">tab 1 tab 1 tab 1</div>
+<img id="tab2Content" src="/img/o2splash.jpg" style="display:none;width:100px;height:90px;">
+<div id="tab3Content" style="display:none;">tab 3 tab 3 tab 3</div>
+<!-- END this code is here to make it work in the doc mode -->
+
+<o2 docSection title="tabLayer, addTab">
+  Creates a Tab Layer like the one you see on the right (or bottom). <br>
+  The TabLayer tag doesn't return HTML in the normal way, instead a mix<br>
+  of HTML and Javascript is used to generate the Tablayer.
+  <o2 docSection title="Syntax">
+    <o2 docCode lang="o2ml">
+      <o2 tabLayer id="docTabLayer" style="height:100px;width:300px;"  showCloseButton="1">
+        <o2 addTab name="tab 1" contentId="tab1Content" selected="1"/>
+        <o2 addTab name="tab 2" contentId="tab2Content" notCloseAble="1" />
+        <o2 addTab name="tab 3" contentId="tab3Content" preAction="alert('like the tab3?');" />
+      </o2:tabLayer>
+      <div id="tab1Content" style="display:none;">tab 1 tab 1 tab 1</div>
+      <img id="tab2Content" src="/img/o2splash.jpg" style="display:none;width:100px;height:90px;">
+      <div id="tab3Content" style="display:none;">tab 3 tab 3 tab 3</div>
+    </o2:docCode>
+    <o2 docCodeResult useModule="Html::TabLayer" seeGeneratedHtmlAsDisplayed="0" seeGeneratedHtml="0" />
+  </o2:docSection>
+
+  <o2 docSection title="TabLayer attributes">
+    <o2 docList class="attributes">
+      <o2 docListItem class="optional">name||id   - use this if you want control of the tabLayer's ID/Name (you only need this if you want to use the JS api)</o2:docListItem>
+      <o2 docListItem class="optional">cssFile [tabLayer] - in most frontend applications, you want to supply your own. Copy the default O2 TabLayer and edit it.</o2:docListItem>
+      <o2 docListItem class="optional">height [100%]</o2:docListItem>
+      <o2 docListItem class="optional">width [100%]</o2:docListItem>
+      <o2 docListItem class="optional">showCloseButton [0] (1|0) - allow closing of tabs</o2:docListItem>
+    </o2:docList>
+  </o2:docSection>
+
+  <o2 docSection title="addTab attributes">
+    <o2 docList class="attributes">
+      <o2 docListItem class="required">name                - Name of the tab</o2:docListItem>
+      <o2 docListItem class="required contentId">contentId - the DOM ID for html element to be use as tab Body for this tab</o2:docListItem>
+      <o2 docListItem class="optional">selected [1]        - make this tab selected upon startup</o2:docListItem>
+      <o2 docListItem class="optional">notCloseAble        - don't allow this tab to be closed, used together with showCloseButton</o2:docListItem>
+      <o2 docListItem class="optional">preAction           - supply a JS code/method name to be called upon a tab selection from user</o2:docListItem>
+    </o2:docList>
+
+  </o2:docSection>
+  <o2 docNote>
+    In Internet Explorer 7 Beta 2 , working good!
+  </o2:docNote>
+
+</o2:docSection>

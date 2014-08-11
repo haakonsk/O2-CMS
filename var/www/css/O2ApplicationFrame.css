@@ -1,0 +1,112 @@
+html, body {
+  height: 100% !important;
+  margin: 0;
+}
+
+#application  {
+  min-height: 100%;
+  width:100%;
+  position: relative;
+  padding:0px;
+  background: #f3f3f3;
+}
+
+#application #frameHeader {
+  background : #e1e1e1 url("/images/system/o2_application_frame.gif") repeat-x left bottom;
+  padding: 5px;
+  line-height: 20px;
+  position: relative;
+  border-bottom: 1px solid #aaa;
+}
+
+#application #frameHeader:after,
+#frameBody:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+/* IE6 */ 
+* html #application #frameHeader {height: 1%;}
+/* IE7 */
+*:first-child+html #application #frameHeader {min-height: 1px;}
+
+.closeButton {
+  position : absolute;
+  top      : 6px;
+  right    : 4px;
+  height   : 16px;
+  width: 16px;
+  cursor   : pointer;
+  background: url("/images/system/close-icon.png") no-repeat top left;
+  text-indent: -9999px;
+}
+
+#application img {
+  vertical-align:middle;
+  padding-right:4px;
+}
+
+#application #frameBody {
+  background : #f3f3f3;
+  padding    : 0 0 25px 0; /* Padding bottom equals height of statusBar + a couple for actual padding*/
+  
+  /*
+  height     : 100%;
+  height     : expression(
+    (parseInt( document.body.offsetHeight ) - (document.getElementById("applicationFrameFooterStatusBar") ? 50 : 25)) + "px"
+  );*/
+}
+
+.frameTitle {
+  font-family: Verdana,Arial;
+  color: #6f6f6f;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 0;
+  margin: 0 40px 0 0;
+  float: left;
+}
+
+
+h2.appHeader {
+  font-size: 12px;
+  font-weight: normal;
+  margin: 0;
+  float: left;
+  line-height: normal;
+  color: #333;
+}
+
+
+#application-HeaderButton {
+  padding-left:5px;
+  padding-right:5px;
+  padding-top:2px;
+}                
+
+#application-HeaderButtonHover {
+  border:1px inset lightgray; 
+  padding-top:2px;
+  padding-left:5px;
+  padding-right:5px;
+  color: highlight;
+  cursor: pointer;
+}
+
+.statusBar {
+  position: fixed;
+  bottom: 0;
+  width:100%;
+  height:22px;
+  background: white url("/images/system/o2_application_frame_statusbar.gif") repeat-x;
+  border-top: 1px solid #aaa;
+  line-height: 22px;
+  text-indent: 5px;
+}
+
+.statusBar td#separator {
+  border-left:1px outset gray;
+  width:1px;
+}

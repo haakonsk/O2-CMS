@@ -1,0 +1,6 @@
+ok 1 - use O2::Context;
+ok 2 - use O2::Mgr::Shop::TransactionManager;
+1..2
+ok 1 - use O2::Context;
+ok 2 - use O2::Mgr::Shop::TransactionManager;
+1..2

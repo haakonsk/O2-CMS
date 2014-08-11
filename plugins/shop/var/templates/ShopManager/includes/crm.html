@@ -1,0 +1,72 @@
+<o2 use Html::Form />
+
+<o2 use I18N />
+<o2 setResourcePath>ShopManager</o2:setResourcePath>
+
+<o2 addCss>
+  .customerSearchForm {
+    line-height : 25px;
+  }
+  .customerSearchForm div div {
+    display : inline;
+  }
+  .customerSearchForm label,
+  .customerSearchForm input[type="button"],
+  .customerSearchForm .textInput {
+    display      : block;
+    float        : left;
+    margin-right : 5px;
+    width        : 100px;
+  }
+  .customerSearchForm .o2RadioButton label {
+    width   : auto;
+    display : inline;
+    float   : none;
+  }
+  .customerSearchForm input[type="button"] {
+    width : 20px;
+  }
+  .customerSearchForm .textInput {
+    width : 120px;
+  }
+  .customerSearchForm .o2DateSelect .textInput{
+    width        : 100px;
+    margin-right : 0;
+  }
+  .customerSearchForm .row {
+    clear : left;
+  }
+</o2:addCss>
+
+<o2 ajaxForm class="customerSearchForm" setMethod="customerSearch" target="customerSearchResult">
+  <o2 input type="hidden" name="frame" value="customerSearchResult" />
+  <div class="row">
+    <o2 input type="text" name="customer.firstName" label="$lang->getString('lblFirstName')" />
+    <o2 input type="text" name="customer.lastName"  label="$lang->getString('lblLastName')"  />
+  </div>
+  <div class="row">
+    <o2 input type="text" name="customer.email" label="$lang->getString('lblEmail')" />
+  </div>
+  <div class="row">
+    <o2 dateSelect name="fromDate" label="$lang->getString('lblFromDate')" format="yyyyMMdd" noObject="1" />
+    <o2 dateSelect name="toDate"   label="$lang->getString('lblToDate')"   format="yyyyMMdd" noObject="1" />
+  </div>
+  <div class="row">
+    <o2 radioGroup name="sortBy" label="$lang->getString('lblSortBy')">
+      <o2 radio value="name" label="$lang->getString('sortByName')" checked="checked" />
+      <o2 radio value="date" label="$lang->getString('sortByDate')" />
+    </o2:radioGroup>
+  </div>
+  <div class="row">
+    <o2 radioGroup name="displayMethod" label="$lang->getString('lblDisplayMethod')">
+      <o2 radio value="overview"       label="$lang->getString('displayMethodOverview')" checked="checked" />
+      <o2 radio value="addresses"      label="$lang->getString('displayMethodAddress')"      />
+      <o2 radio value="addressesExcel" label="$lang->getString('displayMethodAddressExcel')" />
+    </o2:radioGroup>
+  </div>
+  <p>
+    <o2 input type="submit" value="$lang->getString('btnSearchCustomers')" />
+  </p>
+</o2:ajaxForm>
+
+<div id="customerSearchResult"></div>

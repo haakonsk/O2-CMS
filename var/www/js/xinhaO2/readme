@@ -1,0 +1,6 @@
+The xinha/ directory uses xinha's own svn repository.
+
+If we need to make any modifications for ourselves, they should be made
+in this directory (xinhaO2), not xinha/. That way, we can just
+  svn update xinha/
+when they have a new stable release.

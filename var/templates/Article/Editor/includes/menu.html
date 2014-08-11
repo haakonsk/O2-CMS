@@ -1,0 +1,14 @@
+<o2 use O2CMS::Html::BoxMenu />
+
+<div id="articleBox">
+  
+  <o2 BoxMenu width="220px" height="400px" BoxMenuId="articleBox">
+    <o2 setVar $iconUrl><o2 iconUrl>O2CMS-Obj-Article</o2:iconUrl></o2:setVar>
+    <o2 addMenuItem icon="$iconUrl"                    title="$lang->getString('boxMenu.lblArticle')"               elementId="articleMenuItem" />
+    <o2 addMenuItem icon="$iconUrl"                    title="$lang->getString('boxMenu.lblArticleRelatedObjects')" elementId="articleRelatedObjectsMenuItem" />
+    <o2 addMenuItem icon="/images/system/prefs_16.gif" title="$lang->getString('boxMenu.lblProperties')"            elementId="propertiesMenuItem" />
+    <o2 addMenuItem icon="/images/system/prefs_16.gif" title="$lang->getString('boxMenu.lblDirectPublish')"         elementId="directPublishMenuItem" />
+    <o2 addMenuItem icon="/images/system/prefs_16.gif" title="$lang->getString('boxMenu.lblPublishedWhere')"        elementId="publishedWhere" />
+  </o2:BoxMenu>
+
+</div>

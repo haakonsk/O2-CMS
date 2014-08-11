@@ -1,0 +1,65 @@
+<o2 use Html::Form />
+
+<o2 use I18N />
+<o2 setResourcePath>o2.System.FileDialog</o2:setResourcePath>
+
+<o2 header />
+
+<o2 addJsFile file="datadumper"/>
+
+<o2 addJs where="pre">
+
+  var currentFolderId = null;
+  var currentFolderIsWriteAble = false;
+  function setFolderId(folderId) {
+    document.getElementById("folderId_iframe").src = '<o2 urlMod setMethod="listFolder" />?folderId=' + folderId;
+  }
+
+  function _folderChanged(path) {
+    currentFolderId = path[path.length-1].id;
+    var html = "";
+    for (var i = 0; i < path.length; i++) {
+      html += '/ <a href="javascript:setFolderId('+path[i].id+')">' + path[i].name + "</a>";
+    }
+    document.getElementById("folderId_path").innerHTML = html;
+  }
+
+  function _setFolderWriteAble(bool) {
+    if(bool == null) bool = false;
+    currentFolderIsWriteAble = bool;
+  }
+
+  function createFolder() {
+    var name = prompt("$lang->getString('promptFolderName')");
+    if (!name) {
+      return;
+    }
+    o2.ajax.call({
+      setClass  : "System-Tree",
+      setMethod : "createCategory",
+      setParams : { name : name, parentId : currentFolderId },
+      handler   : "folderCreatedHandler",
+      method    : "post"
+    });
+  }
+
+  function folderCreatedHandler(params) {
+    setFolderId(params.categoryId);
+  }
+</o2:addJs>
+
+<o2 form method="post" setClass="File-Upload" setMethod="upload" name="fileForm">
+  $lang->getString("lblSaveFileIn"): 
+  <a href="javascript:createFolder()">$lang->getString("defaultFolderName")</a>
+
+  <div style="width:400; border-style: solid; border-color: #808080; border-width:0">
+    <input type="hidden" name="folderId" id="folderId">
+    <div id="folderId_path" style="padding:2px; border-style:solid; border-color:#808080;border-width:1"></div>
+    <iframe id="folderId_iframe" src="./listFolder?folderId=$q->{folderId}" style="width:400px;height:126px;"></iframe>
+  </div>
+
+  <input type="button" value="$lang->getString('btnOk')">
+  <input type="button" value="$lang->getString('btnCancel')">
+</o2:form>
+
+<o2 footer />

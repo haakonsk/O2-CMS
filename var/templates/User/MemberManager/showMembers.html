@@ -1,0 +1,63 @@
+<o2 use Html::Form/>
+
+<o2 use I18N />
+<o2 setResourcePath>User.MemberManager</o2:setResourcePath>
+
+<o2 header bgColor="#f3f3f3" />
+
+<o2 addCss>
+  .cell {
+    background-color:;
+  }
+</o2:addCss>
+
+<o2 addJs where="pre">
+  function addCanLoginAsMember(memberId) {
+    if (parent.memberInfoFrame.addCanLoginAsMember) {
+      parent.memberInfoFrame.addCanLoginAsMember(memberId);
+    }
+    else {
+      top.displayError("$lang->getString('youMustChooseAMemberFirst')");
+    }
+  }
+</o2:addJs>
+
+<table cellpadding="2" cellspacing="1" border="0" style="background-color:#e2e2e2;">
+  <tr class="header">
+    <td class="tblHeader" width="5%" >$lang->getString("memberId")</th>
+    <td class="tblHeader" width="20%">$lang->getString("username")</th>
+    <td class="tblHeader" width="15%">$lang->getString("email")</th>
+    <td class="tblHeader" width="10%">$lang->getString("firstname")</th>
+    <td class="tblHeader" width="10%">$lang->getString("middlename")</th>
+    <td class="tblHeader" width="15%">$lang->getString("lastname")</th>
+    <td class="tblHeader" width="5%" >$lang->getString("status")</th>
+    <td class="tblHeader" width="10%">$lang->getString("password")</th>
+    <td class="tblHeader" width="10%">$lang->getString("addToLoginOnBehalfUsers")</th>
+  </tr>
+  <o2 foreach "$member in $members">
+    <tr>
+      <td class="cell" align="center">$member->getId()</td>
+      <td class="cell">
+        <o2 link setMethod="showMemberInfo" setParams="memberId=$member->getId()" target="memberInfoFrame">$member->getUsername()</o2:link>
+      </td>
+      <td class="cell">$member->getEmail()</td>
+      <td class="cell">$member->getFirstName()</td>
+      <td class="cell">$member->getMiddleName()</td>
+      <td class="cell">$member->getLastName()</td>
+      <td class="cell">$member->getMetaStatus()</td>
+      <td class="cell">$member->getPassword('N/A')</td>
+      <td class="cell"><input type="button" onclick="addCanLoginAsMember('$member->getId()');" value="&gt;&gt;"></td>
+    </tr>
+  </o2:foreach>
+</table>
+
+<font style="font-weight:bold;font-size:11px;">
+  <o2 if "$previousPage">
+    &larr; <a href='<o2 urlMod removeParam="page" appendParam="page=$previousPage"/>'>Tilbake</a>
+  </o2:if>
+  <o2 if "$nextPage">
+    &nbsp; <a href='<o2 urlMod removeParam="page" appendParam="page=$nextPage"/>'>Frem</a> &rarr;
+  </o2:if>
+</font>
+
+<o2 footer />

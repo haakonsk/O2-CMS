@@ -1,0 +1,48 @@
+<o2 use NumberFormat />
+
+<o2 use I18N />
+<o2 setResourcePath>ShopManager</o2:setResourcePath>
+
+<o2 header noStyle />
+
+<o2 addCssFile file="gui/shopManager" />
+
+<o2 include "includes/backLink.html" />
+
+<o2 pagination numPerPage="$q->{numResultsPerPage}" totalNumResults="$gui->getTotalNumTransactionSearchResults()" elements="$gui->getTransactionSearchResults($skip, $limit)">
+
+  <o2 if "@{$paginationResults}">
+    <p>$lang->getString("paginationResultsFromTo", from => $paginationFirstIndex, to => $paginationLastIndex, total => $gui->getTotalNumTransactionSearchResults())</p>
+    <o2 paginationNavigation />
+    <table>
+      <tr>
+        <th>$lang->getString("lblTransactionId")</th>
+        <th>$lang->getString("lblAmount")</th>
+        <th>$lang->getString("lblCurrency")</th>
+        <th>$lang->getString("lblDate")</th>
+        <th>$lang->getString("lblStatus")</th>
+        <th>$lang->getString("lblOrderId")</th>
+        <th>$lang->getString("lblExternalId")</th>
+      </tr>
+      <o2 foreach "$transaction in $paginationResults">
+        <tr class="transaction">
+          <td><o2 link setMethod="search" setParam="query=$transaction->getId()">$transaction->getId()</o2:link></td>
+          <td class="price"><o2 numberFormat "#,##0.00">$transaction->getAmount()</o2:numberFormat></td>
+          <td>$transaction->getCurrency()</td>
+          <td>$transaction->getDate()</td>
+          <td>$transaction->getStatus()</td>
+          <td><o2 link setMethod="search" setParam="query=$transaction->getOrderId()">$transaction->getOrderId()</o2:link></td>
+          <td>$transaction->getExternalId()</td>
+        </tr>
+      </o2:foreach>
+    </table>
+    <o2 paginationNavigation />
+  </o2:if>
+
+  <o2 else>
+    <o2 include "noResults.html" />
+  </o2:else>
+
+</o2:pagination>
+
+<o2 footer />

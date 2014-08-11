@@ -1,0 +1,86 @@
+.o2Toolbar  {
+  border           : 0;
+  padding          : 4px 0;
+  width            : 100%;
+  font-size        : 11px;
+  font-family      : Arial,Verdana;
+  background       : #f5f4f2 url("/images/system/o2_toolbar_bg.gif") bottom left repeat-x;
+}
+
+/* Clearfix for long toolbar wrapped over several lines */
+.o2Toolbar:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+/* IE6 */ 
+* html .o2Toolbar {height: 1%;}
+/* IE7 */
+*:first-child+html .o2Toolbar {min-height: 1px;}
+
+.o2ToolbarButton, .o2ToolbarButtonActive, .o2ToolbarButtonHover {
+  float: left;
+  padding: 3px 4px 3px 24px;
+  border: 1px solid #aaa;
+  margin: 0 2px 0;
+  line-height: 16px;
+  background-repeat: no-repeat;
+  background-position: 4px 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.o2ToolbarButton {
+  background-color: #dedede;
+  color: #555;
+}
+
+.o2ToolbarButtonHover,
+.o2ToolbarButton:hover {
+  border: 1px solid #999;
+  background-color: #efefef;
+}
+
+.o2ToolbarButtonActive,
+.o2ToolbarButton:active {
+  border              : 1px solid buttonface;
+  border-color        : #bbb #fefefe #fefefe #bbb;
+  background-color: #eee;
+}
+
+.o2ToolbarSeparator {
+  float: left;
+  margin: 5px;
+  padding: 0;
+  border-left: 1px inset lightgray;
+  width: 0;
+  height: 14px;
+}
+
+.o2ToolbarCell {
+  float: left;
+  padding: 3px 4px;
+  line-height: 16px;
+  min-height: 20px;
+}
+
+.o2ToolbarCell .o2ToolbarButton {
+  margin: -3px -2px -3px 0;
+}
+
+.adRight {
+  position : absolute; 
+  left     : 790px; 
+  top      : 126px;
+}
+
+tr#frameHeader td img {
+  position : absolute;
+  top      : 5px;
+  right    : 2px;
+}

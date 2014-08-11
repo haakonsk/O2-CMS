@@ -1,0 +1,13 @@
+<o2 use O2CMS::Publisher/>
+<o2 use DateFormat/>
+
+<o2 foreach "$o in $object->getObjects()">
+  <o2 if "$o->can('getTitle') && $o->getTitle() || !$o->can('getTitle')">
+    <o2 dateFormat format="dd.MM.yyyy">$o->getMetaCreateTime()</o2:dateFormat>
+    <a href="<o2 objectUrl objectId='$o->getId()'/>">
+      <o2 if "$o->can('getTitle')">$o->getTitle()</o2:if>
+      <o2 else>$o->getMetaName()</o2:else>
+    </a>
+    <br>
+  </o2:if>
+</o2:foreach>

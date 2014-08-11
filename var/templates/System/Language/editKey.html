@@ -1,0 +1,34 @@
+<o2 use Html::Form/>
+<o2 use I18N/>
+
+<o2 header title="Edit language key $keyId" />
+
+<o2 addCss>
+  h1 {
+    margin    : 0 0 10px 0;
+    padding   : 0;
+    font-size : inherit;
+  }
+  .languageKey {
+    text-decoration : underline;
+    font-size : 12px;
+  }
+  textarea {
+    margin-bottom : 10px;
+  }
+</o2:addCss>
+
+<o2 form setMethod="saveKey" method="POST">
+  <o2 input type="hidden" name="keyId"  value="$keyId"      />
+
+  <h1>Edit language key: <span class="languageKey">$keyId</span></h1>
+
+  <o2 foreach "$localeCode in $config->get('o2.locales')">
+    <o2 setVar "$text"><o2 getString locale="$localeCode" missingValue="" useOnlyGivenLocale="1">$keyId</o2:getString></o2:setVar>
+    <o2 textarea name="text.$localeCode" style="width:100%" label='$lang->getString("locale.languages.$localeCode")' value="$text" />
+  </o2:foreach>
+
+  <p><o2 input type="submit" value="OK"/></p>
+</o2:form>
+
+<o2 footer/>

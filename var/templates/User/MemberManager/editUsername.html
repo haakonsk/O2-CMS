@@ -1,0 +1,25 @@
+<o2 use Html::Form />
+
+<o2 use I18N />
+<o2 setResourcePath>User.MemberManager</o2:setResourcePath>
+
+<o2 header bgColor="#f3f3f3" />
+
+<h1>$lang->getString("hdrEditUsername")</h1>
+
+<o2 if "$msg">
+  <p class="info">$msg</p>
+</o2:if>
+
+<o2 form method="post" setMethod="saveNewUsername">
+  <o2 input type="hidden" name="oldUsername" value="$member->getUsername()" />
+  <o2 input type="text"   name="oldUsernameDisabled" label="$lang->getString('lblOldUsername')" size="40" value="$member->getUsername()" disabled="disabled" />
+  <o2 input type="email"  name="newUsername"         label="$lang->getString('lblNewUsername')" size="40" />
+  <p>
+    <o2 input type="submit" value="$lang->getString('btnSubmitEditUsername')" />
+    <o2 setVar "$cancelUrl"><o2 urlMod setMethod="showMemberInfo" setParams="memberId=$member->getId()" /></o2:setVar>
+    <o2 input type="button" value="$lang->getString('btnCancelEditUsername')" onClick="window.location.href = '$cancelUrl';" />
+  </p>
+</o2:form>
+
+<o2 footer />

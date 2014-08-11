@@ -1,0 +1,22 @@
+<o2 if "@{$orderLines}">
+  <hr>
+  <h2><o2 if "$title" then="$title" else="$lang->getString('hdrOrderLines')" /></h2>
+  <table>
+    <tr>
+      <th>$lang->getString("lblOrderLineId")</th>
+      <th>$lang->getString("lblStatus")</th>
+      <th>$lang->getString("lblCustomer")</th>
+      <th>$lang->getString("lblAmountIncVat")</th>
+      <th>$lang->getString("lblCreatedTime")</th>
+    </tr>
+    <o2 foreach "$orderLine in $orderLines">
+      <tr>
+        <td class="objectId"><o2 link setParam="query=$orderLine->getId()">$orderLine->getId()</o2:link></td>
+        <td class="status"  >$orderLine->getMetaStatus()</td>
+        <td class="customer"><o2 link setParam="query=$orderLine->getCustomerId()" title="$orderLine->getCustomerId()">^$orderLine->getCustomerFullName()</o2:link></td>
+        <td class="price"   ><o2 numberFormat "#,##0.00">$orderLine->getPriceIncVatExSubOrderLines()</o2:numberFormat></td>
+        <td class="date"    ><o2 dateFormat format="yyyy.MM.dd">$orderLine->getMetaCreateTime()</o2:dateFormat></td>
+      </tr>
+    </o2:foreach>
+  </table>
+</o2:if>

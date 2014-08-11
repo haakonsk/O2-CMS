@@ -1,0 +1,86 @@
+<o2 addJs where="onLoad">
+  o2.addEvent( document.getElementById("simpleKeyword"),   "keydown", addSimpleKeywordOnReturn   );
+  o2.addEvent( document.getElementById("advancedKeyword"), "keydown", addAdvancedKeywordOnReturn );
+</o2:addJs>
+
+<o2 addJs>
+  function addSimpleKeywordOnReturn(event) {
+    if (event.getKeyCode() === 13) {
+      event.preventDefault();
+      event.stopPropagation();
+      addKeyword();
+    }
+  }
+  
+  function addAdvancedKeywordOnReturn(event) {
+    if (event.getKeyCode() === 13) {
+      event.preventDefault();
+      event.stopPropagation();
+      advancedAddKeyword();
+    }
+  }
+</o2:addJs>
+
+<div id="articleMenuItem" class="boxMenuBox">
+  <div class="inputWrapper">
+    <label for="article_articleTitle">$lang->getString("lblArticleTitle")</label>
+    <o2 input rule='required' ruleMsg="$lang->getString('errorMsg.articleMissingTitle')" name="articleTitle" size="25" value="$article->getTitle()" multilingual="1" />
+    <input type="hidden" name="category" value="$categoryId">
+  </div>
+
+  <div class="inputWrapper">
+    <o2 if "$config->get('publisher.disableArticleStatus') eq 'yes'">
+      <input type="hidden" name="status" value="approved"> <o2 comment>Always approve article, when status is turned off</o2:comment>
+    </o2:if>
+    <o2 else>
+      <o2 setVar "$statusIsDisabled">0</o2:setVar>
+
+      <h3>$lang->getString("lblArticleStatus")</h3>
+      <div class="radioInput">
+        <o2 input type="radio" name="status" id="draft"            value="draft"            disabled="$statusIsDisabled">$lang->getString("status.lblDraft")</o2:input>
+      </div>
+      <div class="radioInput">
+        <o2 input type="radio" name="status" id="awaitingApproval" value="awaitingApproval" disabled="$statusIsDisabled">$lang->getString("status.lblAwaitingApproval")</o2:input>
+      </div>
+      <div class="radioInput">
+        <o2 input type="radio" name="status" id="approved"         value="approved"         disabled="$statusIsDisabled">$lang->getString("status.lblApproved")</o2:input>
+      </div>
+    </o2:else>
+  </div>
+
+  <o2 if "$config->get('publisher.allowPublishingPerUrl') eq 'yes'">
+    <div id="publishableUrls" class="inputWrapper">
+      <h3>Available for:</h3>
+      <o2 checkboxGroup name="publishableUrls" values="$article->getPublishableUrls()">
+        <o2 foreach "$url in $article->getAvailablePublishableUrls()">
+          <o2 checkbox value="$url" lineBreakAfter="1" label="$url"/>
+        </o2:foreach>
+      </o2:checkboxGroup>
+    </div>
+  </o2:if>
+
+
+  <!-- KEYWORDS START -->
+  <div class="inputWrapper">
+    <span class="toggleSwitch" id="simpleKeywordsLbl"   onClick="toggleKeywordForm('simple','advanced')"                      >&raquo; $lang->getString('lblArticleKeywordsAdvanced')</span>
+    <span class="toggleSwitch" id="advancedKeywordsLbl" onClick="toggleKeywordForm('advanced','simple')" style="display:none;">&raquo; $lang->getString('lblArticleKeywordsSimple')</span>
+    <h3>$lang->getString("lblArticleKeywords")</h3>
+  </div>
+
+  <div id="simpleKeywords">
+    <o2 input type="text"   id="simpleKeyword" />
+    <o2 input type="button" value="$lang->getString('btnAddKeyword')" onclick="addKeyword()" /><br>
+  </div>
+
+  <div id="advancedKeywords" style="display:none;">
+    <o2 input type="radio" name="addFolder" id="advancedTag" checked /><label for="advancedTag" class="radioLabel">Tag</label>
+    <o2 input type="radio" name="addFolder" id="advancedAddFolder"   /><label for="advancedAddFolder">Tag folder</label>
+
+    <select id="advancedKeywordParent"></select>
+    <o2 input type="text"   id="advancedKeyword" size="10"/>
+    <o2 input type="button" value="$lang->getString('btnAddKeyword')" onclick="advancedAddKeyword()"/>
+  </div>
+  <o2 list id="object.keywordIds" items="[$article->getKeywords()]" extraItemFields="fullName" submitType="all" style="width:200;height:140;overflow:auto;background:white;" submitItemFields="id"/>
+  <!-- KEYWORDS END -->
+
+</div>

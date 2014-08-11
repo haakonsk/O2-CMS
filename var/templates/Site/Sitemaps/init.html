@@ -1,0 +1,112 @@
+<o2 use Html::Form />
+<o2 use Html::Ajax />
+<o2 use O2CMS::ApplicationFrame />
+
+<o2 use I18N />
+<o2 setResourcePath>o2.Site.Sitemaps</o2:setResourcePath>
+
+<o2 setVar "$title">$lang->getString('sitemapFor') $site->getMetaName()</o2:setVar>
+
+<o2 header title="$title" />
+
+<o2 addCssFile file="buttons" />
+<o2 addCssFile file="gui/universal/editObject" />
+
+<o2 addCss>
+  iframe {
+    display: none;
+    width: 600px;
+    height: 400px;
+    background: black;
+    border: 2px inset grey;
+    margin: 10px;
+  }
+  td {
+    vertical-align: top;
+  }
+  .dragList {
+    border: 1px dotted black;
+    padding: 2px 10px 2px 5px;
+  }
+  .dragList:before {
+    content: "$lang->getString('dragSiteObjectHere')";
+  }
+  #btnUpload,
+  #btnDownload {
+    display: none;
+  }
+  #editObjectWrapper h2 {
+    background-image: url("/images/icons/o2default/O2CMS/Obj/Site/Sitemap/O2CMS-Obj-Site-Sitemap-48.png");
+  }
+</o2:addCss>
+
+<o2 addJs where="pre">
+  function startScript()
+  {
+    document.getElementById("shell").style.display = "block";
+    document.getElementById("shell").src           = '<o2 urlMod setMethod="generateSitemap" setParams="sitemapId=$sitemap->getId()" />';
+  }
+
+  function setUploadButtonVisible()
+  {
+    document.getElementById("btnUpload").style.display = "inline";
+  }
+
+  function renameGenerateButton()
+  {
+    document.getElementById("btnGenerate").value = "$lang->getString('btnRegenerateSitemap')";
+  }
+
+  function setDownloadButtonVisible()
+  {
+    document.getElementById("btnDownload").style.display = "inline";
+  }
+</o2:addJs>
+
+<o2 addJs where="onLoad">
+  <o2 if "$sitemapExists">
+    setDownloadButtonVisible();
+    setUploadButtonVisible();
+    renameGenerateButton();
+  </o2:if>
+</o2:addJs>
+
+<o2 ApplicationFrameHeader frameTitle="$title" showCloseButton="1" useCloseAction="confirmCloseIfChanged" disableScrollBar="0" showSettingsButton="0" objectId="$sitemap->getId()" />
+
+<div id="editObjectWrapper">
+  <h2>Sitemap</h2>
+
+  <p>$lang->getString('msgSitemapsIntro')</p>
+  
+  <o2 ajaxForm setMethod="saveVerificationMetaTag" onSuccess="top.displayMessage('Verification tag saved'); setFormChanged(false);" onChange="setFormChanged();" method="post">
+    <p>
+      <o2 input type="hidden" name="sitemapId" value="$sitemap->getId()" />
+      <label for="verificationMetaTag">$lang->getString('lblVerificationMetaTag')</label>
+      <o2 input type="text" id="verificationMetaTag" name="verificationMetaTag" size="40"
+        value='&lt;meta name="$sitemap->getMetatagName()" content="$sitemap->getMetatagValue()" /&gt;' />
+      <span>$lang->getString('msgVerificationTag')</span>
+    </p>
+    <p class="buttons">
+      <o2 input type="submit" value="$lang->getString('btnSaveVerificationTag')" class="button" />
+    </p>
+  </o2:ajaxForm>
+    
+  <o2 setVar "$successMsg"  >$lang->getString('onSubmitSuccessMsg')</o2:setVar>
+  <o2 ajaxForm setMethod="submitSitemap" setParams="sitemapId=$sitemap->getId()" onSuccess="top.displayMessage('$successMsg');" method="post">
+    <o2 input type="hidden" name="sitemapId" value="$sitemap->getId()" />
+    <p class="buttons">
+      <o2 input type="button" value="$lang->getString('btnGenerateSitemap')" id="btnGenerate"  class="button" onClick="startScript();" />
+      <o2 input type="submit" value="$lang->getString('btnSubmitToGoogle')"  id="btnUpload"    class="button" />
+    </p>
+    <p class="buttons">
+      <a href="http://$site->getMetaName()/sitemap.xml" id="btnDownload" class="defaultButton" target="_blank">$lang->getString('btnDownloadSitemap')</a>
+    </p>
+  </o2:ajaxForm>
+</div>
+
+<iframe id="shell"></iframe>
+
+
+<o2 ApplicationFrameFooter />
+
+<o2 footer />

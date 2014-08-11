@@ -1,0 +1,20 @@
+<tr>
+  <td>$lang->getString("lblId")</td>
+  <td>$object->getId()</td>
+</tr>
+
+<o2 if "!$skipStatus">
+  <tr>
+    <td>$lang->getString("lblStatus")</td>
+    <td>$object->getMetaStatus()</td>
+  </tr>
+</o2:if>
+
+<tr>
+  <td>$lang->getString("lblCreatedTime")</td>
+  <td><o2 dateFormat format="yyyy.MM.dd HH:mm:ss">$object->getMetaCreateTime()</o2:dateFormat></td>
+</tr>
+<tr>
+  <td>$lang->getString("lblModifiedTime")</td>
+  <td><o2 dateFormat format="yyyy.MM.dd HH:mm:ss">$object->getMetaChangeTime()</o2:dateFormat></td>
+</tr>

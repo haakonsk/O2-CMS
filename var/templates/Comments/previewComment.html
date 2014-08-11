@@ -1,0 +1,27 @@
+<o2 use Html::Form />
+<o2 use Html::Ajax />
+
+<o2 addCssFile file="gui/comments" />
+<o2 addCss>
+  .changeCommentForm {
+    display : inline;
+  }
+</o2:addCss>
+
+<div class="comments" id="comment_$comment->getId()">
+  <o2 include "o2://var/templates/Comments/comment.html" />
+</div>
+
+<o2 ajaxForm method="post" setDispatcherPath="o2" setClass="Comments" setMethod="saveComment" removeParams="1" class="changeCommentForm" id="previewFormFor_$comment->getId()"
+             onSuccess="var elm = document.getElementById('previewFormFor_$comment->getId()'); elm.parentNode.removeChild(elm);">
+  <o2 input type="hidden" name="objectId"       value="$q->{objectId}"         />
+  <o2 input type="hidden" name="commentPageUrl" value="$q->{commentPageUrl}"   />
+  <o2 input type="hidden" name="name"           value="$comment->getName()"    />
+  <o2 input type="hidden" name="email"          value="$comment->getEmail()"   />
+  <o2 input type="hidden" name="webSite"        value="$comment->getWebSite()" />
+  <o2 input type="hidden" name="comment"        value="$comment->getComment()" />
+  <p>
+    <o2 input type="button" value="Add this comment!" onClick="this.disabled = true; this.form.onsubmit.call(this.form);" />
+    <o2 input type="button" onClick="var elm = document.getElementById('comment_$comment->getId()'); elm.parentNode.removeChild(elm); elm = document.getElementById('previewFormFor_$comment->getId()'); elm.parentNode.removeChild(elm);" value="Cancel" class="button secondaryAction" />
+  </p>
+</o2:ajaxForm>

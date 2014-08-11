@@ -1,0 +1,12 @@
+body {
+  background-color : transparent;
+}
+iframe {
+  overflow : hidden;
+}
+.price {
+  text-align : right;
+}
+.date {
+  text-align : center;
+}

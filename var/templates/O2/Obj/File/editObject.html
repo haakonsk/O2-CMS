@@ -1,0 +1,36 @@
+<o2 use Html::Form />
+<o2 multilingualController object="$object" />
+<o2 addCss>
+  #editObjectWrapper h2 {
+    background-image: url("/images/icons/o2default/O2/Obj/File/O2-Obj-File-48.png");
+  }
+</o2:addCss>
+
+<h2>$lang->getString('o2.file.edit.hdrFile')</h2>
+
+<p>
+  <label for="objectTitle">$lang->getString('o2.file.edit.title'):</label>
+  <o2 input id="objectTitle" name="object.title" value="$object->getTitle()" rule="" ruleMsg="$lang->getString('o2.file.edit.titleError')" multilingual="1" />
+  <span>$lang->getString('o2.file.edit.msgTitle')</span>
+</p>
+
+<p>
+  <label for="metaName">$lang->getString('o2.file.edit.metaName'):</label>
+  <o2 input id="metaName" name="metaName" value="$object->getMetaName()" rule="required" ruleMsg="$lang->getString('o2.file.edit.metaNameError')" onchange="setMetaName(this.value);"/>
+  <span>$lang->getString('o2.file.edit.msgMetaName')</span>
+</p>
+
+<p>
+  <label for="description">$lang->getString('o2.file.edit.description'):</label>
+  <span class="special">$lang->getString('o2.file.edit.msgDescription')</span>
+  <o2 textarea id="description" name="object.description" multilingual="1" value="$object->getDescription()" />
+</p>
+
+<p>
+  <img src="<o2 iconUrl class='O2::Obj::File::$object->getFileFormat()' size='32'/>">
+  <a href="/o2/File-Download/download?objectId=$object->getId()">$lang->getString('o2.file.edit.downloadFile')</a>
+  <a target="_blank" href="$object->getFileUrl()">$lang->getString('o2.file.edit.viewFile')</a>
+</p>
+
+
+

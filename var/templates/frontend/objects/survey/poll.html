@@ -1,0 +1,88 @@
+<o2 use Html::Ajax />
+<o2 use Html::Form />
+<o2 use NumberFormat />
+
+<o2 use I18N />
+<o2 setResourcePath>Survey.Poll</o2:setResourcePath>
+
+<o2 addCssFile file="survey/poll" />
+
+<div class="poll">
+
+<o2 if "$isShowResults"><o2 comment>Showing result</o2:comment>
+
+  <h1>$object->getTitle()</h1>
+
+  <h2>$object->getQuestion()</h2>
+
+  <p class="poll_$messageType">$message</p>
+
+  <table class="pollResult" width="100%">
+    <tbody>
+      <o2 foreach "$alternative in $alternatives" sortBy="$alternative->{index}">
+        <o2 setVar    "$width">$alternative->{percentOfMax}</o2:setVar>
+        <o2 appendVar "$width">%</o2:appendVar>
+        <tr class="alternative">
+          <td class="label" width="1%">$alternative->{text} - $alternative->{numVotes} (<o2 percentFormat isPercentAlready="1">$alternative->{percentOfTotal}</o2:percentFormat>)</td>
+          <td class="barContainer">
+            <o2 if "$alternative->{numVotes} > 0">
+              <div class="bar" style="width : $width;"></div>
+            </o2:if>
+          </td>
+        </tr>
+      </o2:foreach>
+    </tbody>
+  </table>
+
+</o2:if>
+
+
+
+<o2 else><o2 comment>Showing poll form</o2:comment>
+
+  <o2 setVar "$objectId">$object->getId()</o2:setVar>
+  <o2 appendVar "$targetId">poll_</o2:appendVar>
+  <o2 appendVar "$targetId">$objectId</o2:appendVar>
+
+  <o2 addJs where="post">
+    o2.ajax.call({
+      setDispatcherPath : "o2",
+      setClass          : "Survey-Poll",
+      setMethod         : "isAllowedToVote",
+      setParams         : "pollId=$objectId",
+      target            : "$targetId",
+      where             : "replace"
+    });
+  </o2:addJs>
+
+  <div id="$targetId">
+
+    <h1>$object->getTitle()</h1>
+
+    <h2>$object->getQuestion()</h2>
+
+    <o2 ajaxForm setDispatcherPath="o2" setClass="Survey-Poll" setMethod="saveVote" removeParams="1" target="$targetId" where="replace" class="pollForm" method="post">
+      <o2 input type="hidden" name="pollId" value="$objectId" />
+
+      <o2 radioGroup name="pollAnswer" display="block" rule="required" ruleMsg="$lang->getString('rulePollAnswerRequired')">
+        <o2 for "$i (0..$object->getNumberOfAnswerAlternatives()-1)">
+          <o2 radio value="$i" label="$object->getAnswerAlternativeByIndex($i)" />
+        </o2:for>
+      </o2:radioGroup>
+
+      <o2 input type="submit" value="$lang->getString('btnSubmitVote')"  class="pollSubmit"/>
+
+    </o2:ajaxForm>
+
+    <o2 ajaxForm setDispatcherPath="o2" setClass="Survey-Poll" setMethod="showResults" removeParams="1" target="$targetId" where="replace" class="pollForm">
+      <o2 input type="hidden" name="pollId" value="$objectId" />
+      <o2 if "$object->isAllowedToSeeResults()">
+        <o2 input type="submit" value="$lang->getString('txtShowResults')" class="pollSubmit"/>
+      </o2:if>
+    </o2:ajaxForm>
+
+  </div>
+
+</o2:else>
+
+</div>

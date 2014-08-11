@@ -1,0 +1,147 @@
+<o2 use I18N />
+<o2 setResourcePath>o2.System.Login</o2:setResourcePath>
+
+<o2 setVar "$title">$lang->getString("title")</o2:setVar>
+
+<o2 use "Html::Form"/>
+<o2 header title="$title" quirksMode="1" />
+
+<o2 addJs>
+  if (top.location != window.location) {
+    top.location = window.location;
+  }
+</o2:addJs>
+
+
+<o2 addCss>
+  html,
+  body {
+    margin  : 0;
+    padding : 0;
+    height: auto;
+  }
+
+  table {
+    height:98%;
+    width:100%;
+    border: 0;
+    text-align: center;
+  }
+  
+  td {
+    vertical-align: middle;
+  }
+
+  .container {
+    position: relative;
+    margin: 0 auto;
+    width: 590px !important;
+    width: 575px;
+    text-align: left;
+  }
+
+  .container p {
+    float: left;
+    height: 27px;
+    margin: 5px 0 10px 0;
+  }
+
+  .container label {
+    font-size: 16px;
+    float: left;
+    width: 110px;
+    text-align: right;
+    padding-right: 20px;
+    line-height: 27px;
+  }
+
+  .textInput {
+    height: 24px;
+    width: 160px;
+    font-size: 14px;
+    padding: 1px 3px;
+  }
+
+  .container .buttons {
+    float: right;
+  }
+
+  .container img {
+    float: left;
+    margin: 0 25px;
+  }
+
+  .persistent label {
+    width: auto;
+    text-align: left;
+  }
+
+  .persistent input {
+    float: left;
+    margin: 7px 20px 0 98px !important;
+    margin: 5px 20px 0 74px;
+  }
+  .errorText, .messageText {
+    padding-left: 25px;
+  }
+  .messageText {
+    color: green;
+  }
+</o2:addCss>
+
+<table>
+  <tr>
+    <td>
+      <div class="container">
+        <o2 form method="post" setClass="System-Login" setMethod="login">
+          
+          <input type="hidden" name="action" value="login">
+          <input type="hidden" name="loginSuccessUrl" value="$config->get('o2.adminRootUrl')">
+          <input type="hidden" name="loginErrorUrl"   value="$config->get('o2.adminRootUrl')">
+          
+          <!-- $title -->
+          <img src="/images/o2logo/o2_logo_248x115.png" alt="">
+          
+          <p>
+            <label for="username">$lang->getString("lblUsername")</label>
+            <o2 input name="username" />
+          </p>
+
+          <p>
+            <label for="password">$lang->getString("lblPassword")</label>
+            <o2 input id="password" name="password" type="password" />             
+          </p>
+          
+          <p class="persistent">
+            <o2 input type="checkbox" name="permanent" value="1" id="permanent" />
+            <label for="permanent">$lang->getString("lblPermanentLogin")</label>
+          </p>
+          
+          <p class="buttons">
+            <o2 setVar "$loginButton">$lang->getString("btnLogin")</o2:setVar>
+            <o2 input type="submit" value=" $loginButton " />
+          </p>
+
+          <o2 if "$error">
+            <o2 openingTag p class="errorText" />
+          </o2:if>
+          <o2 elsif "$message">
+            <o2 openingTag p class="messageText" />
+          </o2:elsif>
+          
+          <o2 if "$error">
+            $lang->getString("error.$error")
+            <o2 closingTag p />
+          </o2:if>
+          <o2 elsif "$message eq 'userLoggedOut'">
+            $lang->getString("error.$message")
+            <o2 closingTag p />
+          </o2:elsif>
+          
+        </o2:form>
+      </div>
+    </td>
+  </tr>
+</table>
+
+<o2 footer/>

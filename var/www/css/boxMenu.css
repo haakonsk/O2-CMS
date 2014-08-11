@@ -1,0 +1,81 @@
+.boxMenu {
+  border     : 1px solid #767676;
+  border-top : 0;
+  padding    : 0;
+  margin     : 0;
+}
+
+.boxMenu-menu-item {
+  background       : url("/images/system/genericbar_bg.png") repeat-x;
+  border-top       : 1px solid #767676;
+  cursor           : default;
+  height           : 22px;
+  text-indent      : 20px;
+  -moz-user-focus  : ignore;
+  -moz-user-input  : disabled; 
+  -moz-user-select : none; 
+}
+
+.boxMenu-menu-item-icon {
+  height              : 16px;
+  background-repeat   : no-repeat;
+  background-position : center left;
+  margin-left         : 5px;
+  padding-top         : 2px;  
+}
+
+.boxMenu-menu-item-active {
+  background : url("/images/system/genericbar_active_bg.png") repeat-x;
+}
+
+.boxMenu-menu-item-hover {
+  background : url("/images/system/genericbar_bg.png") repeat-x;
+}
+
+.boxMenu-menu-body {
+ background-color : white;
+ height           : 100px;
+ border-top       : 1px solid #767676;
+ overflow         : auto;
+ }
+
+.boxMenu-menu-innerbody {
+  overflow : auto;
+  border   : 0;
+}
+
+.boxMenuBox {
+  padding : 10px;
+}
+
+.boxMenuBox h3 {
+  margin    : 0 0 3px;
+  font-size : 12px;
+}
+
+.boxMenuBox .inputWrapper {
+  margin-bottom : 10px;
+}
+
+.boxMenuBox .inputWrapper label {
+  display     : block;
+  font-weight : bold;
+  font-size   : 12px;
+  margin      : 0 0 3px;
+}
+
+.boxMenuBox .inputWrapper label.radioLabel,
+.boxMenuBox .inputWrapper .radioInput label,
+.boxMenuBox .inputWrapper label.o2CheckboxLabel {
+  display     : inline;
+  font-weight : normal;
+  font-size   : 11px;
+  margin      : 0;
+}
+
+.boxMenuBox .toggleSwitch {
+  float      : right;
+  color      : #999;
+  font-style : italic;
+  cursor     : pointer;
+}

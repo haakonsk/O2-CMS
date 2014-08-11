@@ -1,0 +1,92 @@
+<o2 use I18N />
+<o2 use O2CMS::ApplicationFrame />
+<o2 use O2CMS::Html::PopupMenu />
+<o2 use DateFormat />
+<o2 use StringFormat />
+<o2 use Html::Ajax />
+
+<o2 use Js::Lang />
+<o2 addJsLangFile file="o2.Category.Manager"           />
+<o2 addJsLangFile file="o2.Site.LinkChecker"           />
+<o2 addJsLangFile file="o2.Category.PublisherSettings" />
+
+<o2 setResourcePath>o2.Category.Manager</o2:setResourcePath>
+
+<o2 header />
+
+<o2 addCssFile file="tableSortable"        />
+<o2 addJsFile  file="gui/category/manager" />
+<o2 addCssFile file="gui/category/manager" />
+
+
+<o2 ApplicationFrameHeader showCloseButton="1" useCloseAction="" disableScrollBar="1" showSettingsButton="1" objectId="$category->getId()" />
+
+<!-- $sortBy $sortDirection -->
+
+<o2 PopupMenu menuId="viewMenu" element="viewButton">
+  <o2 addMenuItem name="$lang->getString('menuViewDetails')"    icon="/images/system/foldr_16.gif" action="categoryBrowser.setViewMode('listView');"  />
+  <o2 addMenuItem name="$lang->getString('menuViewThumbnails')" icon="/images/system/image_16.gif" action="categoryBrowser.setViewMode('thumbView');" />
+</o2:PopupMenu>
+
+<o2 use O2CMS::Html::ToolBarMenu />
+<o2 toolBarMenu>
+  <o2 addItem name="$lang->getString('btnBack')"    icon="/images/system/back_16.gif" width="70px" action="history.back(1);" />
+  <o2 if "$parentCategoryId">
+    <o2 addItem name="$lang->getString('btnUp')"    icon="/images/system/open_16.gif" width="50px" action="categoryBrowser.navigateUp();" />
+  </o2:if>
+  <o2 addItem name="$lang->getString('btnRefresh')" icon="/images/system/ref_16.gif"  width="90px" action="categoryBrowser.refresh();" />
+
+  <o2 addSeparator />
+
+  <o2 addItem id="viewButton" name="$lang->getString('btnView')" icon="/images/system/prefs_16.gif" width="70px" action="void(0);" />
+  <o2 if "$category->isa('O2CMS::Obj::WebCategory') || $category->isa('O2CMS::Obj::Installation')">
+    <o2 setVar "$metaName"><o2 substitute from="\'" to="&#39;">$category->getMetaName()</o2:substitute></o2:setVar>
+    <o2 setVar "$metaName"><o2 substitute from='\"' to="&quot;">$metaName</o2:substitute></o2:setVar>
+    <o2 encodeEntities off>
+      <o2 addItem name="$lang->getString('btnEdit')" icon="/images/system/confg_16.gif" width="60px"
+                  action="top.openInFrame('/o2cms/Universal/editObject?objectId=$category->getId()', top.getIconUrl( '$category->getMetaClassName()' ), 'Edit category $metaName');" />
+      <o2 addItem name="$lang->getString('btnPublisherSettings')" icon="/images/system/confg_16.gif" width="170px"
+                  action="top.openInFrame('/o2cms/Category-PublisherSettings/edit?categoryId=$category->getId()', top.getIconUrl( '$category->getMetaClassName()' ), 'Edit publisher settings for $metaName');" />
+    </o2:encodeEntities>
+  </o2:if>
+</o2:toolBarMenu>
+
+
+<div id="categoryBrowser" class="$viewMode sortableColumns" initialViewMode="$viewMode">
+
+  <div class="header row">
+    <o2 foreach "$column in $columns">
+      <o2 setVar "$class"><o2 if "$column->{name} eq 'smallIcon'" then="cell $column->{name} noSort" else="cell $column->{name}" /></o2:setVar>
+      <span type="$column->{name}" class="$class" width="$column->{width}">$lang->getString("header$column->{Name}")</span>
+    </o2:foreach>
+  </div>
+
+  <o2 if "$numObjects == 0">
+    <p id="categoryIsEmptyMessage">$lang->getString("msgCategoryIsEmpty")</p>
+  </o2:if>
+
+  <div id="categoryBrowserItems">
+    <o2 include "includes/items.html" />
+  </div>
+
+  <img id="loadingIcon" src="/images/bigrotation2.gif">
+
+</div>
+
+
+<o2 setVar "$isTrashed"><o2 if "$object && $object->getMetaStatus() eq 'trashed'" then="1" else="" /></o2:setVar>
+<form name="categoryInfo"><o2 comment>This is here only to be accessible from javascript (manager.js)</o2:comment>
+  <input type="hidden" name="id"               value="$category->getId()"                                  >
+  <input type="hidden" name="metaName"         value="$category->getMetaName()"                            >
+  <input type="hidden" name="metaClassName"    value="$category->getMetaClassName()"                       >
+  <input type="hidden" name="parentCategoryId" value="$parentCategoryId"                                   >
+  <input type="hidden" name="isWebCategory"    value="$category->isa('O2CMS::Obj::WebCategory')"           >
+  <input type="hidden" name="isTrashed"        value="$isTrashed"                                          >
+  <input type="hidden" name="isRestorable"     value="^$category->getParent()->isa('O2CMS::Obj::Trashcan')">
+</form>
+
+
+<o2 ApplicationFrameFooter />
+
+
+<o2 footer />

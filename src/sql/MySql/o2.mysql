@@ -1,0 +1,75 @@
+CREATE TABLE IF NOT EXISTS O2CMS_OBJ_OBJECT (
+  objectId int(11) NOT NULL default '0',
+  PRIMARY KEY  (objectId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE=utf8_danish_ci;
+
+
+CREATE TABLE IF NOT EXISTS O2CMS_OBJ_MEMBER_LOGINAS (
+  masteruserid int(11) NOT NULL default '0',
+  userid       int(11) NOT NULL default '0',
+  PRIMARY KEY  (masteruserid,userid)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE=utf8_danish_ci;
+
+
+CREATE TABLE IF NOT EXISTS O2CMS_OBJ_MENU (
+  objectId   int(11) NOT NULL default '0',
+  topLevelId int(11) NOT NULL default '0',
+  PRIMARY KEY  (objectId,topLevelId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE=utf8_danish_ci;
+
+
+CREATE TABLE IF NOT EXISTS O2CMS_OBJ_MENU_ITEM (
+  objectId    int(11)    NOT NULL default '0',
+  targetId    int(11)    NOT NULL default '0',
+  position    int(11)    NOT NULL default '0',
+  expandable  tinyint(1) NOT NULL default '0',
+  visible     tinyint(1) NOT NULL default '0',
+  description longtext,
+  localeCode  varchar(8) NOT NULL default '',
+  parentId    int(11)             default NULL,
+  PRIMARY KEY  (objectId,targetId,localeCode)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE=utf8_danish_ci;
+
+
+CREATE TABLE IF NOT EXISTS O2CMS_OBJ_TEMPLATE_SLOT (
+  objectId   int(11)      NOT NULL default '0',
+  slotId     varchar(255) NOT NULL default '',
+  contentId  int(11)               default NULL,
+  templateId int(11)               default NULL,
+  PRIMARY KEY  (objectId,slotId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE=utf8_danish_ci;
+
+
+CREATE TABLE IF NOT EXISTS O2CMS_OBJ_TEMPLATE_SLOTOVERRIDE (
+  objectId int(11)      NOT NULL default '0',
+  slotId   varchar(255) NOT NULL default '',
+  name     varchar(128) NOT NULL default '',
+  value    varchar(255)          default NULL,
+  PRIMARY KEY  (objectId,slotId,name)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE=utf8_danish_ci;
+
+
+CREATE TABLE IF NOT EXISTS O2CMS_OBJ_TRASHCAN_CONTENT (
+  objectId        int(11)     NOT NULL default '0',
+  originalStatus  varchar(32) NOT NULL default '',
+  removeTime      int(11)     NOT NULL default '0',
+  removedObjectId int(11)     NOT NULL default '0',
+  userId          int(11)              default NULL,
+  KEY objectIdIndex (objectId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE=utf8_danish_ci;
+
+
+CREATE TABLE IF NOT EXISTS O2CMS_OBJ_PAGE_STANDARDDIRECTPUBLISH (
+  objectId int(11) NOT NULL,
+  pageId   int(11) NOT NULL,
+  position int(11) NOT NULL,
+  PRIMARY KEY  (objectId, pageId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE=utf8_danish_ci;
+
+
+CREATE TABLE IF NOT EXISTS O2CMS_WIDGET_NOTES (
+  noteId  int(11) NOT NULL auto_increment,
+  note    text             default NULL,
+  ownerId int(11) NOT NULL default 0,
+  PRIMARY KEY  (noteId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 DEFAULT COLLATE=utf8_danish_ci;

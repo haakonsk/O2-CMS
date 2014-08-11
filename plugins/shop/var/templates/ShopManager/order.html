@@ -1,0 +1,43 @@
+<o2 use DateFormat />
+<o2 use NumberFormat />
+
+<o2 use I18N />
+<o2 setResourcePath>ShopManager</o2:setResourcePath>
+
+<o2 header noStyle />
+
+<o2 addCssFile file="gui/shopManager" />
+
+<o2 include "includes/backLink.html" />
+
+<h1>$object->getMetaClassName()</h1>
+
+<table>
+  <tr>
+    <td>$lang->getString("lblCustomer")</td>
+    <td><o2 link setParam="query=$object->getCustomerId()" title="$object->getCustomerId()">$object->getCustomerFullName()</o2:link></td>
+  </tr>
+  <tr>
+    <td>$lang->getString("lblOrderType")</td>
+    <td>$object->getOrderType()->getMetaName()</td>
+  </tr>
+  <tr>
+    <td>$lang->getString("lblTransactionId")</td>
+    <td><o2 link setParam="query=$object->getTransactionId()">$object->getTransactionId()</o2:link></td>
+  </tr>
+  <tr>
+    <td>$lang->getString("lblTypeOfSale")</td>
+    <td>$object->getTypeOfSale()</td>
+  </tr>
+  <o2 include "includes/metaInfo.html" />
+</table>
+
+<o2 include "includes/orderReceiptLink.html" />
+
+<o2 setVar "$extraInfos" forceType="hash">$object->getExtraInfos()</o2:setVar>
+<o2 include "includes/extraInfos.html" extraInfos="$extraInfos" />
+
+<o2 setVar "$orderLines" forceType="array">$object->getOrderLines()</o2:setVar>
+<o2 include "includes/orderLines.html" orderLines="$orderLines" />
+
+<o2 footer />

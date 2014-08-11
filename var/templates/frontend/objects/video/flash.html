@@ -1,0 +1,44 @@
+<o2 comment>
+XXX Replace the following fields with dynamic values:
+    - width and height
+    - configURL
+    - movie
+    - not flashplayer installed
+</o2:comment>
+<div id="video">
+  <div id="player">
+    <script language="JavaScript1.1" type="text/javascript">
+      <!--
+      var flashVersion = 7;
+      var plugin = (navigator.mimeTypes && navigator.mimeTypes["application/x-shockwave-flash"]) ? 
+                    navigator.mimeTypes["application/x-shockwave-flash"].enabledPlugin : 0;
+      if ( plugin ) {
+        var words = navigator.plugins["Shockwave Flash"].description.split(" ");
+        for (var i = 0; i < words.length; ++i) {
+          if (isNaN(parseInt(words[i]))) { continue };
+          var installedVersion = words[i]; 
+         }
+         var canPlay = installedVersion >= flashVersion;
+      }
+      else if (navigator.userAgent && navigator.userAgent.indexOf("MSIE")>=0 && (navigator.appVersion.indexOf("Win") != -1)) {
+        document.write('<scr' + 'ipt language=VBScript\> \n');
+        document.write('on error resume next \n');
+        document.write('canPlay = ( IsObject(CreateObject("ShockwaveFlash.ShockwaveFlash." & flashVersion)))\n');
+        document.write('</scr' + 'ipt\> \n');
+      }
+      if ( canPlay ) {
+        document.write('<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=7,0,0,0" width="282" height="238" align="middle">');
+        document.write('<param name="flashvars" value="configURL=http://video.dagbladet.no/pub/artikkel/4/46/466/466037/config.xml&adsURL=http://video.dagbladet.no/ads/annonse_dinside.xml" />');
+        document.write('<param name="movie" value="http://video.dagbladet.no/swf/flv280.swf" />');
+        document.write('<param name="quality" value="high" />');
+        document.write('<param name="bgcolor" value="#000000" />');
+        document.write('<embed src="http://video.dagbladet.no/swf/flv280.swf" quality="high" bgcolor="#000000" width="282" height="238" align="middle" flashvars="configURL=http://video.dagbladet.no/pub/artikkel/4/46/466/466037/config.xml&adsURL=http://video.dagbladet.no/ads/annonse_dinside.xml" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" />');
+        document.write('</object>');
+      }
+      else {
+        document.write('<a href="http://www.macromedia.com/go/getflashplayer/"><img src="http://video.dagbladet.no/img/ikkeflash280.gif" width="282" height="238" border="0" /></a>');
+      }
+      //-->
+    </script>
+  </div>
+</div>

@@ -1,0 +1,45 @@
+<o2 use NumberFormat />
+<o2 use DateFormat />
+
+<o2 addCss>
+  .fileDownloadSurroundingSpan {
+    padding: 2px;
+    padding-bottom: 4px;
+    padding-right:10px;
+    border: 1px dotted #cccccc;
+  }
+  .fileDownloadTitle, .fileDownloadDate, .fileDownloadSize {
+    font-family: verdana;
+  }
+  .fileDownloadTitle {
+    text-decoration: none;
+    font-weight: bold;
+    color: black;
+    font-style: italic;
+    font-size: 12px;
+  }
+  .fileDownloadDate, .fileDownloadSize {
+    font-size: 11px;
+    font-style: italic;
+    color: #aaaaaa;
+  }
+</o2:addCss>
+
+<table class="fileDownloadSurroundingSpan">
+  <tr>
+    <td rowspan="2">
+      <a href="/o2/File-Download/download?objectId=<o2 slotString field='id'/>">
+        <img src="$object->getScaledUrl(150,150)" title="<o2 slotString field='metaName'/>" border="0">
+      </a>
+    </td>
+    <td colspan="2">
+      <a href="/o2/File-Download/download?objectId=<o2 slotString field='id'/>" class="fileDownloadTitle" title="<o2 slotString field='metaName'/>"><o2 slotString field="metaName"/></a>
+    </td>
+  </tr>
+  <tr>
+    <td align="left" class="fileDownloadDate"><o2 dateFormat>$object->getMetaCreateTime()</o2:dateFormat></td>
+    <td align="right" class="fileDownloadSize">
+      <o2 byteFormat><o2 slotString field="fileSize"/></o2:byteFormat>
+   </td>
+  </tr>
+</table>

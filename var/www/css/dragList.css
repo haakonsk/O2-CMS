@@ -1,0 +1,11 @@
+.dragList {
+  cursor     : default;
+  background : white;
+}
+
+.dragListSelected {
+  background : #8080FF;
+}
+.dragListUnselected {
+  background : white;
+}

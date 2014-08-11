@@ -1,0 +1,16 @@
+<o2 use Html::Ajax />
+
+<o2 use I18N />
+<o2 setResourcePath>o2.Page.objectTemplate</o2:setResourcePath>
+
+<o2 ajaxForm method="post" setClass="Page-EditableTemplate" setMethod="saveTemplate" removeParams="1" onSuccess="onTemplateSaved()" style="height: 97%;">
+
+  <input type="hidden" name="objectId" value="$templateId">
+  <textarea class="editTemplate" name="template" style="width: 100%; height: 90%;"><o2 encodeEntities on encodeDollars="1">$templateContent</o2:encodeEntities></textarea>
+
+  <o2 if "$templateType eq 'object'">
+    <o2 input type="submit" value="$lang->getString('btnSave')" onClick="window.IS_SAVE_AND_CLOSE = false;" />
+  </o2:if>
+  <o2 input type="submit" value="$lang->getString('btnSaveAndClose')" onClick="window.IS_SAVE_AND_CLOSE = true;"  />
+
+</o2:ajaxForm>

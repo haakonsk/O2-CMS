@@ -1,0 +1,47 @@
+<o2 use Html::Ajax />
+<o2 use Html::PopupDialog />
+
+<o2 use I18N />
+<o2 setResourcePath>Plugins</o2:setResourcePath>
+
+<o2 header />
+
+<o2 addCss>
+  table {
+    cursor : move;
+  }
+</o2:addCss>
+
+<h1>$lang->getString("hdrTitle")</h1>
+
+<p>
+  <o2 popupDialog title="$lang->getString('hdrNewPlugin')" linkText="$lang->getString('linkNewPlugin')" submitText="$lang->getString('btnSubmitNewPlugin')" closeText="$lang->getString('btnCancelNewPlugin')" width="400">
+    <o2 form method="post" setMethod="saveNewPlugin">
+      <o2 formTable>
+        <o2 input type="text" name="name" label="$lang->getString('lblPluginName')" />
+        <o2 input type="text" name="path" label="$lang->getString('lblPluginPath')" />
+      </o2:formTable>
+    </o2:form>
+  </o2:popupDialog>
+</p>
+
+<o2 form setMethod="saveNewPluginOrder">
+  <o2 table rearrangeableRows="1" id="plugins">
+    <o2 foreach "$plugin in $plugins">
+      <o2 if "$plugin->{name} ne 'CMS'">
+        <tr id="plugin_$plugin->{name}">
+          <td valign="top">
+            <o2 ajaxLink setMethod="toggleEnabled" setParams="pluginName=$plugin->{name}" target="this" method="post"><o2 include "includes/enabledIcon.html" /></o2:ajaxLink>
+          </td>
+          <td>
+            <b>$plugin->{name}</b><br>
+            $plugin->{root}
+          </td>
+        </tr>
+      </o2:if>
+    </o2:foreach>
+  </o2:table>
+  <o2 input type="submit" value="$lang->getString('btnSubmitNewOrder')" />
+</o2:form>
+
+<o2 footer />

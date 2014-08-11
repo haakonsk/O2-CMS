@@ -1,0 +1,57 @@
+<o2 use Html::Form />
+<o2 use Html::Ajax />
+<o2 use O2CMS::ApplicationFrame />
+
+<o2 use I18N />
+<o2 setResourcePath>o2.Statistics.GoogleAnalytics</o2:setResourcePath>
+
+<o2 header />
+
+<o2 addCss>
+  td {
+    vertical-align: top;
+  }
+</o2:addCss>
+
+<o2 ApplicationFrameHeader frameTitle="$lang->getString('headerRegisterAnalyticsAccount')" showCloseButton="1" useCloseAction="confirmCloseIfChanged" disableScrollBar="0" showSettingsButton="0"
+  objectId="^$account->getId()" />
+
+<o2 contentGroup title="$lang->getString('headerAccountSettings')">
+  <p>
+    $lang->getString("msgEnterLoginInfo")<br>
+    <o2 if "$account && $account->getPassword()">$lang->getString("msgPasswordInfo")</o2:if>
+  </p>
+  <o2 setVar "$msg">$lang->getString("msgSuccessMsg")</o2:setVar>
+  <o2 ajaxForm method="post" setMethod="saveAccountSettings" removeParams="1" onSuccess="top.displayMessage('$msg'); top.reloadTreeFolder($q->{parentId}); setFormChanged(false);"
+    ruleTitle="An error occured" onChange="setFormChanged();">
+    <o2 input type="hidden" name="objectId" value="$q->{objectId}" />
+    <o2 input type="hidden" name="parentId" value="$q->{parentId}" />
+    <o2 formTable>
+      <o2 input type="hidden"   name="accountId" value="^$account->getId()" />
+      <o2 input type="text"     name="email"     label="$lang->getString('lblEmail')" rule="email" ruleMsg="$lang->getString('errorEmail')" value="^$account->getEmail()" />
+      <o2 input type="password" name="password1" label="$lang->getString('lblPassword')" />
+      <o2 input type="password" name="password2" label="$lang->getString('lblRepeatPassword')" rule="repeat:password1" ruleMsg="$lang->getString('errorPasswords')" />
+      <o2 encodeEntities off>
+        <o2 textarea name="javascript" label="$lang->getString('lblJavascript')" rows="5" cols="60" value="^$account->getJavascript()">
+          <o2 inputHint>$lang->getString('helpTipJavascriptCode')</o2:inputHint>
+        </o2:textarea>
+      </o2:encodeEntities>
+    </o2:formTable>
+    <p>
+      <o2 input type="submit" value="$lang->getString('btnSave')" />
+    </p>
+  </o2:ajaxForm>
+  <p>$lang->getString("msgAnalyticsObjectInfo")</p>
+</o2:contentGroup>
+
+<o2 contentGroup title="$lang->getString('headerRegisterWithGoogle')">
+  <p>$lang->getString("msgRegisterWithGoogleInfo")</p>
+</o2:contentGroup>
+
+<o2 contentGroup title="$lang->getString('headerLogIntoGoogle')">
+  <p><o2 link setMethod="login">$lang->getString("linkLogIntoGoogle")</o2:link></p>
+</o2:contentGroup>
+
+<o2 ApplicationFrameFooter />
+
+<o2 footer />

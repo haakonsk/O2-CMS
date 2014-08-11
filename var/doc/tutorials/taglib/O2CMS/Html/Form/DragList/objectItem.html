@@ -1,0 +1,33 @@
+<o2 use O2Doc::Tutorial />
+
+<o2 docSection title="objectItem">
+  Another way of specifying which elements to display in a <o2 docLink type="tag" id="dragList" /> when the page loads. The normal way
+  is to use the "items" attribute of the <o2 docLink type="tag" id="dragList" /> tag. Using objectItem could be useful in some cases, for
+  example if you need to sort the items.
+  <o2 docSection title="Syntax">
+    <o2 docCode lang="o2ml">
+      <o2 addCss>
+        .dragList {
+          border : 1px dotted black;
+        }
+        .dragList:before {
+          content : "<Drag objects here>";
+        }
+      </o2:addCss>
+      
+      <o2 dragList id="attributeIds" label="Attributes" allowClass="O2::Obj::Image">
+        <o2 foreach "$person in $persons" sortBy="person->getFirstName()">
+          <o2 objectItem>$person</o2:objectItem>
+        </o2:foreach>
+      </o2:dragList>
+    </o2:docCode>
+    <o2 docCodeResult useModule="O2CMS::Html::Form::DragList" seeGeneratedHtmlAsDisplayed="1" seeGeneratedHtml="1" />
+  </o2:docSection>
+
+  <o2 docSection title="Attributes">
+    <o2 docList class="attributes">
+      <o2 docListItem class="optional content">content - the object to insert into the <o2 docLink type="tag" id="dragList" /></o2:docListItem>
+    </o2:docList>
+  </o2:docSection>
+
+</o2:docSection>

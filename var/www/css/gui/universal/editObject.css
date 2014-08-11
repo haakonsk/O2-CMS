@@ -1,0 +1,102 @@
+/* Edit object form */
+
+#editObjectWrapper {
+  padding : 2px;
+}
+
+#editObjectWrapper h2, .pollWrapper h2, h2.editHdr {
+  margin       : 20px 0 0 20px;
+  padding-left : 60px;
+  font-size    : 14px;
+  font-weight  : normal;
+  background   : no-repeat top left;
+  height       : 48px;
+  line-height  : 48px;
+  clear: both;
+}
+
+#editObjectWrapper label, .o2InputLabel, .o2CheckboxGroupLabel, .o2RadioGroupLabel, .o2TextareaLabel, .o2SelectLabel, .o2ComboBoxLabel, .o2DateSelectLabel, .label {
+  width       : 150px;
+  float       : left;
+  line-height : 20px;
+  font-size   : 12px;
+}
+
+#editObjectWrapper .textInput, .o2FormTable .textInput, .images .textInput {
+  width     : 160px;
+  font-size : 11px;
+}
+
+#editObjectWrapper p span, span.infoText {
+  float      : left;
+  clear      : left;
+  width      : 312px;
+  margin-top : 10px;
+  font-size  : 10px;
+  color      : #666;
+}
+#editObjectWrapper span.special {
+  width: 130px;
+}
+
+#editObjectWrapper p, .editObjectInputWrapper {
+  width  : 340px;
+  margin : 15px 20px;
+  float  : left;
+  clear  : left;
+}
+
+#editObjectWrapper .editObjectInputWrapper .o2CheckboxGroup span.o2Checkboxes,
+#editObjectWrapper .editObjectInputWrapper .o2RadioGroup span.o2RadioButtons {
+  width   : 160px;
+  display : block;
+  float   : left;
+  color   : #333;
+}
+
+#editObjectWrapper .editObjectInputWrapper .o2CheckboxGroup .o2CheckboxLabel, 
+#editObjectWrapper .o2CheckboxLabel,
+#editObjectWrapper .o2RadioGroup .o2RadioLabel, 
+#linkContainer label {
+  width : auto;
+  float : none;
+  clear : none;
+}
+
+#editObjectWrapper .buttons {
+  text-align   : right;
+  width        : 312px;
+  margin-right : 0;
+}
+
+#editObjectWrapper .short, .o2FormTable .short {
+  width : 45px;
+}
+
+#editObjectWrapper .long {
+  width : 300px;
+}
+
+#editObjectWrapper textarea.textInput {
+  height: 50px;
+}
+
+#editObjectWrapper #advanced_controls p {
+  width: auto;
+}
+
+#editObjectWrapper #longForm h2 {
+  margin-bottom: 15px;
+}
+
+#editObjectWrapper #longForm p {
+  margin: 5px 20px;
+}
+
+#editObjectWrapper .o2MultilingualControllerTypeText a {
+  margin: 5px 2px;
+}
+
+#editObjectWrapper #o2MultilingualControllerDiv {
+  clear: both;
+}

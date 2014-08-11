@@ -1,0 +1,82 @@
+body {
+  -moz-user-select: none;
+  min-height      : 0 !important; /* Override rule from defaultStyle.css. Don't know exactly why the min-height from defaultStyle fucks up, but it does.. */
+}
+.genericBar {
+  border-top    : 1px solid #767676;
+  border-bottom : 1px solid #767676;
+}
+
+.taskBar td {
+  border       : 0;
+  border-right : 1px dotted black;
+}
+
+.activeTask {
+  background  : url("/images/system/genericbar_active_bg.png") repeat-x;
+  font-weight : bold;
+}
+
+.activeTask div {
+  background-repeat   : no-repeat;
+  background-position : 5px 0;
+  padding-left        : 22px;
+}
+
+.inactiveTask {
+}
+
+.inactiveTask div {
+  background-repeat   : no-repeat;
+  background-position : 5px 0;
+  padding-left        : 22px;
+}
+
+.toolButton {
+  width        : 80px;
+  border-right : 1px dotted black;
+}
+
+.toolButton div {
+  background-image    : url("/images/system/tools_16.gif");
+  background-repeat   : no-repeat;
+  background-position : 5px 0;
+  padding-left        : 22px;
+  font-weight         : bold;
+}
+
+td.toolButton:hover {
+  background : url("/images/system/genericbar_active_bg.png") repeat-x;
+}
+
+td.toolButton:active {
+  background : url("/images/system/genericbar_active_bg.png") repeat-x;
+}
+
+.showDesktopButton {
+  border-right : 1px dotted black;
+}
+.showDesktopButton div {
+  background-image    : url("/images/system/home_16.gif");
+  background-repeat   : no-repeat;
+  background-position : 4px 0;
+  padding-right       : 2px;
+  width               : 20px;
+}
+
+td.showDesktopButton:hover {
+  background : url("/images/system/genericbar_active_bg.png") repeat-x;
+}
+
+td.showDesktopButton:active {}
+
+.trashcan {
+  width : 1%;
+}
+#trashcan {
+  width   : 100%;
+  padding : 0 6px;
+}
+.trashcan a img {
+  border : 0;
+}

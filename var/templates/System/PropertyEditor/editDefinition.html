@@ -1,0 +1,149 @@
+<o2 use O2CMS::Html::List />
+<o2 use Html::Form />
+<o2 use O2CMS::ApplicationFrame />
+<o2 addJsFile "componentBase.js" />
+<o2 addCssFile "system/propertyEditor" />
+
+<o2 header/>
+
+<o2 addCss>
+  label {
+    display: inline-block;
+    width: 150px;
+  }
+  
+  .o2InputWrapper {
+    clear: both;
+    margin: 10px 0;
+    padding: 5px;
+  }
+</o2:addCss>
+
+<o2 addJs>
+// show/hide gui elements
+function updateHidden(form) {
+  var inputType = form['object.inputType'].options[form['object.inputType'].selectedIndex].value;
+
+  var display = {ruleHider:'none', optionsTypeHider:'none', staticOptionsHider:'none', methodOptionsHider:'none', o2ContainerPathOptionsHider:'none'};
+
+  if( inputType=='input' ) {
+    display.ruleHider = 'block';
+  }
+  else if( inputType=='textarea' ) {
+    display.ruleHider = 'block';
+  }
+  else if( inputType=='select' ) {
+    display.optionsTypeHider = 'block';
+    var optionsType = form['object.optionsType'].options[form['object.optionsType'].selectedIndex].value;
+    display[optionsType+'OptionsHider'] = 'block';
+  }
+  for( var key in display ) {
+    document.getElementById(key).style.display = display[key];
+  }
+}
+
+
+function removeProperty(objectId, propertyName) {
+  if( confirm(' $lang->getString('o2.System.PropertyEditor.confirmDelete') ') ) {
+    window.location = './removeProperty?objectId='+objectId+'&propertyName='+propertyName+'&nextUrl='+escape('editDefinition?propertyName='+propertyName+'&returnToObjectId=$returnToObjectId');
+  }
+}
+</o2:addJs>
+
+<o2 addJs where="onLoad">
+  updateHidden(document.forms['definitionForm']);
+</o2:addJs>
+
+
+<o2 ApplicationFrameHeader frameTitle="Edit variable definition" showCloseButton="1" useCloseAction="" disableScrollbar="" />
+
+<o2 form action="./saveDefinition" method="POST" name="definitionForm">
+  <o2 input type="hidden" name="objectId" value="$object->getId()"/>
+  <o2 input type="hidden" name="object.metaParentId" value="$object->getMetaParentId()"/>
+  <o2 input type="hidden" name="returnToObjectId" value="$returnToObjectId"/>
+
+  
+  <o2 input name="object.propertyName" value="$object->getPropertyName()" label="Name" />
+  <o2 textarea name="object.description" value="$object->getDescription()" label="Description" />
+  
+  
+  <o2 select name="object.inputType" value="$object->getInputType()" onchange="updateHidden(this.form)" label="Data type $object->getInputType()">
+    <o2 option value="input">String (input field)</o2:option>
+    <o2 option value="textarea">Text (textarea)</o2:option>
+    <o2 option value="select">Drop down list</o2:option>
+  <!-- radio, checkbox, object -->
+  </o2:select>
+  
+  
+  <div id="ruleHider">
+    <o2 input name="object.rule" value="$object->getRule()" label="Rule"/>
+    <o2 input name="object.ruleErrorMessage" value="$object->getRuleErrorMessage()" label="Rule error message"/>
+  </div>
+  
+  <!-- Apply to classes -->
+  
+  <div id="optionsTypeHider">
+    
+    <o2 select name="object.optionsType" value="$object->getOptionsType()" onchange="updateHidden(this.form)" label="Option type">
+      <o2 option value="static">A static list of options</o2:option>
+      <o2 option value="method">A perl method returning options</o2:option>
+      <o2 option value="o2ContainerPath">A list of O2 objects</o2:option>
+    </o2:select>
+  </div>
+
+  <div id="staticOptionsHider">  
+    <o2 setVar "$optionsData" forceType="array">$object->getOptions()</o2:setVar>
+    <o2 list id="object.staticOptions" type="TableList" items="$optionsData" extraItemFields="name,value" submitType="all" submitItemFields="name,value"/>
+    <o2 addJs where="here">
+      var staticOptions = getComponentById('object.staticOptions');
+      staticOptions.getHeader = function() { return '<table border="0"><tr><th>Name</th><th>Value</th></tr>'; }
+      staticOptions.getFooter = function() { return '<tr><td colspan="3" align="right"><input type="button" value="add" onclick="getComponentById(\'object.staticOptions\').addItem({name:\'\',value:\'\'})"></td></tr></table>'; }
+      staticOptions.getRowCellsHtml = function(data,ix) {
+        var html = '<td><input class="textInput" value="'+data.name+'" onchange="getComponentById(\'object.staticOptions\').setName(this.value, '+ix+', this.form)"></td>';
+        html += '<td><input class="textInput" value="'+data.value+'" name="value'+ix+'" onchange="getComponentById(\'object.staticOptions\').setValue(this.value, '+ix+')"></td>';
+        html += '<td align="right"><img src="/images/system/remov_16.gif" onclick="getComponentById(\'object.staticOptions\').removeItemAt('+ix+')" title="Remove definition"></td>';
+        return html;
+      }
+      staticOptions.setName = function(name,ix,form) {
+        var item = this.getItemAt(ix);
+        item.name = name;
+        if( item.value=='' ) form['value'+ix].value = name;
+      }
+      staticOptions.setValue = function(value,ix) {
+        var item = this.getItemAt(ix);
+        item.value = value;
+      }
+    
+      staticOptions.redraw();
+    </o2:addJs>
+  </div>
+
+  <div id="methodOptionsHider">
+    <o2 setVar "$perlMethodValue"><o2 if "$object->getOptionsType() eq 'method'">$object->getOptionsData()</o2:if></o2:setVar>
+    <o2 input name="object.method" value="$perlMethodValue" rule="regex:/^\w?[\w:]*$/" ruleMsg="Perl method syntax is 'Package::Subpackage[...]::method'" label="Perl method" />
+  </div>
+
+  <div id="o2ContainerPathOptionsHider">
+    <o2 setVar "$pathValue"><o2 if "$object->getOptionsType() eq 'o2ContainerPath'">$object->getOptionsData()</o2:if></o2:setVar>
+    
+    <o2 input name="object.o2ContainerPath" value="$pathValue" rule="" ruleMsg="" resize="40" label="O2 path to container (usually a meta query, or category)"/>
+  </div>
+
+
+<h1>Variable set on the following objects:</h1>
+  <o2 foreach "$propertyInfo in $existingProperties">
+    <o2 foreach "$part in $propertyInfo->{path}"> / $part->getMetaName </o2:foreach>
+
+    <o2 setVar "$property">$propertyInfo->{property}</o2:setVar>
+    <img src="/images/system/remov_16.gif" onclick="removeProperty($property->getObjectId(), '$property->getName()')"><br>
+    <o2 include "editPropertyRow.html"/>
+    <br>
+  </o2:foreach>
+
+
+  <o2 input type="submit" value="Save"/>
+</o2:form>
+
+
+
+<o2 footer/>

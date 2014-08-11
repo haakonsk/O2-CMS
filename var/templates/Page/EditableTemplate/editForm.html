@@ -1,0 +1,26 @@
+<o2 use Html::PopupDialog />
+
+<o2 use I18N />
+<o2 setResourcePath>o2.Page.objectTemplate</o2:setResourcePath>
+
+<o2 setVar "$successMsg">$lang->getString('msgTemplateSaved')</o2:setVar>
+<o2 addJs>
+  var IS_SAVE_AND_CLOSE;
+
+  function onTemplateSaved() {
+    top.displayMessage("$successMsg")
+    if (IS_SAVE_AND_CLOSE) {
+      o2.popupDialog.hide();
+    }
+    if ("$templateType" === "include") {
+      document.location.href = document.location.href;
+    }
+  }
+</o2:addJs>
+
+<o2 setVar "$popupTitle">
+  <o2 if "$template->getId()">$lang->getString('headerEditTemplateContentFor', templateName => $templateName)</o2:if>
+  <o2 else>$lang->getString('headerEditTemplateContent')</o2:else>
+</o2:setVar>
+<o2 popupDialog id="editTemplatePopup" setClass="Page-EditableTemplate" setMethod="displayTemplate" setParams="templateId=$template->getId()&templateType=$templateType"
+  width="800" height="500" title="$popupTitle" />

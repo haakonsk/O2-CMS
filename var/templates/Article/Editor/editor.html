@@ -1,0 +1,175 @@
+<o2 use O2CMS::ApplicationFrame />
+<o2 use O2CMS::Html::TabLayer />
+<o2 use O2CMS::Html::List />
+<o2 use O2CMS::Html::Form::RichTextArea />
+<o2 use DateFormat />
+<o2 use Html::Ajax />
+
+<o2 use Js::Lang />
+<o2 addJsLangFile file="o2.article.editor" />
+
+<o2 use I18N />
+<o2 setResourcePath>o2.article.editor</o2:setResourcePath>
+
+<o2 header disableScrollbars="0" onLoad="init()" />
+
+<o2 addCssFile file="system/editor" />
+
+<o2 addJsFile file="article/editor" />
+<o2 addJsFile file="componentBase"  />
+<o2 addJsFile file="O2Event"        />
+
+<o2 setVar "$appName">$lang->getString("applicationName")</o2:setVar>
+
+<o2 if "$article->getId()">
+  <o2 setVar "$articleId">$article->getId()</o2:setVar>
+</o2:if>
+<o2 else>
+  <o2 setVar "$articleId">$article->getMetaParentId()</o2:setVar>
+  <o2 setVar "$extraPath">$lang->getString("newArticle")</o2:setVar>
+</o2:else>
+
+<o2 include "o2://var/templates/Article/Editor/includes/setGlobalJsVars.html" article="$article" draftId="$draftId" hasNewerDraft="$hasNewerDraft" />
+
+<o2 addJs where="onLoad">
+  setTimeout("saveDraft();", 5*60000);
+</o2:addJs>
+<o2 addJs where="post">
+  resizeArticleEditor();
+  window.onresize = function() {
+    resizeArticleEditor();
+  }
+</o2:addJs>
+
+<o2 ApplicationFrameHeader frameTitle="$appName" showCloseButton="1" useCloseAction="confirmCloseIfChanged" showSettingsButton="0" disableScrollBar="1" objectId="$articleId" extraPath="$extraPath" />
+
+<o2 include "o2://var/templates/Article/Editor/includes/toolBarMenu.html" />
+
+<o2 ajaxForm name="article" setClass="Article-Editor" setMethod="saveArticle" removeParams="1" autoComplete="off" onChange="setFormChanged();" handler="onArticleSaved" method="post">
+
+  <div style="position: absolute; visibility: hidden;">
+    <o2 setVar "$msgSavingDraft">$lang->getString("message.savingDraft")</o2:setVar>
+    <o2 setVar "$msgErrorSaving">$lang->getString("errorMsg.savingDraft")</o2:setVar>
+    <o2 button id="saveDraftBtn" ajaxEvent="onClick" setClass="Article-Editor" setMethod="saveDraft" formParams="all" onClick="setStatusBar('$msgSavingDraft'); storeText(); o2.multilingualController.setHiddenValues();"
+      handler="draftSaved" onError="setStatusBar('$msgErrorSaving');" method="post">Save draft</o2:button>
+    <o2 button id="saveDraftForPreviewBtn" ajaxEvent="onClick" setClass="Article-Editor" setMethod="saveDraft" formParams="all" onClick="setStatusBar('$msgSavingDraft'); storeText(); o2.multilingualController.setHiddenValues();"
+      handler="draftForPreviewSaved" onError="setStatusBar('$msgErrorSaving');" method="post">Save draft for preview</o2:button>
+  </div>
+  
+  <o2 input type="hidden" name="articleId" value="$article->getId()"/>
+  <o2 setVar "$ownerId"><o2 if "$article->getMetaOwnerId()" then="$article->getMetaOwnerId()" else="$user->getId()" /></o2:setVar>
+  <o2 input type="hidden" name="ownerId"  value="$ownerId" />
+  <o2 input type="hidden" name="parentId" value=""         /> <o2 comment>parentId is only used when an article is "saved as"</o2:comment>
+  <o2 input type="hidden" name="draftId"  value="$draftId" />
+  
+  <div id="articleEditor" class="clearfix">
+
+    <o2 include "o2://var/templates/Article/Editor/includes/menu.html" article="$article" />
+
+    <div id="theArticle">
+    
+      <o2 tabLayer style="height:18px;width:100px;" cssFile="TabLayer-OnlyTabs" showCloseButton="1">
+        <o2 addTab name="$lang->getString('tabFrontpage')" jsName="section_frontPageText" preAction="swapTab('section_frontPageText')" selected="1" />
+        <o2 addTab name="$lang->getString('tabArticle')"   jsName="section_articleText"   preAction="swapTab('section_articleText')"   />
+      </o2:tabLayer>
+      
+      <div component="DragObject" id="editorPane">
+        <o2 encodeEntities on>
+          <o2 richtextarea name="editor" id="editor" loadPlugin='ListType,TableOperations,ContextMenu,FindReplace,Stylist,SpellChecker' style="padding:0px;width:99%;height:99%;">$article->getText('section_frontPageText',skipIncludeFiles=>1)</o2:richtextarea>
+        </o2:encodeEntities>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div style="position: absolute; visibility: hidden;">
+    <o2 textarea name="section_frontPageText" id="section_frontPageText" style="visibility:hidden;height:0px;" multilingual="1" value="$article->getText('section_frontPageText', skipIncludeFiles=>1)" />
+    <o2 textarea name="section_articleText"   id="section_articleText"   style="visibility:hidden;height:0px;" multilingual="1" value="$article->getText('section_articleText',   skipIncludeFiles=>1)" />
+  </div>
+
+  <o2 include "o2://var/templates/Article/Editor/includes/menuItems.html" article="$article" categoryId="$categoryId" publishPlaces="$publishPlaces" />
+
+  <o2 ApplicationFrameFooter statusBar>
+    <o2 addCell>$lang->getString("lblStatusBar")<span id="statusLabel" style="font-weight:bold;"></span></o2:addCell>
+  </o2:ApplicationFrameFooter>
+
+  <o2 input type="submit" id="articleSubmitButton" style="visibilty:hidden" />
+</o2:ajaxForm>
+
+<o2 form setClass="Article-Editor" setMethod="preview" name="previewForm" target="_blank">
+  <o2 input type="hidden" name="draftId" />
+  <o2 input type="hidden" name="categoryId" value="$categoryId" />
+</o2:form>
+
+<o2 addCss>
+  /* overiding some of the defaults css values */
+
+  .htmlarea {
+    border-top    : 1px solid #D6D6D6;
+    border-bottom : 2px solid #C0C0C0;
+    border-left   : 1px solid #D6D6D6;
+    border-right  : 1px solid #C0C0C0;
+    margin        : 0px;
+    padding       : 0px;
+  }
+
+  .htmlarea .toolbar {
+    border : 1px solid #D6D6D6;
+  }
+
+  .tabLayerRow {
+    width : 400px;
+  }
+</o2:addCss>
+
+<!-- Start JS for Keywords -->
+<o2 addJs where="onLoad">
+  initDragContainer(document.getElementById('object.keywordIds'));
+
+  var keywordList = getComponentById('object.keywordIds');
+  keywordList.getRowCellsHtml = function(item, ix) {
+    var html = '';
+    if (item.alternativeKeywords && item.alternativeKeywords.length > 1) {
+      var options = generateOptionList(item.alternativeKeywords, item.id);
+      html += '<select onchange="getComponentById(\'object.keywordIds\').setAttributeAt(\'id\',this.options[this.selectedIndex].value,'+ix+')">' + options + '</select>';
+    }
+    else {
+      html += item.fullName;
+    }
+    html += this.getIcon('delete','javascript:void(getComponentById(\'object.keywordIds\').removeItemAt(' + ix + '))','Remove');
+
+    return '<td><img src="/images/system/classIcons/O2-Obj-Keyword.gif"> ' + html + '</td>';
+  }
+
+  keywordList.addKeyword = function(args) {
+    args.ix = this.length();
+    o2.ajax.call({
+      setClass  : "Keyword-KeywordEditor",
+      setMethod : "queryKeywords",
+      setParams : args,
+      handler   : "getComponentById('object.keywordIds').addKeywordCallback"
+    });
+  }
+
+  keywordList.addKeywordCallback = function(args) {
+    this.addItem({ fullName : args.keyword });
+    var item = this.getItemAt(args.ix);
+    item.fullName            = args.alternativeKeywords[0].name;
+    item.id                  = args.alternativeKeywords[0].id;
+    item.alternativeKeywords = args.alternativeKeywords;
+    this.setItemAt(item, args.ix);
+    if( args.folderKeywords ) setFolderKeywordOptions(args.folderKeywords);
+  }
+
+  keywordList.ondrop = function(source,target) {
+    if( source.data.className=='O2::Obj::Keyword' ) {
+      this.addItem({fullName:source.data.name, id:source.data.id});
+    }
+  }
+
+  keywordList.redraw();
+  loadParentKeywords();
+</o2:addJs>
+
+<o2 footer/>

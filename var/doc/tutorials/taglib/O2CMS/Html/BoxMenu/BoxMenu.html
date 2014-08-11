@@ -1,0 +1,53 @@
+<o2 use O2Doc::Tutorial />
+
+<o2 docSection title="BoxMenu, addMenuItem">
+  Creates a box menu like the one you see on the right (or bottom). The BoxMenu tag doesn't return HTML in the normal way, instead Javascript is used
+  to generate the BoxMenu.
+  <o2 docSection title="Syntax">
+    <o2 docCode lang="o2ml">
+      <o2 BoxMenu width="100px" height="100px" icon="/images/boxmenu/collapsed_16.gif" expandIcon="/images/boxmenu/expanded_16.gif">
+        <o2 addMenuItem title="Item 1">Content of menu item 1 here.</o2:addMenuItem>
+        <o2 addMenuItem title="Item 2" selected="1">Content of menu item 2 here.</o2:addMenuItem>
+      </o2:BoxMenu>
+    </o2:docCode>
+    <o2 docCodeResult useModule="Html::BoxMenu" seeGeneratedHtmlAsDisplayed="0" seeGeneratedHtml="0" />
+    The box menu generated from this code can be seen at the top right (Firefox) or bottom left (Explorer) corner of this page.
+  </o2:docSection>
+
+  <o2 docSection title="BoxMenu attributes">
+    <o2 docList class="attributes">
+      <o2 docListItem class="optional">BoxMenuId   - use this if you want control of the BoxMenu's ID</o2:docListItem>
+      <o2 docListItem class="optional">cssFile [boxMenu]</o2:docListItem>
+      <o2 docListItem class="optional">icon        - an icon that is displayed to the left of the menu item title</o2:docListItem>
+      <o2 docListItem class="optional">expandIcon  - an icon that is displayed to the left of the menu item title when the menu item is the selected one (expanded)</o2:docListItem>
+      <o2 docListItem class="optional">animate [0] - slides the boxes to their new positions when a new box is selected (doesn't seem to work as well as it should)</o2:docListItem>
+      <o2 docListItem class="optional">height [100%]</o2:docListItem>
+      <o2 docListItem class="optional">width [100%]</o2:docListItem>
+      <o2 docListItem class="required content">content - the menu items</o2:docListItem>
+    </o2:docList>
+  </o2:docSection>
+
+  <o2 docSection title="addMenuItem attributes">
+    <o2 docList class="attributes">
+      <o2 docListItem class="required">title</o2:docListItem>
+      <o2 docListItem class="optional">icon            - Overrides the BoxMenu "icon" attribute</o2:docListItem>
+      <o2 docListItem class="optional">expandIcon      - Overrides the BoxMenu "expandIcon" attribute</o2:docListItem>
+      <o2 docListItem class="optional">selected [0]    - set this to true (1) if this is the menu item that should be expanded when the page loads</o2:docListItem>
+      <o2 docListItem class="optional">url             - if specified, the HTML of this URL will be the content of the menu item</o2:docListItem>
+      <o2 docListItem class="optional">elementId       - if specified, the element with this ID will become the content of the menu item</o2:docListItem>
+      <o2 docListItem class="optional">body            - if specified, this will be the content of the menu item</o2:docListItem>
+      <o2 docListItem class="optional content">content - same as "body"</o2:docListItem>
+    </o2:docList>
+    <o2 docNote>
+      Either, "body" or "content" should contain the content of the menu item, or "elementId" or "url" can be used to specify the ID or URL of the element that makes up this menu item.
+      Using "content" is recommended over "body" and "elementId" whenever possible, as it makes the HTML more easy-to-grasp.
+    </o2:docNote>
+  </o2:docSection>
+  <o2 docNote>
+    In Internet Explorer 7 Beta 2, BoxMenu is incompatible with <o2 docLink type="tag" id="Html-Form-richtextarea" />.
+  </o2:docNote>
+  <o2 docNote>
+    &lt;o2 header&gt; or &lt;o2 incJavascript&gt; and &lt;o2 incStylesheet&gt; must be called on the same page as &lt;o2 BoxMenu&gt; in order for the box menu to work correctly.
+  </o2:docNote>
+  See also <o2 docLink type="tag" id="Html-header" />, <o2 docLink type="tag" id="Html-incJavascript" /> and <o2 docLink type="tag" id="Html-incStylesheet" />.
+</o2:docSection>

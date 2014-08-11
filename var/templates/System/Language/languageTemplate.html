@@ -1,0 +1,29 @@
+<o2 use Html />
+<o2 use O2CMS::ApplicationFrame />
+<o2 use O2CMS::Html::TreeMenu />
+
+<o2 header disableScrollbars="0" />
+
+<o2 appendVar "$path">$lang->getString('o2.desktop.btnStartMenu')</o2:appendVar>
+<o2 appendVar "$path" delimiter=", ">$lang->getString('o2.applicationNames.o2SystemFolder')</o2:appendVar>
+<o2 appendVar "$path" delimiter=", ">$lang->getString('o2.applicationNames.o2System.o2LanguageManager')</o2:appendVar>
+<o2 ApplicationFrameHeader frameTitle="$lang->getString('o2.System.Language.headerEditor')" showCloseButton="1" useCloseAction="" disableScrollbar="1" path="$path" />
+
+<table border="0" height="100%" width="100%" bgColor="#FFFFFF" cellpadding="0" cellspacing="0">
+  <tr>
+    <td valign="top" width="20%" style="border-right:1px solid black;">
+      <o2 TreeMenu>
+        <o2 encodeEntities off>
+          <o2 doubleParse>
+            $treeMenu
+          </o2:doubleParse>
+        </o2:encodeEntities>
+      </o2:TreeMenu>
+    </td>
+    <td>
+      <iframe style="border:0px;" name="editor" id="editor" src="about:blank" border="0" height="100%" width="100%"></iframe> 
+    </td>
+  </tr>
+</table>
+
+<o2 footer/>

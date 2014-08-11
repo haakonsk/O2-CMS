@@ -1,0 +1,29 @@
+<o2 use Html/>
+
+<o2 use I18N />
+<o2 setResourcePath>o2.authManager</o2:setResourcePath>
+
+<o2 header disableScrollbars="$disableScrollbars" />
+
+<o2 addCssFile file="authManager"/>
+
+<o2 setVar "$userIconUrl"><o2 iconUrl size="16">O2CMS::Obj::AdminUser</o2:iconUrl></o2:setVar>
+
+<o2 use "DateFormat" />
+
+<o2 use O2CMS::ApplicationFrame />
+<o2 appendVar "$path">$lang->getString('o2.desktop.btnStartMenu')</o2:appendVar>
+<o2 appendVar "$path" delimiter=", ">$lang->getString('o2.applicationNames.o2SystemFolder')</o2:appendVar>
+<o2 appendVar "$path" delimiter=", ">$lang->getString('o2.applicationNames.o2System.o2SystemAuthManager')</o2:appendVar>
+<o2 ApplicationFrameHeader frameTitle="$lang->getString('o2.authManager.frameTitle')" showCloseButton="1" useCloseAction="confirmClose" disableScrollBar="1" showSettingsButton="0" path="$path" />
+
+<o2 use O2CMS::Html::ToolBarMenu />
+<o2 toolBarMenu>
+  <o2 addItem name="$lang->getString('toolBar.userBtnTitle')" icon="$userIconUrl" width="165px" action="userAdm();"   />
+  <o2 addItem name="$lang->getString('toolBarNewUser')"       icon="$userIconUrl" width="100px" action="editUser(0);" />
+</o2:toolBarMenu>
+
+<o2 addJs>
+  function userAdm() {    location.href = "<o2 urlMod setMethod='userAdm'/>";                                  }
+  function editUser(id) { location.href = "<o2 urlMod setMethod='editUser' removeParam='userId'/>?userId="+id; }
+</o2:addJs>

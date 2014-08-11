@@ -1,0 +1,11 @@
+.basicAlbum a img {
+  border : 0;
+  margin : 6px;
+}
+.basicAlbum a {
+  text-decoration : none;
+}
+
+.basicAlbumImage {
+  text-align : center;
+}

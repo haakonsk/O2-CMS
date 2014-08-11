@@ -1,0 +1,9 @@
+<o2 if "$page->isa('O2CMS::Obj::Template::Grid')">
+  This grid contains a variable size list. It will produce meaningful content when placed on a page.
+</o2:if>
+<o2 else>
+  <o2 slotChildren maxItems="8" alwaysMaxItems="yes">
+    <div><o2 slot id="slot$slotIndex" /></div>
+    <img src="/images/pix.gif" width="1" height="5" border="0" alt=""><br>
+  </o2:slotChildren>
+</o2:else>

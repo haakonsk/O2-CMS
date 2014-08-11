@@ -1,0 +1,11 @@
+<o2 use Html::Form />
+
+<o2 addCssFile file="/css/gui/comments.css" />
+
+<o2 header />
+
+<h1>Change comment</h1>
+
+<o2 include "o2://var/templates/Comments/commentForm.html" objectId="$q->{objectId}" isChanging="1" commentPageUrl="$q->{commentPageUrl}" />
+
+<o2 footer />

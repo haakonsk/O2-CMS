@@ -1,0 +1,11 @@
+<o2 use Html /><o2 use O2CMS::Publisher /><o2 setVar "$image">$object->getImage()</o2:setVar><o2 setVar "$url">$object->getUrl</o2:setVar>
+<div class="textSnippet">
+  <o2 if "$image"><div class="textSnippetImage"><o2 if "$url"><a href="$url"></o2:if><o2 img id="$image->getId()"/><o2 if "$url"></a></o2:if></div></o2:if>
+  <div class="textSnippetTitle"><o2 if "$url"><o2 openingTag a href="$url" /></o2:if>$object->getTitle()<o2 if "$url"><o2 closingTag a /></o2:if></div>
+  <div class="textSnippetText"><o2 encodeEntities off>$object->getTextSnippet()</o2:encodeEntities></div>
+  <o2 if "$url">
+  <div class="textSnippetURL">
+    <a href="$url">$url</a>
+  </div>
+  </o2:if>
+</div>

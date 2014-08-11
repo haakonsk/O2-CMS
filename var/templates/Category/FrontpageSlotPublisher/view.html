@@ -1,0 +1,155 @@
+<o2 use "Html::Form"/>
+<o2 use "O2CMS::Objects"/>
+<o2 header/>
+
+<o2 addJsFile file="/js/dragDrop.js"/>
+<o2 addJsFile file="/js/componentBase.js"/>
+
+<div id="frontpageList" component="FrontpageList" style="height:300px;">
+  <o2 form action="./view" id="form">
+    <o2 input type="hidden" name="parentId" value="$parentId"/>   <!--  -->
+    <o2 input type="hidden" name="addedPageId"/>   <!--  -->
+    <o2 input type="hidden" name="removedPageId"/> <!--  -->
+
+    <o2 setVar "$currentSiteName"></o2:setVar>
+    <o2 foreach "$page in $pages">
+      <o2 if "$page->{hostname} ne $currentSiteName">
+         <o2 setVar "$currentSiteName">$page->{hostname}</o2:setVar>
+         $page->{hostname}:<br>
+      </o2:if>
+
+      <!-- Page error -->
+      <o2 if "$page->{status} eq 'objectNotAPage'">
+        $lang->getString('o2.Category.FrontpageSlotPublisher.objectNotAPage') <br>
+      </o2:if>
+      <o2 elsif "$page->{status} eq 'missingObject'">
+        $lang->getString('o2.Category.FrontpageSlotPublisher.missingObject') <br>
+      </o2:elsif>
+      <o2 elsif "$page->{status} eq 'pageHasNoDirectPublishSlots'">
+        $lang->getString('o2.Category.FrontpageSlotPublisher.pageHasNoDirectPublishSlots') <br>
+      </o2:elsif>
+
+      <!-- Page ok -->
+      <o2 else>
+        <o2 input type="checkbox" name="selectedPageIds" value="$page->{page}->getId()" checked="$page->{checked}" onchange="tellParentFrame()"/>
+        <o2 if "$page->{status} eq 'multipleSlots'">
+          <img src="<o2 iconUrl action='O2-action-collapse'/>" id="toggleSlotListButton" onclick="toggleSlotList( $page->{page}->getId(), this )" title="$lang->getString('o2.Category.FrontpageSlotPublisher.toggleButtonToolTip')">
+        </o2:if>
+        <o2 else>
+          <img src="/images/pix.gif" width="16" height="16">
+        </o2:else>
+  
+        <img src= $page->{page}->getIconUrl() dragid="$page->{page}->getId()"> $page->{category} <br>
+      
+        <div id="slotList_$page->{page}->getId()" style="display:none">
+          <o2 if "$page->{status} eq 'singleSlot'">
+            <o2 input type="hidden" name="$page->{page}->getId()" value="$page->{directPublishSlots}->[0]->{slotId}"/>
+          </o2:if>
+      
+          <o2 if "$page->{status} eq 'multipleSlots'">
+            <o2 foreach "$slot in $page->{directPublishSlots}">
+              <o2 setVar "$checked"><o2 if "$slot->{slotId} eq $page->{selectedSlotId}" then="1" else="0" /></o2:setVar>
+              <o2 input type="radio" name="selectedSlotId_$page->{page}->getId()" value="$slot->{slotId}" checked="$checked" onchange="tellParentFrame()"> $slot->{title} </o2:input>
+              (
+              <o2 if "$slot->{existingContent}"><img src="$slot->{existingContent}->getIconUrl()">$slot->{existingContent}->getMetaName()</o2:if>
+              <o2 else><i>$lang->getString('o2.Category.FrontpageSlotPublisher.emptySlot')</i></o2:else>
+              )
+              <br>
+            </o2:foreach>
+          </o2:if>
+        </div>
+      </o2:else>
+
+    </o2:foreach>
+  </o2:form>
+</div>
+
+
+<o2 addJs where="onLoad">
+  tellParentFrame(); // tell parent frame about initial status
+  var frontpageList = getComponentById('frontpageList');
+  var listObjects = [];
+  <o2 foreach "$page in $pages">
+    <o2 if "$page->{page}">
+      listObjects[listObjects.length] = <o2 objectHash>$page->{page}</o2:objectHash>;
+    </o2:if>
+  </o2:foreach>
+  frontpageList.setListObjects(listObjects);
+</o2:addJs>
+
+
+<o2 addJs>
+// drag/drop list for receiving objects dropped in list
+function FrontpageList(componentId) {
+  this.id = componentId;
+  initDragContainer(document.getElementById(this.id));
+}
+
+FrontpageList.prototype.ondrop = function(from,to) {
+  var form = document.forms['form'];
+  form.addedPageId.value = from.data.id;
+  form.submit();
+}
+
+FrontpageList.prototype.getDragDataById = function(dragId) {
+  return this.list[ this.getIndexByValue(dragId) ];
+}
+
+FrontpageList.prototype.getIndexByValue = function(id) {
+  for( var ix=0; ix<this.list.length; ix++ ) {
+    if( this.list[ix].id == id ) return ix;
+  }
+}
+
+FrontpageList.prototype.removeItemAt = function(ix) {
+  var form = document.forms['form'];
+  form.removedPageId.value = this.list[ix].id;
+  form.submit();
+}
+
+FrontpageList.prototype.setListObjects = function(list) {
+  this.list = list;
+}
+
+
+
+// pack current form state into a string, and pass it to setDirectPublishData() in parent frame
+function tellParentFrame() {
+  var form = document.getElementById('form');
+  var directPublishData = '';
+  var selectedElms = _alwaysArray(form.elements['selectedPageIds']);
+  for( var i=0; i<selectedElms.length; i++ ) {
+    if( selectedElms[i].checked ) {
+      var pageId = selectedElms[i].value;
+
+      var slotIdElms = _alwaysArray(form.elements['selectedSlotId_'+pageId]);
+      for( var j=0; j<slotIdElms.length; j++ ) {
+        if( slotIdElms[j].checked ) {
+          if( directPublishData ) directPublishData += ',';
+          directPublishData += pageId+':'+slotIdElms[j].value;
+        }
+      }
+    }
+  }
+  var debugElm = document.getElementById('debug');
+  if( debugElm ) debugElm.innerHTML = directPublishData;
+  parent.setDirectPublishData(directPublishData);
+}
+
+function toggleSlotList(pageId, slotListButtonImg) {
+  var slotList = document.getElementById('slotList_'+pageId);
+  if( slotList.style.display=='none' ) {
+    slotList.style.display = 'block';
+    slotListButtonImg.src='<o2 iconUrl action="O2-action-expand"/>';
+  } else {
+    slotList.style.display = 'none';
+    slotListButtonImg.src='<o2 iconUrl action="O2-action-collapse"/>';
+  }
+}
+
+function _alwaysArray(elm) {
+  if( typeof(elm)=='undefined' ) return [];
+  if( elm.length ) return elm;
+  return [elm];
+}
+</o2:addJs>

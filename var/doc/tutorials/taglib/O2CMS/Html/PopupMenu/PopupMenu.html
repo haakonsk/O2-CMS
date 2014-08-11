@@ -1,0 +1,40 @@
+<o2 use O2Doc::Tutorial />
+
+<o2 docSection title="PopupMenu, addMenuItem, addSeparator">
+  To test, right click somewhere in the page. The menu will appear in the top left corner.
+  <o2 docSection title="Syntax">
+    <o2 docCode lang="o2ml">
+      <o2 PopupMenu element="contextmenu">
+        <o2 addMenuItem name="item 1" action="alert(1);" />
+        <o2 addMenuItem name="item 2" action="alert(2);" />
+        <o2 addSeparator />
+        <o2 addMenuItem name="item 3" action="alert(3);">alert(4);</o2:addMenuItem>
+      </o2:PopupMenu>
+    </o2:docCode>
+    <o2 docCodeResult useModule="O2CMS::Html::PopupMenu" seeGeneratedHtml="0" seeGeneratedHtmlAsDisplayed="0" />
+  </o2:docSection>
+
+  <o2 docSection title="PopupMenu attributes">
+    <o2 docList class="attributes">
+      <o2 docListItem class="optional">menuId</o2:docListItem>
+      <o2 docListItem class="optional">element - don't know how the popup menu works if "element" is something other than "contextmenu"</o2:docListItem>
+      <o2 docListItem class="optional">cssFile</o2:docListItem>
+      <o2 docListItem class="required content">content - addMenuItem and addSeparator tags</o2:docListItem>
+    </o2:docList>
+  </o2:docSection>
+
+  <o2 docSection title="addMenuItem attributes">
+    <o2 docList class="attributes">
+      <o2 docListItem class="required">name        - the text of the menu item</o2:docListItem>
+      <o2 docListItem class="required">action      - Javascript code to be executed when the element is clicked on</o2:docListItem>
+      <o2 docListItem class="optional">hoverAction - Javascript code to be executed when the mouse pointer is over this element (doesn't work)</o2:docListItem>
+      <o2 docListItem class="optional">icon</o2:docListItem>
+      <o2 docListItem class="optional content">content - Javascript code that is executed when the page loads</o2:docListItem>
+    </o2:docList>
+  </o2:docSection>
+
+  <o2 docSection title="addSeparator attributes">
+    No attributes - adds a horizontal rule to the menu
+  </o2:docSection>
+
+</o2:docSection>

@@ -1,0 +1,31 @@
+<o2 if "$query">
+  <o2 foreach "$conditionGroup in $query->getConditionGroups()">
+    <o2 setVar "$conditions" forceType="array">$conditionGroup->getConditions()</o2:setVar>
+    <o2 foreach "$condition in $conditions">
+      <o2 include "o2://var/templates/System/Search/includes/searchForm/criterion.html" criterionName="$condition->getFieldName()_$condition->getOperator()" values="$condition->getValues()" />
+    </o2:foreach>
+  </o2:foreach>
+  
+  <o2 if "$query->getInFolderCondition()">
+    <o2 setVar "$condition">$query->getInFolderCondition()</o2:setVar>
+    <o2 include "o2://var/templates/System/Search/includes/searchForm/criterion.html" criterionName="parentIdRecursive_in" values="$condition->getValues()" />
+  </o2:if>
+  
+  <o2 if "$query->getLimit()">
+    <o2 setVar "$values"></o2:setVar>
+    <o2 push "$values">$query->getLimit()</o2:push>
+    <o2 include "o2://var/templates/System/Search/includes/searchForm/criterion.html" criterionName="limit" values="$values" />
+  </o2:if>
+  
+  <o2 if "$query->getOrderBy()">
+    <o2 setVar "$values"></o2:setVar>
+    <o2 push "$values">$query->getOrderBy()</o2:push>
+    <o2 include "o2://var/templates/System/Search/includes/searchForm/criterion.html" criterionName="orderBy" values="$values" />
+  </o2:if>
+  
+</o2:if>
+<o2 else>
+  
+  <o2 include "o2://var/templates/System/Search/includes/searchForm/criterion.html" criterionName="name_likeAny" />
+  
+</o2:else>

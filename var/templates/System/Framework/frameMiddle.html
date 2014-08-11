@@ -1,0 +1,111 @@
+<o2 use Html::Form/>
+<o2 use Html::PopupDialog />
+<o2 use Html::Ajax />
+
+<o2 use Js::Lang />
+
+<o2 addJsLangFile file="o2.Category.PublisherSettings" />
+<o2 addJsLangFile file="o2.Site.LinkChecker"           />
+
+<o2 addJsFile file="componentBase"/>
+<o2 addJsFile file="dragDrop"/>
+
+<o2 addCssFile file="dialogBox"                                           />
+<o2 addJsFile  file="gui/system/framework/frameMiddle"                    />
+<o2 addCssFile file="gui/system/framework/frameMiddle"                    />
+<o2 addJsFile  file="util/urlMod"                                         />
+<o2 addJsFile  file="gui/system/framework/dommenu/DomMenuDraggableObject" />
+<o2 addCssFile file="dommenu"                                             />
+
+<o2 header />
+
+<o2 addCss>
+  body {
+    height : 100%;
+  }
+</o2:addCss>
+
+<o2 use O2CMS::Html::StartMenu/>
+
+<div id="startMenu" class="startMenu"></div>
+<table cellspacing="0" cellpadding="0" border="0" width="100%" height="100%">
+  <tr>
+    <td width="300" id="leftColumn" height="100%">
+      <iframe src="<o2 urlMod setMethod='setupLeft'/>" name="left" id="left" frameborder="0" width="100%" height="100%" marginwidth="0" marginheight="0"></iframe>
+    </td>
+    <td id="resizer">
+    </td>
+    <td width="" id="rightColumn" style="border-width:0px 0px 0px 0px; border-style:solid; border-color:#000000;" height="100%">
+      <iframe style="z-index:0;" src="<o2 urlMod setMethod='setupRight'/>" scrolling="no" id="right" name="right" frameborder="0" width="100%" height="100%" marginwidth="0" marginheight="0"></iframe>
+    </td>
+  </tr>
+</table>
+
+
+<o2 use O2CMS::Html::PopupMenu />
+
+<o2 PopupMenu menuId="startMenu" cssFile="startMenu">
+  <o2 StartMenu/>
+</o2:PopupMenu>
+
+
+
+
+
+<o2 popupDialog id="confirmBox" title="$lang->getString('o2.desktop.headerDialogWindowQuestion')" height="140" width="300">
+  <table class="questionBox" border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
+    <tr>
+      <td class="confirmBoxIconCell" id="confirmBoxIconCell">&nbsp;</td>
+      <td class="confirmBoxTextCell" id="confirmBoxText">
+        ConfirmBoxText goes here
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" align="center" >
+        <table border="0" cellpadding="0" cellspacing="2"><tr>
+            <td class="dialogButton" onclick="confirmBoxAnswer(true);"><a style="display:block;width:50px;height:16px;text-decoration:none;text-align:center;border:0px;" class="dialogButton" id="confirmBoxYesBtn" href="#">$lang->getString("o2.desktop.btnYes")</a></td>
+            <td class="dialogButton" onclick="confirmBoxAnswer(false);"><a style="display:block;width:50px;height:16px;text-decoration:none;text-align:center;border:0px;" class="dialogButton" id="confirmBoxNoBtn" href="#" >$lang->getString("o2.desktop.btnNo")</a>
+            </td>
+          </tr></table>
+      </td>
+    </tr>
+  </table>
+</o2:popupDialog>
+
+<o2 popupDialog id="messageBox" showCloseButton="0" title="$lang->getString('o2.desktop.headerDialogWindowMessage')" width="500" xpos="400" ypos="160" visible="0" statusBar="0" resizeAble="0">
+  <table class="messageBox" border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
+    <tr>
+      <!-- The content in this cell (next line) ensures that the cell doesn't collapse to almost zero size when the messageBoxText cell gets a lot of content -->
+      <td class="messageBoxIconCell" id="messageBoxIconCell">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+      <td class="messageBoxTextCell" id="messageBoxText">
+        MessageBoxText goes here
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" align="center">
+        <table border="0" cellpadding="0" cellspacing="2">
+          <tr>
+            <td class="dialogButton" onclick="messageBoxAnswer();" id="messageBoxOkBtn">
+              <a id="messageBoxOkBtnLink" style="display:block;width:50px;height:16px;text-decoration:none;text-align:center;border:0px;" class="dialogButton" href="#">Ok</a>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</o2:popupDialog>
+
+
+<o2 popupDialog id="propertiesDialog" title="$lang->getString('o2.propertiesDialog.headerProperties')" width="620" height="435" resizable="0">
+  <iframe scrolling="no" frameBorder="0" id="propertiesDialogIframe" style="margin: 0; padding: 0; width: 100%; height: 99%;"></iframe>
+</o2:popupDialog>
+
+<o2 popupDialog id="revisionDialog" title="$lang->getString('o2.revisionManager.headerRevisions')" height="340" width="650">
+  <iframe scrolling="no" frameBorder="0" id="revisionDialogIframe" style="margin: 0; padding: 0; width: 100%; height: 99%;"></iframe>
+</o2:popupDialog>
+
+<o2 popupDialog id="keywordDialog" title="$lang->getString('o2.gui.backend.keyword.editor.dialogWindowTitle')" height="410" width="620">
+  <iframe scrolling="no" frameBorder="0" id="keywordDialogIframe" style="margin: 0; padding: 0; width: 100%; height: 99%;"></iframe>
+</o2:popupDialog>
+
+<o2 footer/>

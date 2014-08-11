@@ -1,0 +1,25 @@
+<o2 use Html::Form />
+
+<o2 header title="Logging in to Google Analytics" />
+
+<o2 addCss>
+  #btnSubmit {
+    visibility: hidden;
+  }
+</o2:addCss>
+
+<o2 addJs where="post">
+  document.getElementById("btnSubmit").click();
+</o2:addJs>
+
+<o2 form method="post" action="https://www.google.com/accounts/LoginAuth">
+  <o2 input type="hidden" name="service"          value="analytics" />
+  <o2 input type="hidden" name="Email"            value="$email"    />
+  <o2 input type="hidden" name="Passwd"           value="$password" />
+  <o2 input type="hidden" name="PersistentCookie" value="yes"       />
+  <o2 input type="hidden" name="rmShown"          value="1"         />
+  <o2 input type="hidden" name="continue"         value="http://www.google.com/analytics/home/?et=reset&amp;hl=" />
+  <o2 input type="submit" value="Log in" id="btnSubmit" />
+</o2:form>
+
+<o2 footer />

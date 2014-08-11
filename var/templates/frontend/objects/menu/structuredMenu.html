@@ -1,0 +1,20 @@
+<o2 use O2CMS::Publisher/>
+<o2 use Html/>
+<o2 calc> $object->setPage($page) </o2:calc>
+
+<o2 function renderMenuLevel>
+  <ul id="o2menuItem$levelId" class="structuredMenu">
+    <o2 foreach "$item in $object->getMenuItemsAt($levelId)">
+      <o2 if "$item->getVisible()">
+        <li>
+          <a href="<o2 objectUrl objectId='$item->getTargetId()' />">$item->getTargetName()</a>
+          <o2 if "$item->getExpandable()">
+            <o2 call renderMenuLevel levelId="$item->getTargetId()" menuItem="$item" />
+          </o2:if>
+        </li>
+      </o2:if>
+    </o2:foreach>
+  </ul>
+</o2:function>
+
+<o2 call renderMenuLevel levelId="$object->getTopLevelId()" />

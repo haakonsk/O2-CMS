@@ -1,0 +1,12 @@
+<o2 use Html />
+
+<o2 header title="$title" />
+
+<o2 if "$templatePath">
+  <o2 include $templatePath />
+</o2:if>
+<o2 else>
+  <o2 slot id="content" />
+</o2:else>
+
+<o2 footer />

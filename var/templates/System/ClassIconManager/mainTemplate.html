@@ -1,0 +1,41 @@
+<o2 use Html::Form />
+
+<o2 header />
+
+<h1>The SSCNIM app</h1>Super Simple ClassName IconManager
+
+<o2 form setMethod="saveIcons" removeParams="1" method="post" autoComplete="off">
+  <table border="1">
+    <tr>
+      <td> className </td>
+      <td> size 16</td>
+      <td> size 24</td>
+      <td> size 32</td>
+    </tr>
+    <o2 foreach "$className in $classNames">
+      <tr>
+        <td><b>$className</b></td>
+        <td onClick="showUpload('$className::16')"><img src="<o2 iconUrl>$className</o2:iconUrl>">
+          <o2 input type="file" id="$className::16" name="$className::16" style="display:none;"/>
+        </td>
+        <td onClick="showUpload('$className::24')"><img src="<o2 iconUrl size=24>$className</o2:iconUrl>">
+          <o2 input type="file" id="$className::24" name="$className::24" style="display:none;"/>
+        </td>
+        <td onClick="showUpload('$className::32')"><img src="<o2 iconUrl size=32>$className</o2:iconUrl>">
+          <o2 input type="file" id="$className::32" name="$className::32" style="display:none;"/>
+        </td>
+      </tr>
+    </o2:foreach>
+    <tr><td colspan="4" align="right">
+        <o2 input type="submit" value="upload icons"/>
+      </td></tr>
+  </table>
+</o2:form>
+
+<o2 addJs>
+  function showUpload(id) {
+    document.getElementById(id).style.display="";
+  }
+</o2:addJs>
+
+<o2 footer />

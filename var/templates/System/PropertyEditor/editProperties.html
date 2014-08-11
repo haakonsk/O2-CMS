@@ -1,0 +1,153 @@
+<o2 use Html::Form />
+<o2 use O2CMS::ApplicationFrame />
+
+<o2 header/>
+
+<o2 addCssFile file="system/propertyEditor" />
+
+<o2 addJsFile file="o2escape" />
+<o2 addJsFile file="ajax" />
+
+
+<o2 addJs>
+  function editProperty(propertyName, objectId) {
+    o2.ajax.call({
+      setDispatcherPath : "o2cms",
+      setClass          : "System-PropertyEditor",
+      setMethod         : "editPropertyRow",
+      setParams         : { objectId : objectId, propertyName : propertyName },
+      handler           : "editPropertyHandler"
+    });
+  }
+  
+  function editPropertyHandler(data) {
+    var properties = document.getElementById("properties");
+    var divId = "property_"+data.objectId+"_"+data.propertyName;
+    var div = document.getElementById(divId);
+    if (!div) {
+      div = document.createElement("tr");
+      div.setAttribute("id", divId);
+      properties.appendChild(div);
+    }
+    div.innerHTML = data.html;
+  }
+  
+  function addProperty(propertyName) {
+    window.location="./editProperties?objectId="+ $objectId +"&includePropertyName="+ propertyName;
+  }
+  
+  function removeProperty(objectId, propertyName) {
+    if( confirm(" $lang->getString('o2.System.PropertyEditor.confirmDelete') ") ) {
+      window.location = "./removeProperty?objectId="+objectId+"&propertyName="+propertyName+"&nextUrl="+escape("editProperties?objectId=$objectId&ok=1");
+    }
+  }
+</o2:addJs>
+
+
+<o2 ApplicationFrameHeader frameTitle="$lang->getString('o2.System.PropertyEditor.frameTitle')" showCloseButton="1" useCloseAction="" disableScrollbar="" />
+
+
+<o2 if "$displayAdvancedProperties">
+  <a href="./editProperties?objectId=$objectId&displayAdvancedProperties=0">$lang->getString("o2.System.PropertyEditor.goToSimpleView")</a>
+</o2:if>
+<o2 else>
+  <a href="./editProperties?objectId=$objectId&displayAdvancedProperties=1">$lang->getString("o2.System.PropertyEditor.goToAdvancedView")</a>
+</o2:else>
+
+
+<o2 form setMethod="saveProperties">
+  <input type="hidden" name="objectId" value="$objectId">
+
+  <o2 if "$displayAdvancedProperties">    
+    <o2 setVar "$colspan">-1</o2:setVar>
+    <o2 foreach "$part in $path">
+      <o2 set "$colspan++" />
+    </o2:foreach>
+    <table border="0" id="properties" cellpadding="0" cellspacing="0">
+      <tr>
+        <th rowspan="2">$lang->getString("o2.System.PropertyEditor.propertyColumn")</th>
+        <th colspan="$colspan">$lang->getString("o2.System.PropertyEditor.parentValues")</th>
+        <th>$lang->getString("o2.System.PropertyEditor.valueColumn")</th>
+      </tr>
+      <tr>
+        <o2 foreach "$part in $path">
+          <th class="propertyPath">/<a href="./editProperties?objectId=$part->getId()">$part->getMetaName()</a></th>
+        </o2:foreach>
+      </tr>
+      
+      <o2 foreach "$property in $properties">
+        <tr>
+          <td>
+            <div class="propertyName"><a href="./editDefinition?propertyName=$property->getName()&returnToObjectId=$objectId">$property->getName()</a></div>
+            <div class="propertyDescription">$property->getDefinition()->getDescription()</div>
+          </td>
+          <o2 foreach "$part in $path">
+            <o2 setVar "$parentProperty">$parentProperties->{ $property->getName() }->{ $part->getId() }</o2:setVar>
+            <td id="property_$part->getId()_$property->getName()" class="propertyValue">
+              <o2 if "$part->getId() == $objectId">
+                <img src="/images/system/edit_16.gif" onclick="editProperty('$property->getName()', $part->getId())"> 
+                $property->getHumanReadableValue()
+                
+                <o2 if "$parentProperty && !$parentProperty->isInherited()">
+                  <img src="/images/system/remov_16.gif" title="Remove definition" onclick="removeProperty($part->getId(), '$parentProperty->getName()')">
+                </o2:if>
+              </o2:if>
+              <o2 elsif "$parentProperty && !$parentProperty->isInherited()">
+                $parentProperty->getHumanReadableValue()
+              </o2:elsif>
+              
+            </td>
+          </o2:foreach>
+        </tr>
+      </o2:foreach>
+      
+    </table>
+    
+    <o2 input type="submit" value="$lang->getString('o2.System.PropertyEditor.saveButton')"/>
+    <o2 input type="button" onclick="window.location='./editDefinition?returnToObjectId=$objectId'" value="$lang->getString('o2.System.PropertyEditor.addNewPropertyButton')"/>
+
+
+    <o2 if "@{$unusedDefinitions}>0">
+      <label for="unusedDefinitions">Unused definitions</label>
+      <select id="unusedDefinitions" onchange="addProperty(this.options[this.selectedIndex].value)">
+        <option>-</option>
+        <o2 foreach "$definition in $unusedDefinitions">
+          <option value="$definition->getPropertyName()">$definition->getMetaName()</option>
+        </o2:foreach>
+      </select>
+    </o2:if>
+  </o2:if>
+  <o2 else>
+    <table id="properties">
+      <tr>
+        <th>$lang->getString("o2.System.PropertyEditor.propertyColumn")</th>
+        <th>$lang->getString("o2.System.PropertyEditor.valueColumn")</th>
+      </tr>
+      
+      <o2 foreach "$property in $properties">
+        <o2 if "$property->getDefinition()->getId() > 0">
+          <tr>
+            <td class="propertyName">
+              <div class="propertyName">
+                $property->getName()
+              </div>
+              <div class="propertyDescription">
+                $property->getDefinition()->getDescription()
+              </div>
+            </td>
+            <td class="propertyValue">
+              <o2 include "editPropertyRow.html"/>
+              <o2 if "$property && !$property->isInherited()">
+                <img src="/images/system/remov_16.gif" title="Remove definition" onclick="removeProperty($property->getObjectId(), '$property->getName()')">
+              </o2:if>
+            </td>
+          </tr>
+        </o2:if>
+      </o2:foreach>
+    </table>
+    <o2 input type="submit" value="$lang->getString('o2.System.PropertyEditor.saveButton')"/>
+  </o2:else>
+
+</o2:form>
+
+<o2 footer/>

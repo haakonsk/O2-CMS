@@ -1,0 +1,58 @@
+<o2 use Html::Ajax />
+<o2 use I18N />
+
+<o2 addCssFile file="tellAFriend" />
+
+<o2 addJs where="pre">
+  function showMailIsSentConfirmation() {
+    o2.temporaryMessage.setMessage({
+      "type"    : "info",
+      "message" : "$lang->getString('grids.tellAFriend.msgEmailIsSent')",
+      "id"      : "mailSentMsg"
+    });
+  }
+
+  function showMailIsSentError() {
+    o2.temporaryMessage.setMessage({
+      "type"    : "error",
+      "message" : "$lang->getString('grids.tellAFriend.errorCouldntSend')",
+      "id"      : "mailSentMsg"
+    });
+  }
+</o2:addJs>
+
+
+
+<div class="tellAFriend">
+
+  <h1>$lang->getString("grids.tellAFriend.title")</h1>
+
+  <h2>$lang->getString("grids.tellAFriend.subTitle")</h2>
+
+  <p id="mailSentMsg"></p>
+
+  <p>$lang->getString("grids.tellAFriend.description")</p>
+
+  <o2 ajaxForm method="post" setDispatcherPath="o2" setClass="Mail-TellAFriend" setMethod="tell" removeParams="1"
+    onSuccess="showMailIsSentConfirmation();" onError="showMailIsSentError();" ruleTitle="$lang->getString('grids.tellAFriend.ruleTitle')">
+
+    <o2 setVar "$url">$ENV->{SCRIPT_URI}</o2:appendVar>
+    <o2 if "$ENV->{QUERY_STRING}">
+      <o2 appendVar "$url" delimiter="?">$ENV->{QUERY_STRING}</o2:appendVar>
+    </o2:if>
+
+    <o2 setVar "$contentObject">$page->getSlotContentById("content")</o2:setVar>
+
+    <o2 input type="hidden" name="url"   value="$url" />
+    <o2 input type="hidden" name="title" value="$contentObject->getTitle()" />
+    <div class="emailFields">
+      <o2 input type="text" label="$lang->getString('grids.tellAFriend.lblRecipientEmail')" name="recipientEmail" rule="email" ruleMsg="$lang->getString('grids.tellAFriend.errorRecipientEmail')" />
+      <o2 input type="text" label="$lang->getString('grids.tellAFriend.lblSenderEmail')"    name="senderEmail"    rule=""      ruleMsg="$lang->getString('grids.tellAFriend.errorSenderEmail')"    />
+    </div>
+    <div class="commentField">
+      <o2 textarea label="$lang->getString('grids.tellAFriend.lblComment')" name="comment" />
+    </div>
+    <p><o2 input type="submit" value="$lang->getString('grids.tellAFriend.btnSend')" /></p>
+  </o2:ajaxForm>
+
+</div>

@@ -1,0 +1,52 @@
+<o2 include "header.html" disableScrollbars="0" />
+
+
+<o2 addJsFile file="jquery" />
+
+<o2 addCss>
+  .inactive {
+    display : none;
+  }
+  table.datagrid td {
+    border-right : 1px solid black;
+  }
+  table.datagrid tr {
+    cursor : pointer;
+  }
+</o2:addCss>
+
+<o2 table sortable="1" class="datagrid">
+
+  <tr>
+    <th>$lang->getString("dialogHeaderName")</th>
+    <th>$lang->getString("dialogHeaderUsername")</th>
+    <th>$lang->getString("dialogHeaderStatus")</th>
+    <th>$lang->getString("dialogHeaderAddedDate")</th>
+  </tr>
+
+  <o2 if "!@{$users}">
+    <tr>
+      <td colspan="5">$lang->getString("errorMessages.noUserAdded")</td>
+    </tr>
+  </o2:if>
+
+  <o2 foreach "$user in $users">
+    <o2 setVar "$userIsActive"><o2 if "$user->getMetaStatus() eq 'active'" then="1" /></o2:setVar>
+    <o2 setVar "$rowClass"    ><o2 if "!$userIsActive" then="inactive" /></o2:setVar>
+    <tr onClick="editUser( $user->getId() )" class="$rowClass">
+      <o2 setVar "$imgSrc"><o2 iconUrl size="16">$user->getMetaClassName()</o2:iconUrl></o2:setVar>
+      <td><img style="vertical-align:middle;" src="$imgSrc" border="0">$user->getFullName()</td>
+      <td>$user->getUsername()</td>
+      <td align="center"><o2 encodeEntities off><o2 if "$userIsActive" then="$lang->getString('userStatusActive')" else="$lang->getString('userStatusInactive')" /></o2:encodeEntities></td>
+      <td align="center"><o2 dateFormat>$user->getMetaCreateTime()</o2:dateFormat></td>
+    </tr>
+  </o2:foreach>
+
+</o2:table>
+
+<p>
+  <a href="javascript: void( $('.inactive').toggle() );">$lang->getString('linkToggleShowInactiveUsers')</a>
+</p>
+
+
+<o2 include "footer.html" />

@@ -1,0 +1,107 @@
+package O2CMS::Backend::Gui::System::Console;
+
+use strict;
+
+use base 'O2CMS::Backend::Gui';
+
+use O2 qw($context $cgi $db);
+
+# Log entries older than this number of days will be deleted:
+my $MAX_AGE_ERRORS     = 180; # Errors may cause strange bugs that we may not notice before long after they occurred, so we shouldn't delete them too early.
+my $MAX_AGE_NOT_ERRORS =  14; # Less important and we don't want the tables to grow too big.
+
+#------------------------------------------------------------------
+sub init { 
+  my ($obj) = @_;
+  $obj->_deleteOldLogEntries();
+  my ($query, $placeHolders) = $obj->_buildQuery('select count(*)');
+  $obj->display(
+    'showConsole.html',
+    gui             => $obj,
+    totalNumResults => $db->fetch($query, @{$placeHolders}),
+  );
+}
+#------------------------------------------------------------------
+sub _buildQuery {
+  my ($obj, $startOfQuery) = @_;
+  my $fromDate =       $obj->getParam( 'fromDate' );
+  $fromDate   .= ' ' . $obj->getParam( 'fromTime' ) if $fromDate;
+  my $toDate   =       $obj->getParam( 'toDate'   );
+  $toDate     .= ' ' . $obj->getParam( 'toTime'   ) if $fromDate;
+  
+  my $dateFormatter = $context->getDateFormatter();
+  my $startEpoch = $fromDate  ?  $dateFormatter->dateTime2Epoch( $fromDate )  :  time-86400;
+  my $endEpoch   = $toDate    ?  $dateFormatter->dateTime2Epoch( $toDate   )  :  time;
+  
+  my $query = "$startOfQuery from O2_CONSOLE_LOG where timestamp >= ? and timestamp <= ?";
+  my @placeHolders = ($startEpoch, $endEpoch);
+  if ($obj->getParam('type')) {
+    $query .= ' and logType = ?';
+    push @placeHolders, $obj->getParam('type');
+  }
+  if ($obj->getParam('filterOn') && $obj->getParam('filterMatch')) {
+    my $filterOn = $obj->getParam('filterOn');
+    die "Error in 'filterOn' parameter" if $filterOn =~ m{ \W }xms;
+    
+    $query .= " and " . $obj->getParam('filterOn') . ' = ?';
+    push @placeHolders, $obj->getParam('filterMatch');
+  }
+  return ($query, \@placeHolders);
+}
+#------------------------------------------------------------------
+sub getResults {
+  my ($obj, $skip, $limit) = @_;
+  my ($query, $placeHolders) = $obj->_buildQuery('select *');
+  my $lines = $db->fetchAll("$query order by id desc limit $skip, $limit", @{$placeHolders});
+  return @{$lines};
+}
+#------------------------------------------------------------------
+sub resetConsole {
+  my ($obj) = @_;
+  $db->sql('truncate table O2_CONSOLE_LOG');
+  $obj->init();
+}
+#------------------------------------------------------------------
+sub deleteLogEntry {
+  my ($obj) = @_;
+  my $rowId = $obj->getParam('rowId');
+  my ($id) = $rowId =~ m{ logRow (\d+) }xms;
+  eval {
+    $db->sql("delete from O2_CONSOLE_LOG where id = ?", $id);
+  };
+  if ($@) {
+    $obj->error("Error deleting row: $@");
+  }
+  return 1;
+}
+#------------------------------------------------------------------
+sub deleteByFilter {
+  my ($obj) = @_;
+  my ($query, $placeHolders) = $obj->_buildQuery('delete');
+  $db->sql($query, @{$placeHolders});
+  $cgi->redirect(
+    setMethod    => 'init',
+    removeParams => '1',
+  );
+}
+#------------------------------------------------------------------
+sub deleteRows {
+  my ($obj) = @_;
+  $db->sql('delete from O2_CONSOLE_LOG where id in (' . $obj->getParam('ids') . ')');
+  $obj->init();
+}
+#------------------------------------------------------------------
+sub deleteAllRowsBut {
+  my ($obj) = @_;
+  $db->sql('delete from O2_CONSOLE_LOG where id not in (' . $obj->getParam('ids') . ')');
+  $obj->init();
+}
+#------------------------------------------------------------------
+sub _deleteOldLogEntries {
+  my ($obj) = @_;
+  $db->sql( "delete from O2_CONSOLE_LOG where logType != 'error' and timestamp < ?", time - $MAX_AGE_NOT_ERRORS*24*60*60 );
+  $db->sql( "delete from O2_CONSOLE_LOG where logType  = 'error' and timestamp < ?", time - $MAX_AGE_ERRORS*24*60*60     );
+  return 1;
+}
+#------------------------------------------------------------------
+1;

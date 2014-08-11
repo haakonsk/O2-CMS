@@ -1,0 +1,108 @@
+<o2 use Html::Form />
+<o2 use O2CMS::ApplicationFrame />
+<o2 use O2CMS::Html::ToolBarMenu />
+<o2 use StringFormat />
+<o2 use DateFormat />
+
+<o2 use I18N />
+<o2 setResourcePath>o2.applications.system.console</o2:setResourcePath>
+
+<o2 addJsFile file="util/urlMod"    />
+<o2 addJsFile file="system/console" />
+
+<o2 addCssFile file="system/console" />
+
+<o2 header />
+
+<o2 setVar "$appName">$lang->getString('applicationName')</o2:setVar>
+<o2 ApplicationFrameHeader frameTitle="$appName" showCloseButton="1" showSettingsButton="0" path="O2 Console" />
+<o2 toolBarMenu>
+  <o2 addItem name="$lang->getString('lblAll')"      icon="/images/system/checkin_16.gif"      width="50px"  action="filterLinesByType('');"        />
+  <o2 addItem name="$lang->getString('lblErrors')"   icon="/images/system/console/error.gif"   width="100px" action="filterLinesByType('error');"   />
+  <o2 addItem name="$lang->getString('lblWarnings')" icon="/images/system/console/warning.gif" width="90px"  action="filterLinesByType('warning')"  />
+  <o2 addItem name="$lang->getString('lblMessages')" icon="/images/system/console/message.gif" width="90px"  action="filterLinesByType('message');" />
+  <o2 addItem name="$lang->getString('lblDebug')"    icon="/images/system/console/debug.gif"   width="70px"  action="filterLinesByType('debug');"   />
+  <o2 addSeparator />
+  <o2 addItem name="$lang->getString('lblRefresh')"        icon="/images/system/ref_16.gif"    width="100px" action="refresh();"              />
+  <o2 addItem name="$lang->getString('lblFilter')"         icon="/images/system/filter_16.gif" width="100px" action="toggleShowFilterLine();" />
+  <o2 addItem name="$lang->getString('lblResetConsole')"   icon="/images/system/del_16.gif"    width="100px" action="resetConsole();"         />
+  <o2 addItem name="$lang->getString('btnDeleteByFilter')" icon="/images/system/del_16.gif"    width="110px" action="deleteFilterMatches();"  />
+</o2:toolBarMenu>
+
+<div id="filterLine">
+  <o2 form name="filter" setMethod="init" removeParams="1">
+    <o2 setVar "$fromTime"><o2 if "$q->{fromTime}" then="$q->{fromTime}" else="00:00" /></o2:setVar>
+    <o2 setVar "$toTime"  ><o2 if "$q->{toTime}"   then="$q->{toTime}"   else="00:00" /></o2:setVar>
+    <o2 dateSelect name="fromDate" style="width: 80px;" format="yyyy-MM-dd" maxDate="today" label="$lang->getString('lblFromDate')" value="$q->{fromDate}" noObject="1" />
+    <o2 input name="fromTime" label="$lang->getString('lblFromTime')" style="width: 40px" value="$fromTime" rule="regex:/^([01]\d|2[0123]):[012345]\d$/" ruleMsg="$lang->getString('ruleMsgFromTime')" />
+    <o2 dateSelect name="toDate" style="width: 80px;" format="yyyy-MM-dd" maxDate="today" label="$lang->getString('lblToDate')" value="$q->{toDate}" noObject="1" />
+    <o2 input name="toTime" label="$lang->getString('lblToTime')" style="width: 40px" value="$toTime" rule="regex:/^([01]\d|2[0123]):[012345]\d$/" ruleMsg="$lang->getString('ruleMsgToTime')" />
+    |
+    <o2 select name="filterOn" onChange="this.form.filterMatch.select();" value="$q->{filterOn}">
+      <o2 option value="id"      >$lang->getString('lblId')</o2:option>
+      <o2 option value="package" >$lang->getString('lblPackage')</o2:option>
+      <o2 option value="method"  >$lang->getString('lblMethod')</o2:option>
+      <o2 option value="url"     >$lang->getString('lblUrl')</o2:option>
+      <o2 option value="referrer">$lang->getString('lblReferrer')</o2:option>
+      <o2 option value="userId"  >$lang->getString('lblUserId')</o2:option>
+      <o2 option value="message" >$lang->getString('lblMessage')</o2:option>
+    </o2:select>
+    =
+    <o2 input type="text" name="filterMatch" value="$q->{filterMatch}" />$q->{filterMatch}
+    | <label for="filterFormLogType">$lang->getString('lblType') = </label>
+    <o2 select name="type" id="filterFormLogType" value="$q->{type}">
+      <o2 option value=""       >$lang->getString('lblAll')</o2:option>
+      <o2 option value="error"  >$lang->getString('lblErrors')</o2:option>
+      <o2 option value="warning">$lang->getString('lblWarnings')</o2:option>
+      <o2 option value="message">$lang->getString('lblMessages')</o2:option>
+      <o2 option value="debug"  >$lang->getString('lblDebug')</o2:option>
+    </o2:select>
+    <o2 input type="submit" value="$lang->getString('btnFilter')" />
+    <o2 input type="button" value="$lang->getString('btnReset')" onClick="clearForm();" />
+  </o2:form>
+</div>
+
+<o2 pagination numPerPage="25" elements="$gui->getResults($skip, $limit)" totalNumResults="$totalNumResults" linkSeparator="|">
+  <p>$lang->getString("msgDisplayingResults", from => $paginationFirstIndex, to => $paginationLastIndex, total => $paginationTotalNumResults)</p>
+  <table id="console" width="100%" cellspacing="1" cellpadding="2" border="0" bgcolor="#DDDDFF">
+    <tr bgcolor="#E5E5E5">
+      <td width="20">&nbsp;</td>
+      <td width="20">&nbsp;</td>
+      <td width="20">&nbsp;</td>
+      <td width="120"><b>$lang->getString('lblTime')</b></td>
+      <td><b>$lang->getString('lblPackage')</b></td>
+      <td><b>$lang->getString('lblMethod')</b></td>
+      <td><b>$lang->getString('lblUrl')</b></td>
+      <td><b>$lang->getString('lblReferrer')</b></td>
+      <td><b>$lang->getString('lblUserId')</b></td>
+      <td><b>$lang->getString('lblIp')</b></td>
+      <td><b>$lang->getString('lblMessage')</b></td>
+    </tr>
+
+    <o2 makeFlipper var="bgColor" values="#F8F8F8, #F8F8F8, #FFFFFF, #FFFFFF"/>
+    <o2 foreach "$line in $paginationResults">
+      <o2 setVar "$date"><o2 dateFormat format="yyyy-MM-dd 'at' HH:mm">$line->{timestamp}</o2:dateFormat></o2:setVar>
+      <o2 textarea id="info$line->{id}" style="display: none;" value="$line->{info}" />
+      <tr bgColor="$bgColor" style="cursor: pointer;" name="logLine" logType="$line->{logType}" id="logRow$line->{id}">
+        <td valign="top" onClick="deleteRow(this.parentNode);"><img src="/images/system/del_16.gif" title="Delete row"></td>
+        <td valign="top">
+          <o2 if "$line->{info}">
+            <img src="/images/system/about_16.gif" onClick="showInfo(document.getElementById('info$line->{id}').value);">
+          </o2:if>
+        </td>
+        <td valign="top"><img src="/images/system/console/$line->{logType}.gif" width="16" height="16"></td>
+        <td valign="top">$date</td>
+        <td valign="top">$line->{package}</td>
+        <td valign="top">$line->{method}</td>
+        <td valign="top"><a href="$line->{url}"      target="_blank"><o2 stringCut "30...">$line->{url}</o2:wordCut></a></td>
+        <td valign="top"><a href="$line->{referrer}" target="_blank"><o2 stringCut "30...">$line->{referrer}</o2:wordCut></a></td>
+        <td valign="top">$line->{userId}</td>
+        <td valign="top">$line->{ip}</td>
+        <td valign="top"><o2 encodeEntities on encodeDollars="1">$line->{message}</o2:encodeEntities></td>
+      </tr>
+    </o2:foreach>
+  </table>
+  <o2 paginationNavigation linkSeparator="&middot;" />
+</o2:pagination>
+
+<o2 footer />

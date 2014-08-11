@@ -1,0 +1,7 @@
+<div id="directPublishMenuItem">
+  <input type="hidden" name="directPublishData" id="directPublishData" value="">
+  <iframe src="about:blank" frameborder="0" border="0" id="directPublishIframe" style="width:215px; height:300px; border: 0px solid #ffffff;"></iframe>
+  <o2 addJs where="onLoad">
+    setTimeout('document.getElementById("directPublishIframe").src="/o2cms/Category-FrontpageSlotPublisher/view?parentId=$article->getMetaParentId()"', 5);
+  </o2:addJs>
+</div>

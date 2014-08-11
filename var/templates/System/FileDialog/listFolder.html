@@ -1,0 +1,86 @@
+<o2 use O2CMS::Objects />
+<o2 use StringFormat />
+
+<o2 addCss>
+  .image, .hiliteImage {
+    padding-left:  2px;
+    padding-right: 2px;
+    padding-top:   5px;
+    cursor:        pointer;
+  }
+  .file, .image {
+    background: white;
+    color:      black;
+    border:     1px solid white;
+    cursor:     pointer;
+  }
+  .hiliteFile, .hiliteImage {
+    background: #EEEEFF;
+    color:      black;
+    border:     1px dotted #7777AA;
+    cursor:     pointer;
+  }
+  .image {
+    border:1px dotted #CCCCCC;
+  }
+</o2:addCss>
+
+<o2 addJs>
+  var path = [];
+  <o2 foreach "$category in $path">
+    path[path.length] = <o2 objectHash >$category</o2:objectHash>;
+  </o2:foreach>
+
+
+  function setCurrentPath(path) {
+    // let application decide if current file is ok
+    var accepted = window.parent.<o2 out>$q->{onObjectChangeMethod}</o2:out>(path[path.length-1]);
+    // tell framework about the choice
+    window.parent.updateComponent_<o2 out>$q->{componentId}</o2:out>(path, accepted);
+  }
+
+  function fileClicked(file) {
+    var newPath = path.concat([file]);
+    setCurrentPath(newPath);
+    if( file.isContainer==1 ) {
+      window.location = './listFolder?folderId='+file.id+'&componentId=$q->{componentId}&viewMode=$q->{viewMode}&onObjectChangeMethod=$q->{onObjectChangeMethod}';
+    }
+  }
+
+  setCurrentPath(path);
+
+</o2:addJs>
+
+
+<o2 header style="margin:2"/>
+
+<o2 if "$q->{viewMode} eq 'thumbnails'">
+  <o2 foreach "$file in $files">
+   <o2 if "$file->isa('O2::Obj::Image')">
+    <div style="padding:2px; float:left">
+     <div id="file$file->getId()" onclick="fileClicked(<o2 objectHash >$file</o2:objectHash>)" 
+       onmouseover="this.className='hiliteImage';" onmouseout="this.className='image';" class="image" style="width:110px; height:120px; text-align:center;">
+       <img src="$file->getScaledUrl(100,100)" alt="$file->getMetaName()"><br> 
+       <o2 stringCut "16..">$file->getMetaName()</o2:stringCut>
+     </div>
+    </div>
+   </o2:if>
+   <o2 else>
+     <div id="file$file->getId()" onclick="fileClicked(<o2 objectHash >$file</o2:objectHash>);" 
+       onmouseover="this.className='hiliteFile'" onmouseout="this.className='file'" class="file">
+       <nobr><img _style="padding-left:3px;border-style:none" src="$file->getIconUrl()">&nbsp;$file->getMetaName()</nobr>
+     </div>
+   </o2:else>
+  </o2:foreach>
+</o2:if>
+<o2 else>
+  <o2 foreach "$file in $files">
+    <div id="file$file->getId()" onclick="fileClicked(<o2 objectHash >$file</o2:objectHash>)" onmouseover="this.className='hiliteFile'" 
+      onmouseout="this.className='file'" class="file">
+      <img _style="padding-left:3px;border-style:none" src="$file->getIconUrl()"> $file->getMetaName()<br>
+    </div>  
+  </o2:foreach>
+</o2:else>
+
+<o2 footer/>
+

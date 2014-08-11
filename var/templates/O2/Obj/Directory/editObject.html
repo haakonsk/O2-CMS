@@ -1,0 +1,42 @@
+<o2 use I18N />
+<o2 setResourcePath>o2.Directory</o2:setResourcePath>
+
+<o2 addJsFile file="util/urlMod" />
+
+<o2 addJs>
+  function sync() {
+    document.getElementById("syncFrame").src = o2.urlMod.urlMod({
+      setClass  : "Directory",
+      setMethod : "sync",
+      setParams : "directoryId=$object->getId()"
+    });
+  }
+</o2:addJs>
+
+<o2 addCss>
+  #editObjectWrapper h2 {
+    background-image: url("/images/icons/o2default/O2CMS/Obj/Directory/O2CMS-Obj-Directory-48.png");
+  }
+</o2:addCss>
+
+<h2>$lang->getString('hdrEditDirectory')</h2>
+
+<p class="helpText">$lang->getString('helpText')</p>
+
+<p>
+  <label for="metaName">$lang->getString("lblCategoryName"):</label>
+  <o2 input id="metaName" name="metaName" value="$object->getMetaName()" rule="" ruleMsg="$lang->getString('errorCategoryName')" onchange="setMetaName(this.value)"/>
+  <span>$lang->getString('msgCategoryName')</span>
+</p>
+
+<p>
+  <label for="object.path">$lang->getString("lblDirectory"):</label>
+  <o2 input id="object.path" name="object.path" value="$object->getPath()" rule="" ruleMsg="$lang->getString('errorDirectory')" onchange=""/>
+  <span>$lang->getString('msgDirectory')</span>
+</p>
+
+<p>
+  <a href="javascript: sync()">Sync</a>
+</p>
+
+<iframe id="syncFrame" width="700" height="400" frameBorder="0"></iframe>

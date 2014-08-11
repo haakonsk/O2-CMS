@@ -1,0 +1,11 @@
+<o2 use O2CMS::Publisher />
+<o2 use Html />
+
+<div class="url urlDefault">
+  <o2 if "$object->getNewWindow()">
+    <o2 link url="$object->getUrl()" target="_blank">$object->getTitle</o2:link>
+  </o2:if>
+  <o2 else>
+    <o2 link url="$object->getUrl()">$object->getTitle</o2:link>
+  </o2:else>
+</div>

@@ -1,0 +1,25 @@
+<o2 use O2CMS::ApplicationFrame />
+
+<o2 use I18N />
+<o2 setResourcePath>o2.Statistics.GoogleAnalytics</o2:setResourcePath>
+
+<o2 header />
+
+<o2 appendVar "$path">$lang->getString('o2.desktop.btnStartMenu')</o2:appendVar>
+<o2 appendVar "$path" delimiter=", ">$lang->getString('o2.applicationNames.o2ToolsFolder')</o2:appendVar>
+<o2 appendVar "$path" delimiter=", ">$lang->getString('o2.applicationNames.o2Tools.o2Analytics')</o2:appendVar>
+<o2 ApplicationFrameHeader frameTitle="$lang->getString('titleChooseAccount')" showCloseButton="1" useCloseAction="" disableScrollBar="0" showSettingsButton="0" path="$path" />
+
+<p>$lang->getString("questionChooseAccount")</p>
+
+<o2 setVar "$href">/o2cms/Statistics-GoogleAnalytics/login</o2:setVar>
+<ul>
+  <o2 foreach "$account in $accounts">
+    <o2 setVar "$site">$account->getSite()</o2:setVar>
+    <li><a href="$href?accountId=$account->getId()">$site->getMetaName()</a></li>
+  </o2:foreach>
+</ul>
+
+<o2 ApplicationFrameFooter />
+
+<o2 footer />

@@ -1,0 +1,20 @@
+
+
+<o2 if "$object->getStatus() eq 'ok'">
+  <o2 setVar "$rdss">$object->getXmlRssObject()</o2:setVar>
+
+  <b>$object->getChannelTitle()</b>
+  <o2 if "$object->hasImage()">
+    <a href="$object->getImageLink()"><img src="$object->getImageUrl()" title="$object->getImageTitle()" border="0"></a>
+  </o2:if>
+  <br>
+
+  <o2 foreach "$item in $object->getItems()">
+    <li><a href="$item->getLink()">$item->getTitle()</a><br>
+    $item->getDescription()
+  </o2:foreach>
+</o2:if>
+<o2 else>
+  <!-- Rss feed error "$object->getStatus()" in "$object->getMetaName()" -->
+</o2:else>
+

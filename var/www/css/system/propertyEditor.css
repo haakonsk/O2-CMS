@@ -1,0 +1,48 @@
+#properties {
+  width: 600px;
+  margin: 15px;
+  border: 0;
+  border-collapse: collapse;
+}
+
+#properties th,
+#properties td {
+  padding: 5px;
+  font-size: 12px;
+}
+
+#properties th {
+  font-size: 14px;
+  text-align: left;
+}
+
+#properties tr:nth-child(odd) {
+  background: #ddd;
+}
+.propertyName { 
+  font-weight: bold;
+}
+.propertyDescription { 
+  font-weight: normal;
+}
+
+.propertyPath { 
+  font-weight: bold;
+}
+
+.propertyValue { 
+  font-weight: bold;
+}
+
+.propertyValue input,
+.propertyValue textarea {
+  border: 1px solid #ccc;
+  padding: 3px;
+  font-size: 12px;
+  width: 350px;
+  font-family: "Verdana", sans-serif;
+}
+
+.propertyValue textarea {
+  height: 100px;
+}

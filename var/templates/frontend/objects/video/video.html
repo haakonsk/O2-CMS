@@ -1,0 +1,11 @@
+<o2 use O2CMS::Publisher/>
+<o2 ifFrontend>
+  <center>
+  <o2 use Html::MediaPlayer/>
+  <o2 MediaPlayer url="$object->getFileUrl()" autoStart="0"/>
+  </center>
+</o2:ifFrontend>
+<o2 ifBackend>
+  $lang->getString('o2.Page.objectTemplate.videoNotVisibleBackend')
+</o2:ifBackend>
+

@@ -1,0 +1,84 @@
+<o2 use Html::Form />
+<o2 use O2CMS::Tree />
+
+<o2 use I18N />
+<o2 setResourcePath>File.Upload</o2:setResourcePath>
+
+<o2 header bgColor="#D4D0C8"/>
+
+<o2 addJs where="pre">
+
+  var previewExtensions = {gif:'image',jpg:'image',jpeg:'image',png:'image',swf:'flash'};
+
+  function fileChange(ix) {
+    var path  = document.getElementById('upload'+ix).value;
+    if (!path) {
+      return previewElm.innerHTML = '';
+    }
+    var ext = path.substring(path.lastIndexOf('.')+1).toLowerCase();
+    var type = previewExtensions[ext];
+    var previewElm = document.getElementById('preview'+ix);
+    if (type=='image') {
+      previewElm.innerHTML = '<a href="javascript:void(window.open(\'./previewImage?file=file://'+path+'\',\'preview\'))"><img src="file://'+path+'" width="40" height="40" border="0"></a>';
+    }
+    else if (type=='flash') {
+      previewElm.innerHTML = 'XXX preview here';
+    }
+    else {
+      previewElm.innerHTML = '';
+    }
+    // windows or unix path?
+    var filename = path.indexOf('\\')>=0 ? path.substring(path.lastIndexOf('\\')+1) : path.substring(path.lastIndexOf('/')+1);
+    document.getElementById('name'+ix).value = filename;
+  }
+
+  // called when a file is selected in chooseFolder component
+  function objectChanged(file) {
+    return file.isContainer==1 ? true : false;
+  }
+
+</o2:addJs>
+
+
+<o2 addCss>
+  h1 {
+    color          : #F0F0F0;
+    letter-spacing : 2px;
+  }
+</o2:addCss>
+
+
+<!--<div style="background-color:#505050; padding:1px 10px 1px 10px"><h1>Upload files</h1></div>-->
+<o2 form setMethod="upload" method="post" name="fileForm">
+  <input type="hidden" name="executeJs" value="window.opener.top.reloadTreeFolder(%%parentId%%);window.close()">
+
+  <o2 contentGroup title="$lang->getString('titleFolder')">
+ 
+    <div style="width:100%; height:200px; border-style: solid; border-color: #808080; border-width:0">
+      <o2 chooseFolder id="folderId" height="175" folderId="$q->{folderId}" onObjectChangeMethod="objectChanged"/>
+    </div>
+
+  </o2:contentGroup>
+
+
+  <o2 contentGroup title="$lang->getString('titleFiles')">
+    <table width="100%">
+      <tr><td>$lang->getString('lblFile')</td><td>$lang->getString('lblO2Name')</td><!--<td>Preview</td>--></tr>
+      <o2 for "(1..$numberOfFiles)">
+        <tr>
+          <td><o2 input id="upload$_" type="file" name="file$_" onchange="fileChange('$_')" class="inputFile"/></td>
+          <td><o2 input id="name$_" name="name$_" class="inputText"/></td>
+          <td style="display:none"><div id="preview$_"></div></td>
+        </tr>
+      </o2:for>
+    </table>
+  </o2:contentGroup>
+
+  <div style="text-align:right;margin-top:4px;margin-right:4px">
+    <o2 input type="submit" value="$lang->getString('btnUpload')" />
+    <o2 input type="button" value="$lang->getString('btnCancel')" onclick="window.close()" />
+  </div>
+
+</o2:form>
+
+<o2 footer />

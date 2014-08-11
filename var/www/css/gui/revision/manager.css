@@ -1,0 +1,15 @@
+table.diff {
+  border-collapse : collapse;
+  min-width       : 100%;
+}
+.diff td.serializedObject {
+  white-space : pre;
+  font-family : monospace;
+}
+.diff td, .diff th {
+  vertical-align : top;
+  border         : 1px solid black;
+}
+.date {
+  font-weight : bold;
+}

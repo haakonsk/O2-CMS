@@ -1,0 +1,65 @@
+.tabLayer {
+  border:0;
+  empty-cells:show;
+-moz-user-focus: ignore;
+-moz-user-input: disabled;
+-moz-user-select: none;
+z-index:10;
+ margin:0px;
+ padding:0px;
+}
+
+.tabLayerBody {
+  clear:both;
+/*  border-left:1px solid #DDDDDD; */
+/*  border-right:1px solid #DDDDDD; */
+/*  height:100%; */
+/*  width:100%;  */
+}
+
+.tabLayerRow {
+ float:left; 
+}
+
+
+
+.tabLayerTabItem {
+  position:relative;
+  float:left;
+  background-Image: url("/images/tablayer/tab-OFF.gif");
+  background-repeat: no-repeat;
+  border:0px solid red;
+  text-decoration:none;
+  font-size:10px;
+  font-family:verdana;
+  text-indent:15px; 
+  padding-top:2px;
+  cursor:pointer;
+}
+
+.tabLayerTabItem DIV  {
+  float:left;
+  width:101px;
+  height:16px;
+  border:0px solid green;
+}
+
+.tabLayerTabItemActive DIV  {
+  float:left;
+  width:101px;
+  height:16px;
+  border:0px solid green;
+}
+
+.tabLayerTabItemActive{
+  position:relative;
+  float:left;
+  background-Image: url("/images/tablayer/tab-ON.gif");
+  background-repeat: no-repeat;
+  border:0px solid green;
+  text-decoration:none;
+  font-size:10px;
+  font-family:verdana;
+  text-indent:15px; 
+ padding-top:2px;
+}

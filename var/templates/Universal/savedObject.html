@@ -1,0 +1,23 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title></title>
+<script language="javascript">
+function displayMessage() {
+  if ('$mode' == 'newObject') {
+    parent.setSaved('edit', '$object->getId()');
+  }
+  top.displayMessage("Your object '$object->getMetaName()' is saved!");
+  top.reloadTreeFolder( $object->getMetaParentId() );
+  if ( parent.closeWindowOnSave ) {
+    top.closeFrame(parent.window.name);
+  }
+  else {
+    parent.setFormChanged(false);
+  }
+}
+</script>
+</head>
+<body onLoad="displayMessage();">
+<!--Put debug info here if you want.-->
+</body>
+</html>

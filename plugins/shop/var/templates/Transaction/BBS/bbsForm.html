@@ -1,0 +1,66 @@
+<o2 comment>
+  Notes
+  The customer configuration file must say if O2 is to host the GUI or not
+  The BBS test system talks on port 9443, production uses 443
+  
+  !! Names and types cannot be changed !!
+  
+  Style as you will
+  
+  Also, I see no need to use O2 form on the autosubmit form... FYI
+</o2:comment>
+
+<o2 use Html />
+<o2 use Html::Form />
+
+<o2 if "$config->{hostBBSGUI} eq 1">
+  <o2 header title="BBS"/>
+</o2:if>
+<o2 else>
+  <o2 comment>
+    When we want BBS to host the UI, we must autosubmit the BBSForm
+  </o2:comment>
+  <o2 header title="BBS" onload="document.BBSForm.submit();"/>
+</o2:else>
+
+<o2 if "$config->{hostBBSGUI} eq 1">
+  <p>
+    Ordrenummer: $order->getId()<br>
+    Transaksjonsnummer: $transaction->getId()<br>
+    Ordresum: $order->getPriceIncVat()<br>
+    Beskrivelse: $orderDescription
+  </p>
+  
+  <o2 form name="BBSForm" method="post" action="$config->{bbsFormAction}">
+    <o2 formTable>
+      <o2 encodeEntities off>$session->get('bbsSetupCode')</o2:encodeEntities>
+      <o2 tr><td><b>Visa</b></td></o2:tr>
+      <o2 input type="text" name="va" size="19" maxlength="19" label="Cardnumber" />
+      <o2 input type="text" name="vm" size="2" maxlength="2" label="Month" />
+      <o2 input type="text" name="vy" size="2" maxlength="2" label="Year" />
+      <o2 input type="text" name="vc" size="4" maxlength="4" label="CVV2" />
+      <o2 tr><td><b>Mastercard</b></td></o2:tr>
+      <o2 input type="text" name="ma" size="19" maxlength="19" label="Cardnumber" />
+      <o2 input type="text" name="mm" size="2" maxlength="2" label="Month" />
+      <o2 input type="text" name="my" size="2" maxlength="2" label="Year" />
+      <o2 input type="text" name="mc" size="4" maxlength="4" label="CVC2" />
+      <o2 tr><td><b>Diners Club</b></td></o2:tr>
+      <o2 input type="text" name="da" size="19" maxlength="19" label="Cardnumber" />
+      <o2 input type="text" name="dm" size="2" maxlength="2" label="Month" />
+      <o2 input type="text" name="dy" size="2" maxlength="2" label="Year" />
+      <o2 input type="text" name="dc" size="4" maxlength="4" label="CVC2" />
+      <o2 tr><td><b>American Express</b></td></o2:tr>
+      <o2 input type="text" name="aa" size="19" maxlength="19" label="Cardnumber" />
+      <o2 input type="text" name="am" size="2" maxlength="2" label="Month" />
+      <o2 input type="text" name="ay" size="2" maxlength="2" label="Year" />
+    </o2:formTable>
+    <o2 input type="submit" value="OK" />
+  </o2:form>
+</o2:if>
+<o2 else>
+  <o2 form name="BBSForm" method="POST" action="$config->{bbsFormAction}">
+    <o2 encodeEntities off>$session->get('bbsSetupCode')</o2:encodeEntities>
+  </o2:form>
+</o2:else>
+
+<o2 footer />

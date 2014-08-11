@@ -1,0 +1,59 @@
+<o2 use Html::Form/>
+<o2 addCss>
+  #editObjectWrapper h2 {
+    background-image: url("/images/icons/o2default/O2CMS/Obj/Site/O2CMS-Obj-Site-48.png");
+  }
+</o2:addCss>
+
+<o2 multilingualController object="$object"/>
+
+<o2 addJs>
+  function showHide() {
+    var elm = document.getElementById("advanced_controls");
+    elm.style.display = (elm.style.display == "block" ? "none" : "block");
+  }
+
+  function preSubmit(f) {
+    if (!getMetaName()) {
+      setMetaName( f["object.hostname"].value );
+    }
+    return true;
+  }
+
+  var DIRECTORY_NAME_CAN_BE_CHANGED = "$object->getId()" ? false : true;
+  function updateDirectoryName(elm) {
+    if (!DIRECTORY_NAME_CAN_BE_CHANGED) {
+      return;
+    }
+    var form     = elm.form;
+    var hostname = elm.value;
+    form["object.directoryName"].value = "$object->getDirectoryName()" + hostname;
+  }
+</o2:addJs>
+
+<h2>Site properties</h2>
+
+<p>
+  <label for="object.title">Category title:</label>
+  <o2 input id="object.title" name="object.title" value="$object->getTitle()" rule="" ruleMsg="Error in title" multilingual="1" />
+  <span>Info about the site title</span>
+</p>
+
+<p>
+  <label for="object.hostname">Hostname:</label>
+  <o2 input id="object.hostname" name="object.hostname" value="$object->getHostname()" onchange="setMetaName(this.value)" rule="hostname" ruleMsg="Error in hostname" onKeyUp="updateDirectoryName(this)" />
+  <a href="javascript:void(showHide())" title="Advanced options"><img src="/images/system/confg_16.gif" border="0" alt=""></a>
+  <span>Info about the hostname</span>
+</p>
+
+<div id="advanced_controls" style="display:none">
+  <p>
+    <label for="object.PortNumber">Port number:</label>
+    <o2 input id="object.portNumber" name="object.portNumber" value="$object->getPortNumber()" class="textInput short"/>
+  </p>
+
+  <p>
+    <label for="object.directoryName">Document root directory:</label>
+    <o2 input id="object.directoryName" name="object.directoryName" value="$object->getDirectoryName()" class="textInput long" onChange="DIRECTORY_NAME_CAN_BE_CHANGED = false;" />
+  </p>
+</div>

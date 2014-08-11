@@ -1,0 +1,77 @@
+<o2 use Html::Ajax />
+<o2 use DateFormat />
+<o2 use NumberFormat />
+
+<o2 use I18N />
+<o2 setResourcePath>ShopManager</o2:setResourcePath>
+
+<o2 header noStyle />
+
+<o2 addCssFile file="gui/shopManager" />
+
+<o2 addCss>
+  .message {
+    max-width : 400px;
+    overflow  : hidden;
+  }
+  .clientIdentifier,
+  .dateTime,
+  .type {
+    vertical-align : top;
+  }
+</o2:addCss>
+
+<o2 include "includes/backLink.html" />
+
+<h1>$object->getMetaClassName()</h1>
+
+<table>
+  <tr>
+    <td>$lang->getString("lblAmount")</td>
+    <td><o2 numberFormat "#,##0.00">$object->getAmount()</o2:numberFormat></td>
+  </tr>
+  <tr>
+    <td>$lang->getString("lblCurrency")</td>
+    <td>$object->getCurrency()</td>
+  </tr>
+  <tr>
+    <td>$lang->getString("lblExternalId")</td>
+    <td>$object->getExternalId()</td>
+  </tr>
+  <tr>
+    <td>$lang->getString("lblOrderId")</td>
+    <td><o2 link setParam="query=$object->getOrderId()">$object->getOrderId()</o2:link></td>
+  </tr>
+  <tr>
+    <td>$lang->getString("lblStatus")</td>
+    <td>$object->getStatus()</td>
+    <o2 if "$object->getStatus() ne 'completed'">
+      <td><o2 link type="button" setMethod="manuallyConfirmTransaction" setParams="transactionId=$object->getId()" confirmMsg="$lang->getString('confirmTransactionManually')">$lang->getString("btnConfirmTransaction")</o2:link></td>
+    </o2:if>
+  </tr>
+  <o2 include "includes/metaInfo.html" skipStatus="1" />
+</table>
+
+<o2 setVar "$logEntries" forceType="array">$object->getLogEntries()</o2:setVar>
+<o2 if "@{$logEntries}">
+  <h2>$lang->getString("hdrTransactionLog")</h2>
+
+  <table>
+    <tr>
+      <th>$lang->getString("lblClientIdentifier")</th>
+      <th>$lang->getString("lblLogType")</th>
+      <th>$lang->getString("lblMessage")</th>
+      <th>$lang->getString("lblDateTime")</th>
+    </tr>
+    <o2 foreach "$logEntry in $logEntries">
+      <tr>
+        <td class="clientIdentifier">$logEntry->{clientIdentifier}</td>
+        <td class="type"            >$logEntry->{type}</td>
+        <td class="message"         ><o2 encodeEntities on>$logEntry->{message}</o2:encodeEntities></td>
+        <td class="dateTime"        ><o2 dateFormat format="yyyy.MM.dd HH:mm:ss">$logEntry->{epochTime}</o2:dateFormat></td>
+      </tr>
+    </o2:foreach>
+  </table>
+</o2:if>
+
+<o2 footer />

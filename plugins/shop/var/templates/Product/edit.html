@@ -1,0 +1,180 @@
+<o2 use Html::Form />
+<o2 header />
+<o2 use DataDumper />
+
+<o2 comment>Ok trying to extract data from product</o2:comment>
+<o2 setVar "$objectId">$product->getId()</o2:setVar>
+<o2 setVar "$active">$product->isActive()</o2:setVar>
+<o2 setVar "$metaName">$product->getMetaName()</o2:setVar>
+<o2 setVar "$name">$product->getName()</o2:setVar>
+<o2 setVar "$priceIncVat">$product->getPriceIncVat()</o2:setVar>
+<o2 setVar "$priceExVat">$product->getPriceExVat()</o2:setVar>
+<o2 setVar "$images" forceType="array">$product->getImages()</o2:setVar>
+  
+<o2 addJs where="pre">
+  // Transform links into a structure that JS speaks
+  var linkArray = new Object(); // Using it as a hash
+
+  <o2 foreach "$key => $value in $links">
+    linkArray['$key'] = '$value';        
+  </o2:foreach>
+
+  function addLink(){
+    // Adds a link to the linkArray().
+    // Will then run displayLinks()
+    var title = document.getElementById('titleBox').value;
+    var url = document.getElementById('urlBox').value;
+    if ( ( title.length > 0 ) && ( url.length > 0 ) ) {
+      linkArray[title] = url;
+      displayLinks();
+    }
+  }
+
+  function removeLink( key ){
+    // Removes a link from the linkArray
+    delete linkArray[key];
+    displayLinks();
+  }
+
+  function displayLinks(){
+    // Display links on page
+    // Basically adds inputs to list
+    var linkString = '0';
+    var linkContainer = document.getElementById('linkContainer');
+    var containerContent = '';
+    for (var key in linkArray) {
+      linkString += ';'+key+'@'+linkArray[key];
+      containerContent += '<p><label for="'+key+'">Title</label> <input id="'+key+'" value="'+key+'"> <label for="'+key+linkArray[key]+'">URL</label> <input id="'+key+linkArray[key]+'" value="'+linkArray[key]+'"> <input type="button" onClick="removeLink(\''+key+'\');" value="Remove" class="btnRemove"></p>';
+    }
+
+    // Add button for adding new links
+    containerContent += '<p><label for="titleBox">Title</label> <input id="titleBox" value=""> <label for="urlBox">URL</label> <input id="urlBox" value=""> <input type="button" onClick="addLink();" value="Add link" class="btnAdd"></p>';
+
+    linkContainer.innerHTML = containerContent;
+
+    // Updating the form with selected links
+    document.getElementById('links').value = linkString;
+  }
+
+  function saveProduct (){
+    document.productForm.imageIds.value = document.getElementById('_imageIds').value;
+    document.productForm.submit();
+  }
+</o2:addJs>
+
+<o2 addCss>
+  h2.editHdr {
+    background-image : url("/images/icons/o2default/O2Plugin/Shop/Obj/Product/O2CMS-Shop-Obj-Product-48.png");
+  }
+  #linkContainer { 
+    float       : left;
+    margin-left : 10px;
+  }
+  #linkContainer p {
+    margin : 0 0 15px 0;
+  }
+  #linkContainer input {
+    border    : 1px solid #555555;
+    font-size : 11px;
+    height    : 20px;
+    padding   : 2px;
+    width     : 121px;
+  }
+  .btnAdd, #linkContainer input.btnAdd {
+    background   : transparent url("/images/icons/o2default/O2/action/add/O2-action-add-16.png") no-repeat center left;
+    padding-left : 18px;
+    border       : none;
+    font-size    : 12px;
+    width        : auto;
+  }
+  .btnRemove, #linkContainer input.btnRemove {
+    background   : transparent url("/images/icons/o2default/O2/action/remove/O2-action-remove-16.png") no-repeat center left;
+    padding-left : 18px;
+    border       : none;
+    font-size    : 12px;
+    width        : auto;
+  }
+  .images label {
+    margin-right : 10px;
+  }
+  .imageWrapper {
+    clear : both;
+  }
+  .imageWrapper img {
+    float      : left;
+    border     : 1px solid #333;
+    margin     : 5px;
+    background : #478acc;
+    padding    : 3px;
+  }
+  .productsButton {
+    float          : left;
+    clear          : left;
+    margin-left    : 380px;
+    padding-bottom : 15px;
+  }
+  .links, .images {
+    margin-left : 20px;
+    float       : left;
+    clear       : left;
+  }
+</o2:addCss>
+
+<h2 class="editHdr">Edit product</h2>
+<o2 form setMethod="save" method="post" name="productForm">
+  <o2 formTable>
+    
+    <o2 checkboxGroup name="active" label="Status" values="$active" display="inline">
+      <o2 checkbox value="1" label="Active" accesskey="o" />
+    </o2:checkboxGroup>
+    
+    <o2 checkboxGroup name="allowIndexing" label="Allow indexing" values="$allowIndexing" display="inline">
+      <o2 checkbox value="1" label="Allow" accesskey="o" />
+    </o2:checkboxGroup>
+    
+    <o2 input type="text" name="disabledObjectId" label="Object Id"       value="$objectId" class="textInput short" disabled="disabled"/>
+    <o2 input type="text" name="metaParentId"     label="Parent Id"       value="$parentId" class="textInput short" />
+    <o2 input type="text" name="metaName"         label="MetaName"        value="$metaName" />
+    <o2 input type="text" name="name"             label="Name"            value="$name" />
+    <o2 input type="text" name="priceIncVat"      label="Price (inc VAT)" value="$priceIncVat" class="textInput short" />
+    <o2 input type="text" name="priceExVat"       label="Price (ex VAT)"  value="$priceExVat"  class="textInput short" />
+    
+    <o2 textarea name="summary"     label="Summary"     value="$product->getSummary()"     />
+    <o2 textarea name="description" label="Description" value="$product->getDescription()" />
+    
+    <o2 input type="hidden" name="links" id="links"/>
+    <o2 input type="hidden" name="objectId" id="objectId" value="$objectId" />
+    <o2 input type="hidden" name="imageIds" id="imageIds"/>
+    
+  </o2:formTable>
+</o2:form>
+
+<div class="links">
+  <label class="label">Links</label>
+  <div id="linkContainer"></div>
+</div>
+
+<div class="images">
+  <label class="label" for="_imageIds">Images</label>
+  <o2 input type="text" name="imageIds" id="_imageIds" value="$selectedImageIds" />
+  <span>Image ids, seperated by commas.</span>
+  
+  <div class="imageWrapper">
+    <o2 foreach "$image in $images">
+      <o2 img id="$image->getId()" width="100" height="100" onTooBig="crop" alt="$image->getMetaName()"/>
+      <!--<img src="$image->getScaledUrl(200)" alt="$image->getMetaName()">-->
+    </o2:foreach>
+  </div>
+
+</div>
+
+<p class="productsButton">
+  <input type="button" onClick="saveProduct();" value="Save product" class="button">
+</p>
+
+<o2 addJs where="post">
+  // Display links for the first time
+  displayLinks();
+</o2:addJs>
+
+<o2 footer />

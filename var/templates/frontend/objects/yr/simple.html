@@ -1,0 +1,31 @@
+<o2 use DateFormat/>
+<o2 if "$object->getStatus() eq 'ok'">
+  <o2 setVar "$tabular" forceType="array">$object->getTabular()</o2:setVar>
+  <o2 foreach "$item ($tabular->[0], $tabular->[1], $tabular->[2])">
+    <img src="$item->getSymbolUrl()"> <o2 dateFormat format="eeee HH:mm">$item->getFromTime()</o2:dateFormat> $item->getTemperature()&deg;<br>
+    $item->getSymbolName(). $item->getWindSpeedName().<br>
+  </o2:foreach>
+
+<b>$object->getShortTermForecastTitle</b><br>
+$object->getShortTermForecast
+
+
+
+  <o2 comment>Illegal to use YR data without copyright notice: http://www.yr.no/verdata/1.3321307</o2:comment>
+  <a href="$object->getOverviewUrl()">
+  <o2 if "$object->getCurrentLocale() eq 'nb_NO'">
+  Varsel fra yr.no
+  </o2:if>
+  <o2 elsif "$object->getCurrentLocale() eq 'nn_NO'">
+  Varsel frå yr.no
+  </o2:elsif>
+  <o2 else>
+  Forecast from yr.no
+  </o2:else>
+  </a>
+</o2:if>
+<o2 else>
+  <!-- yr feed error! status: '$object->getStatus()', url:'$object->getUrl()' -->
+</o2:else>
+
+

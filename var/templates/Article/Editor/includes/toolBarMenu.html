@@ -1,0 +1,27 @@
+<o2 use O2CMS::Html::ToolBarMenu />
+
+<o2 setVar "$revisionForId"><o2 if "$article->getId" then="$article->getId()" else="0" /></o2:setVar>
+
+<o2 toolBarMenu>
+  <o2 if "$article->getId()">
+    <o2 addItem name="$lang->getString('btnSave')"         icon="/images/system/save_16.gif"         action="saveArticle();"     />
+    <o2 addItem name="$lang->getString('btnSaveAndClose')" icon="/images/system/saveAndClose_16.gif" action="saveArticle(true);" />
+  </o2:if>
+  <o2 else>
+    <o2 addItem name="$lang->getString('btnSave')"         icon="/images/system/save_16.gif"         action="saveArticle();"     />
+    <o2 addItem name="$lang->getString('btnSaveAndClose')" icon="/images/system/saveAndClose_16.gif" action="saveArticle(true);" />
+  </o2:else>
+  
+  <o2 addItem name="$lang->getString('btnSaveAs')" icon="/images/system/savas_16.gif" action="saveAs();" />
+  <o2 if "$article->getId()">
+    <o2 setVar "$undoUrl"><o2 urlMod setClass="Article-Editor" setMethod="init" setParams="artId=$article->getId()&isUndo=1" /></o2:setVar>
+    <o2 addItem name="$lang->getString('btnUndo')" icon="/images/system/undo_16.gif" action="document.location.href = '$undoUrl';" />
+  </o2:if>
+  <o2 addItem name="$lang->getString('btnPreview')" icon="/images/system/docs_16.gif" action="previewPart1();" />
+  <o2 addSeparator />
+  <o2 addItem name="$lang->getString('btnRevisions')" icon="/images/system/forms_16.gif" action="top.showRevisionDialog($revisionForId ,window);"/>
+  <o2 addSeparator />
+  <o2 addCell>
+    <o2 multilingualController object="$article" onSwitchPre="storeText();" onSwitchPost="copyFromHiddenLocaleInputToTextarea();" />
+  </o2:addCell>
+</o2:toolBarMenu>

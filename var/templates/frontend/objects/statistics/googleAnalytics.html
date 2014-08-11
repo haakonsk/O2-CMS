@@ -1,0 +1,14 @@
+<o2 use Html />
+<o2 use O2CMS::Publisher />
+
+<o2 if "$object->getJavascript()">
+  <o2 encodeEntities off>$object->getJavascript()</o2:encodeEntities>
+  <o2 ifBackend>
+    $lang->getString("o2.Statistics.GoogleAnalytics.msgJavascriptIncluded")
+  </o2:ifBackend>
+</o2:elsif>
+<o2 else>
+  <o2 ifBackend>
+    $lang->getString("o2.Statistics.GoogleAnalytics.errorNoAnalyticsId")
+  </o2:ifBackend>
+</o2:else>

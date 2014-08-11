@@ -1,0 +1,98 @@
+<o2 use Html::Form />
+<o2 use O2CMS::ApplicationFrame />
+
+<o2 addCssFile file="gui/universal/editObject" />
+
+<o2 addJsFile file="openwindow"  />
+<o2 addJsFile file="util/urlMod" />
+
+<o2 addJs>
+  var submitErrorTitle   = "";
+  var submitErrorMessage = "";
+  var closeWindowOnSave  = false;
+
+  function checkForm(f) {
+    var preSubmitOk = o2.rules.verifyForm(f);
+    if (preSubmitOk && window.preSubmit) {
+      preSubmitOk = preSubmit(f);
+    }
+    if (preSubmitOk) {
+      var parentId = f[ "object.metaParentId" ].value;
+      var filename = f[ "object.metaName"     ].value;
+      if (parentId && filename) {
+        return true;
+      }
+      else {
+        var lockedPath = 0;
+        if (f.lockedPath) {
+          lockedPath = f.lockedPath.value;
+        }
+        var url = o2.urlMod.urlMod({
+          setClass  : "System-FileDialog",
+          setMethod : "saveAsDialog",
+          setParams : "folderId=" + parentId + "&filename=" + filename + "&lockedPath=" + lockedPath
+        });
+        o2.openWindow.openWindow({ url : url });
+        return false;
+      }
+    }
+    else {
+      var errors = o2.rules.getVerifyErrors();
+      var errorBody = errors.join("<br>");
+      top.displayError(errorBody);
+      return false;
+    }
+    return false;
+  }
+
+  function saveAsDialogCallback(folderId, filename) {
+    var form = document.forms.objectForm;
+    form[ "object.metaParentId" ].value = folderId;
+    form[ "object.metaName"     ].value = filename;
+    if (checkForm(form) && o2.rules.checkForm(form)) {
+      form.submit();
+    }
+  }
+
+  function setSaved(newMode,newId) {
+    document.forms.objectForm.mode.value     = newMode;
+    document.forms.objectForm.objectId.value = newId;
+    setMetaId(newId);
+  }
+</o2:addJs>
+
+<o2 header />
+
+<o2 if "$object->getId()">
+  <o2 setVar "$objectId">$object->getId()</o2:setVar>
+</o2:if>
+<o2 else>
+  <o2 setVar "$objectId" >$object->getMetaParentId()</o2:setVar>
+  <o2 setVar "$extraPath">$lang->getString("o2.desktop.newObject")</o2:setVar>
+</o2:else>
+<o2 ApplicationFrameHeader frameTitle="$title" showCloseButton="1" useCloseAction="confirmCloseIfChanged" showSettingsButton="0" objectId="$objectId" extraPath="$extraPath" />
+
+<o2 form name="objectForm" method="post" target="universalSaveFrame" setMethod="saveObject" removeParams="1" onChange="setFormChanged();" onSubmit="return checkForm(this) && o2.rules.checkForm(this);">
+
+  <o2 setVar "$parentId"><o2 if "$object->getMetaParentId()" then="$object->getMetaParentId()" else="$q->{parentId}" /></o2:setVar>
+
+  <o2 input type="hidden" name="object.metaParentId"  value="$parentId"                   id="object.metaParentId"  />
+  <o2 input type="hidden" name="object.metaName"      value="$object->getMetaName()"      id="object.metaName"      />
+  <o2 input type="hidden" name="object.metaClassName" value="$object->getMetaClassName()" id="object.metaClassName" />
+  <o2 input type="hidden" name="objectId"             value="$object->getId()"            id="objectId"             />
+  <o2 input type="hidden" name="mode"                 value="$mode"                                                 />
+
+  <o2 include "o2://var/templates/Meta/editMeta.html"/>
+
+  <div id="editObjectWrapper">
+    <o2 include "$includeTemplatePath"/> 
+    <p class="buttons">
+      <o2 input type="submit" value="$lang->getString('o2.Universal.editObject.btnSave')"/>
+      <o2 input type="submit" onClick="closeWindowOnSave=true;" value="$lang->getString('o2.Universal.editObject.btnSaveAndClose')"/>
+    </p>
+  </div>
+</o2:form>
+
+<iframe width="0" height="0" name='universalSaveFrame' frameborder='0'></iframe>
+
+<o2 footer/>

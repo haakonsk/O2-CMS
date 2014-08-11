@@ -1,0 +1,22 @@
+<o2 use O2Doc::Tutorial />
+
+<o2 docSection title="slotChildren">
+  This is kind of a foreach-loop for slots. A variable called "\$slotIndex" is available inside the loop.
+  <o2 docSection title="Syntax">
+    <o2 docCode lang="o2ml">
+      <o2 slotChildren maxItems="5" alwaysMaxItems="yes">
+        <o2 slot id="rightboxSlot$slotIndex" inheritIfEmpty="yes" templateMatch="*RightBoxMenu-art*|*plugDownload*|*zInvisible.html*" />
+      </o2:slotChildren>
+    </o2:docCode>
+  </o2:docSection>
+
+  <o2 docSection title="Attributes">
+    <o2 docList class="attributes">
+      <o2 docListItem class="optional">maxItems            - maximum number of slots in the list.</o2:docListItem>
+      <o2 docListItem class="optional">alwaysMaxItems [no] - should be one of {yes, no}. If set to "yes", always displays the maximum number of slots (in o2cms).</o2:docListItem>
+      <o2 docListItem class="optional">virtual [no]        - should be one of {yes, no}. If set to "yes", doesn't call getChildren on the slot object. [Someone who knows a little
+      more about this than me, please explain better!]</o2:docListItem>
+      <o2 docListItem class="required content">content     - usually a <o2 docLink type="tag" id="slot" />, and possibly some additional html.</o2:docListItem>
+    </o2:docList>
+  </o2:docSection>
+</o2:docSection>

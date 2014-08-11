@@ -1,0 +1,23 @@
+<o2 use Html />
+
+<o2 header />
+
+<o2 addJs where="pre" onLoad="displayMessage();">
+  function displayMessage() {
+    if ('$mode' == 'newObject') {
+      parent.setSaved('edit', '$object->getId()');
+    }
+    top.displayMessage("Your object '$object->getMetaName()' is saved!");
+    top.reloadTreeFolder( $object->getMetaParentId() );
+    if ( parent.closeWindowOnSave ) {
+      top.closeFrame(parent.window.name);
+    }
+    else {
+      parent.setFormChanged(false);
+    }
+  }
+</o2:addJs>
+
+<!--Put debug info here if you want.-->
+
+<o2 footer />

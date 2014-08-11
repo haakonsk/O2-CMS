@@ -1,0 +1,36 @@
+
+.reportSelect {
+  border:1px black dotted;
+  width:300px;
+}
+
+.optionEntry {
+  background-Repeat: no-repeat;
+  padding-left:20px;
+  padding-right:2px;
+  paddint-top: 2px;
+}
+
+.messageLabel{
+  font-weigt:bold;
+}
+
+select {
+  border:1px black dotted;
+  width:250px;
+  height:150px;
+}
+
+option {
+ background-Repeat: no-repeat;
+  padding-left:20px;
+  padding-right:2px;
+  padding-top: 2px;
+  margin-left:2px;
+  margin-top:2px;
+  height:16px;
+}
+
+.applicationOption {
+  background-Image: url('/images/system/apps_16.gif');
+}

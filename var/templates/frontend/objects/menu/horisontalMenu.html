@@ -1,0 +1,54 @@
+<o2 use O2CMS::Publisher/>
+<o2 use Html/>
+<o2 calc> $object->setPage($page) </o2:calc>
+
+<o2 addCss>
+  li {
+    display : inline;
+  }
+  
+  .horisontalMenu a {
+    color : white;
+  }
+</o2:addCss>
+
+
+<o2 function renderMenuLevel>
+  <o2 setVar "$class"><o2 if "$menuItem && $menuItem->getExpanded()">o2menuItemOpen</o2:if><o2 else>o2MenuItemClosed</o2:else></o2:setVar>
+  <o2 if " $object->getTopLevelId()==$levelId "> <o2 setVar "$class">o2Menu</o2:setVar> </o2:if>
+<ul class="horisontalMenu">
+    <o2 foreach "$item in $object->getMenuItemsAt($levelId)">
+      <o2 if "$item->getVisible()">
+        <li> <a href="<o2 objectUrl objectId='$item->getTargetId()'/>">$item->getTargetName()</a> </li>
+       </o2:if>
+    </o2:foreach>
+</ul>
+
+</o2:function>
+
+<o2 call renderMenuLevel levelId="$object->getTopLevelId()" />
+
+<o2 comment>
+<o2 calc> $object->setPage($page) </o2:calc>
+<o2 if "!$page->isa('O2CMS::Obj::Template::Page')">
+  <ul>
+    <!-- home link -->
+    <o2 if "$page->getWebCategory()->getId() == $page->getSite()->getId()">
+      <li class="active">Home</li>
+    </o2:if>
+    <o2 else>
+      <li class="" ><a href="/">Home</a></li>
+    </o2:else>
+    
+    <!-- Other menu links -->
+    <o2 foreach "$category in $page->getSite()->getWebCategories()">
+      <o2 if "$page->getWebCategory()->getId() == $category->getId()">
+        <li class="active">$category->getMetaName()</li>
+      </o2:if>
+      <o2 else>
+        <li><a href="<o2 objectUrl objectId='$category->getId()' />">$category->getMetaName()</a></li>
+      </o2:else>
+    </o2:foreach>
+  </ul>
+</o2:if>
+</o2:comment>

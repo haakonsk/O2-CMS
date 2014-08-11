@@ -1,0 +1,16 @@
+<o2 addCss>
+  #editObjectWrapper h2 {
+    background-image: url("/images/icons/o2default/O2/Obj/Keyword/O2-Obj-Keyword-48.png");
+  }
+</o2:addCss>
+
+<o2 use I18N />
+<o2 setResourcePath>o2.keyword</o2:setResourcePath>
+
+<h2>$lang->getString('hdrEditKeyword')</h2>
+<p class="helpText">$lang->getString('helpText')</p>
+<p>
+  <label for="metaName">$lang->getString('lblName')</label>
+
+  <o2 input id="metaName" name="metaName" value="$object->getMetaName()" rule="" ruleMsg="Error in name" onchange="setMetaName(this.value);"/>
+</p>

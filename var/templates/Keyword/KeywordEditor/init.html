@@ -1,0 +1,79 @@
+<o2 use Html/>
+<o2 use DateFormat/>
+<o2 use O2CMS::Html::List/>
+
+<o2 use Html::Form/>
+<o2 addJsFile file="datadumper"/>
+<o2 addJsFile file="gui/backend/keyword/editor" />
+<o2 addCssFile file="/css/gui/backend/keyword/init.css" />
+
+
+<o2 header disableScrollbars="1" onLoad="initKeyword()" />
+
+<o2 form name="searchForm" removeParams="0" onSubmit="return lookupKeyword(this);" >
+
+  <fieldset id="keywordField">
+    <legend>$lang->getString('o2.gui.backend.keyword.editor.lblKeywordField')</legend>
+    
+    <o2 input type="text" name="keyword" value="" />
+    <o2 input type="button" onClick="lookupKeyword(this.form)" id="btnSearchKeyword" value="$lang->getString('o2.gui.backend.keyword.editor.btnSearchKeyword')" />
+    <o2 select name="keywordPath" onChange='getChildrenInKeywordFolder(this);' label="$lang->getString('o2.gui.backend.keyword.editor.lblListAKeywordFolder')">
+      <o2 foreach "$keywordFolder in $keywordFolders">
+        <o2 if "$keywordFolder->isa('O2CMS::Obj::Category::Keywords')">
+          <o2 option value="$keywordFolder->getId()">$keywordFolder->getMetaName</o2:option>
+        </o2:if>
+        <o2 else>
+          <o2 option value="$keywordFolder->getId()">$keywordFolder->getFullName</o2:option>
+        </o2:else>
+      </o2:foreach>
+    </o2:select>
+  
+  </fieldset>
+
+  <fieldset id="objectInfo">
+    <legend>$lang->getString('o2.gui.backend.keyword.editor.lblObjectField')</legend>
+    <div id="name">$lang->getString('o2.gui.backend.keyword.editor.lblObjectName') ^$object->getMetaName() </div>
+    <div id="type">$lang->getString('o2.gui.backend.keyword.editor.lblObjectType') ^$object->getMetaClassName() ( ^$object->getId() )</div>
+    <div id="createDate">$lang->getString('o2.gui.backend.keyword.editor.lblObjectDate') <o2 dateFormat format="long">^$object->getMetaCreateTime()</o2:dateFormat>  <o2 dateFormat format="HH:mm">^$object->getMetaCreateTime()</o2:dateFormat></div>
+  </fieldset>
+
+  <fieldset id="searchList">
+    <legend>$lang->getString('o2.gui.backend.keyword.editor.lblSearchListField')</legend>
+    <div id="keywordSearchActive" class="loadingImage" style="display:none;"></div>
+    <div id="searchKeywordListEmpty" style="display:;"><div class="informationImage">$lang->getString('o2.gui.backend.keyword.editor.msgPleaseSearchForAKeyword')</div></div>
+    <div id="searchKeywordListNoHits" style="display:none;">
+      <div class="informationImage">$lang->getString('o2.gui.backend.keyword.editor.msgNoMatchingKeywords')</div>
+      $lang->getString('o2.gui.backend.keyword.editor.lblAddKeywordInThisFolder')
+      <o2 select name="addKeywordPath">
+        <o2 foreach "$keywordFolder in $keywordFolders">
+          <o2 if "$keywordFolder->isa('O2CMS::Obj::Category::Keywords')">
+            <o2 option value="$keywordFolder->getId()">$keywordFolder->getMetaName</o2:option>
+          </o2:if>
+          <o2 else>
+            <o2 option value="$keywordFolder->getId()">$keywordFolder->getFullName</o2:option>
+          </o2:else>
+        </o2:foreach>
+      </o2:select>
+      <o2 input type="text" name="addKeyword" value="" label="$lang->getString('o2.gui.backend.keyword.editor.lblAddKeyword')" /><br>
+      <div id="missingKeywordError" style="display:none;">$lang->getString('o2.gui.backend.keyword.editor.msgMissingKeyword')</div>
+      <o2 input type="button" onClick="addThisKeyword(this.form)" id="btnAddKeyword" value="$lang->getString('o2.gui.backend.keyword.editor.btnAddKeyword')" />
+      
+    </div>
+  
+    <o2 list id="searchKeywordList"></o2:list>
+    
+  </fieldset>
+
+  <fieldset id="objectKeyword">
+    <legend>$lang->getString('o2.gui.backend.keyword.editor.lblKeywordListField')</legend>
+    <div id="objectWorkingActive" class="loadingImage" style="display:'';"></div>
+    <div id="objectKeywordListEmpty" style="display:none;"><div class="informationImage">$lang->getString('o2.gui.backend.keyword.editor.msgNoKeywordsOnObject')</div></div>
+    <o2 list id="objectKeywordList"></o2:list>
+
+  </fieldset>
+
+
+</o2:form>
+
+
+<o2 footer/>

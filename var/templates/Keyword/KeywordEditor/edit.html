@@ -1,0 +1,130 @@
+<o2 use Html::Form />
+<o2 use O2CMS::Html::List />
+
+<o2 header/>
+
+<o2 addJs where="onLoad">
+  var keywordList = getComponentById("object.keywordIds");
+  keywordList.getRowCellsHtml = function(item, ix) {
+    var html = "";
+    if (item.alternativeKeywords && item.alternativeKeywords.length > 1) {
+      var options = generateOptionList(item.alternativeKeywords, item.id);
+      html += '<select onchange="getComponentById(\'object.keywordIds\').setAttributeAt(\'id\',this.options[this.selectedIndex].value,'+ix+')">' + options + "</select>";
+    }
+    else {
+      html += item.fullName;
+    }
+    html += this.getIcon("delete", "javascript:void(getComponentById('object.keywordIds').removeItemAt(" + ix + "))", "Remove");
+    
+    return '<td><img src="/images/system/classIcons/O2-Obj-Keyword.gif"> ' + html + "</td>";
+  }
+  
+  keywordList.addKeyword = function(args) {
+    args.ix = this.length();
+    o2.ajax.call({
+      setClass  : "Keyword-KeywordEditor",
+      setMethod : "queryKeywords",
+      setParams : args,
+      handler   : "getComponentById('object.keywordIds').addKeywordCallback"
+    });
+  }
+  
+  keywordList.addKeywordCallback = function(args) {
+    this.addItem({ fullName : args.keyword });
+    var item = this.getItemAt(args.ix);
+    item.fullName            = args.alternativeKeywords[0].name;
+    item.id                  = args.alternativeKeywords[0].id;
+    item.alternativeKeywords = args.alternativeKeywords;
+    this.setItemAt(item, args.ix);
+    if (args.folderKeywords) {
+      setFolderKeywordOptions(args.folderKeywords);
+    }
+  }
+  
+  keywordList.redraw();
+  loadParentKeywords();
+</o2:addJs>
+
+<o2 addJs>
+  function generateOptionList(options, selectedId) {
+    var html = "";
+    for (var i = 0; i < options.length; i++) {
+      html += '<option value="'+options[i].id+'"' + (options[i].id == selectedId ? " selected" : "") + ">" + options[i].name;
+    }
+    return html;
+  }
+  
+  function addKeyword() {
+    var keyword = _getKeyword( document.getElementById("simpleKeyword") );
+    getComponentById("object.keywordIds").addKeyword({ keyword : keyword });
+  }
+  
+  function advancedAddKeyword() {
+    var args = {};
+    args.keyword = _getKeyword( document.getElementById("advancedKeyword") );
+    args.addFolder = document.getElementById("advancedAddFolder").checked ? 1 : 0;
+    var elm = document.getElementById("advancedKeywordParent");
+    args.parentId =  elm.options[elm.selectedIndex].value;
+    getComponentById("object.keywordIds").addKeyword(args);
+  }
+  
+  function _getKeyword(elm) {
+    var keyword = elm.value;
+    if (!keyword.match(/\w/)) {
+      return null;
+    }
+    elm.value = "";
+    elm.focus();
+    return keyword;
+  }
+  
+  function loadParentKeywords() {
+    o2.ajax.call({
+      setClass  : "Keyword-KeywordEditor",
+      setMethod : "getFolderKeywords",
+      handler   : "loadParentKeywordsCallback"
+    });
+  }
+  
+  function loadParentKeywordsCallback(params) {
+    setFolderKeywordOptions(params.folderKeywords);
+  }
+  
+  function setFolderKeywordOptions(options) {
+    var elm = document.getElementById("advancedKeywordParent");
+    elm.options.length = 0;
+    for (var i = 0; i < options.length; i++) {
+      elm.options[i] = new Option( options[i].name, options[i].id );
+    }
+  }
+</o2:addJs>
+
+<o2 form name="listForm" setDispatcherPath="o2cms" setClass="Keyword-KeywordEditor" setMethod="save" method="post">
+  
+  <o2 list id="object.keywordIds" items="[]" extraItemFields="fullName" submitType="all" submitItemFields="id"/>
+  
+  <o2 use O2CMS::Html::TabLayer/>
+  <o2 tabLayer name="keywords" style="height:400px;width:400px;">
+    <o2 addTab name="simple"   contentId="simpleKeywords"  selected />
+    <o2 addTab name="advanced" contentId="advancedKeywords" />
+  </o2:tabLayer>
+  
+  <div id="simpleKeywords">
+    <input type="text"   id="simpleKeyword">
+    <input type="button" value="Add" onclick="addKeyword()">
+  </div>
+  
+  <div id="advancedKeywords">
+    <input type="radio" name="addFolder" checked>Tag
+    <input type="radio" name="addFolder" id="advancedAddFolder">Tag folder<br>
+    <select id="advancedKeywordParent"></select>
+    <input type="text"   id="advancedKeyword">
+    <input type="button" value="Add" onclick="advancedAddKeyword()">
+  </div>
+  
+  <hr>
+  <o2 input type="submit"/>
+  
+</o2:form>
+
+<o2 footer />

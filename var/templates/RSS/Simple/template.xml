@@ -1,0 +1,28 @@
+<o2 use O2CMS::Publisher /><o2 use StringFormat /><o2 use DateFormat /><?xml version="1.0" encoding="iso-8859-1"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <atom:link href="$site->getUrl()o2/RSS-Simple/" rel="self" type="application/rss+xml" />
+    <title>$config->get('o2.rss.title')</title>
+    <link>$site->getUrl()</link>
+    <description>$config->get('o2.rss.description')</description>
+    <language>$config->get('o2.rss.language')</language>
+    <copyright>$config->get('o2.rss.copyright')</copyright>
+    <o2 setVar "$day"></o2:setVar><lastBuildDate><o2 dateFormat locale="en_US" format="eee, d MMM Y HH:mm:ss +0100">$buildTime</o2:dateFormat></lastBuildDate>
+    <ttl>$config->get('o2.rss.ttl')</ttl><o2 if "$config->get('o2.rss.image')">
+    <image>
+      <title>$config->get('o2.rss.image.title')</title>
+      <url>$config->get('o2.rss.image.url')</url>
+      <link>$site->getUrl()</link>
+      <width>$config->get('o2.rss.image.width')</width>
+      <height>$config->get('o2.rss.image.height')</height>
+    </image></o2:if><o2 foreach "$object in $objects">
+    <item>
+      <title>$object->getTitle()</title>
+      <description><o2 wordCut "200...">$object->getTextWithoutHtml(section_frontPageText)</o2:wordCut></description>
+      <pubDate><o2 dateFormat locale="en_US" format="eee, d MMM Y HH:mm:ss +0100">$object->getMetaCreateTime()</o2:dateFormat></pubDate>
+      <link><o2 objectUrl absolute="yes" objectId="$object->getId()"/></link>
+      <guid><o2 objectUrl absolute="yes" objectId="$object->getId()"/></guid>
+      <source url="$site->getUrl()"></source>
+    </item></o2:foreach>
+  </channel>
+</rss>

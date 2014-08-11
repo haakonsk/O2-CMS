@@ -1,0 +1,169 @@
+#commentForm {
+  background: #BCD6DF;
+  -moz-border-radius: 25px 0 25px 0;
+  -webkit-border-radius: 25px 0 25px 0;
+  border-radius: 25px 0 25px 0;
+  padding: 10px 20px 10px 70px;
+  margin: 10px 0;
+  clear: both;
+  position: relative;
+}
+
+#commentForm fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+#commentForm .o2Input,
+#commentForm .o2Textarea {
+  margin: 10px 0;
+  padding: 0 5px;
+}
+
+#commentForm label {
+  display: block;
+  float: left;
+  width: 120px;
+  line-height: 30px;
+  font-size: 16px;
+}
+
+#commentForm input.textInput,
+#commentForm textarea {
+  width: 300px;
+  padding: 4px 6px;
+  border: 1px solid #bbb;
+  background: #f1f1f1;
+}
+
+#commentForm .textInput:focus {
+  border-color: #999;
+  background: white;
+}
+
+#commentForm textarea {
+  height: 150px;
+  font-family: "Lucida Grande", "Lucida Sans", Helvetica, Arial, sans-serif;
+  font-size: 13px;
+}
+
+#commentForm input.button,
+.changeCommentForm input.button {
+  padding: 10px !important;
+  background: #1b708c;  
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  border: 0;
+  color: white;
+  font-weight: bold;
+  margin-left: 125px;
+  cursor: pointer;  
+  height: auto;
+  font-size: 13px;
+  line-height: 170%;
+  text-transform: none;
+}
+
+.changeCommentForm input.button {
+  margin: 0 10px 0 0;
+}
+
+
+.changeCommentForm input.secondaryAction {
+  background: #6ca3b5;
+}
+
+#commentForm input.button:hover {
+  background: #2991b3;
+}
+
+#commentForm input.button:active {
+  padding: 11px 9px 9px 11px;
+}
+
+#commentForm h4 {
+  -moz-text-shadow: 1px 1px 0px rgba(255,255,255,0.6);
+  -webkit-text-shadow: 1px 0px 1px rgba(255,255,255,0.6);
+  text-shadow: 1px 1px 0px rgba(255,255,255,0.6);
+  font-size: 24px;
+  color: #0a4558;
+  font-weight: bold;
+}
+
+.csstransforms #commentForm h4 {
+  font-family: Helvetica, Arial, sans-serif;
+  position: absolute;
+  left: -120px;
+  top: 160px;
+  text-transform: uppercase;
+  -webkit-transform: rotate(-90deg); 
+  -moz-transform: rotate(-90deg);
+  -o-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+}
+
+.comments .comment {
+  position         : relative;
+  background-color : #ddd;
+  margin: 10px 0;
+}
+
+.comments > .comment {
+  padding: 10px 15px;
+  -webkit-border-radius: 15px 0 15px 0;
+  -moz-border-radius:  15px 0 15px 0;
+  border-radius:  15px 0 15px 0;
+}
+
+.comments .comment .comment {
+  margin: 0 0 0 20px;
+  padding: 0 0 0 5px;
+}
+
+.comments .comment .comment .author {
+  background: #eee;
+  padding: 5px 0 5px 5px; 
+}
+
+.comments .comment .comment .date {
+  background: #eee;
+  padding: 0 0 15px 5px;
+}
+.comments .comment .date {
+  position: static;
+  border-bottom: 1px dashed #ababab;
+  padding-bottom: 15px;
+  margin-bottom: 5px;
+}
+
+.comments .comment .author {
+  padding: 0 0 2px 0;
+  font-size: 16px;
+  border: 0;
+  font-weight: bold;
+}
+
+.comments .comment .commentText {
+  padding: 10px 0;
+}
+
+.comments img.gravatar {
+  float: left;
+  margin: 0 15px 0 0;
+  padding: 0;
+  border: 4px solid white;
+}
+
+#commentForm .error {
+  background: #f5b3b3;
+  padding: 10px 5px;
+  -webkit-border-radius: 10px 0 10px 0;
+  -moz-border-radius: 10px 0 10px 0;
+  border-radius: 10px 0 10px 0;
+}
+
+#commentForm .errorMessage {
+  margin: 0 0 5px 120px;
+}

@@ -1,0 +1,12 @@
+<o2 if "%{$extraInfos}">
+  <hr>
+  <h2>$lang->getString("hdrExtraInfo")</h2>
+  <table>
+    <o2 foreach "$key => $value in $extraInfos">
+      <tr>
+        <td>$key</td>
+        <td>$value</td>
+      </tr>
+    </o2:foreach>
+  </table>
+</o2:if>

@@ -1,0 +1,76 @@
+<o2 use O2CMS::Publisher />
+<o2 use Html />
+
+<o2 calc>$object->setPage($page)</o2:calc>
+
+<o2 function renderMenuLevel>
+  <ul class="sitemap sitemapLevel$level">
+    <o2 foreach "$obj in $elements">
+      <li>
+        <a href="$obj->getUrl()">$obj->getTitle()</a>
+        <o2 if "$value">
+          <o2 call renderMenuLevel level="$level+1" menuItem="$item" />
+        </o2:if>
+      </li>
+    </o2:foreach>
+  </ul>
+</o2:function>
+
+<o2 call renderMenuLevel level="1" elements="$sitemap" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<o2 function renderMenuLevel>
+  <ul class="sitemap sitemapLevel$level">
+    <o2 foreach "$obj => $value in $elements">
+      <li>
+        <a href="$obj->getUrl()">$obj->getTitle()</a>
+        <o2 if "$value">
+          <o2 call renderMenuLevel level="$level+1" menuItem="$item" />
+        </o2:if>
+      </li>
+    </o2:foreach>
+  </ul>
+</o2:function>
+
+<o2 call renderMenuLevel level="1" elements="$sitemap" />
+
+
+<o2 comment>
+sitemap = {
+           aktuelt => {
+                       nyhetsbrev => undef,
+                      },
+           finansiell.. => {
+                            2002 => undef,
+                            2003 => undef,
+                            2004 => undef,
+                            2005 => undef,
+                            2006 => undef,
+                           },
+           Printable => undef,
+           ...
+         }
+sitemap = {
+1 => [
+      {
+       name => aktuelt,
+       url  => http..,
+      }
+     ]
+}
+</o2:comment>

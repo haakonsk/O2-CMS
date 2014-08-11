@@ -1,0 +1,70 @@
+<o2 use Html::Ajax />
+<o2 use DateFormat />
+<o2 use Html::PopupDialog />
+<o2 use O2CMS::Publisher />
+
+<o2 header cssReset="1" title="Comments Admin"/>
+
+<o2 addCssFile file="gui/comments" />
+<o2 addCssFile file="backend/comments" />
+
+<o2 use O2CMS::ApplicationFrame />
+<o2 ApplicationFrameHeader frameTitle="$lang->getString('o2.applicationNames.o2CommentMgr')" showCloseButton="1" useCloseAction="" disableScrollBar="1" showSettingsButton="0" />
+
+<div id="applicationWrapper">
+  <h1>Edit comments</h1>
+
+  <o2 pagination numPerPage="10" totalNumResults="$totalNumComments" elements="$gui->getComments($skip, $limit)">
+    <p>Displaying $paginationFirstIndex - $paginationLastIndex of $totalNumComments comments</p>
+    <table id="comments">
+      <tr>
+        <th>Author</th>
+        <th>Comment</th>
+        <th>In response to</th>
+      </tr>
+      <o2 foreach "$comment in $paginationResults">
+        <tr id="comment_$comment->getId()">
+
+          <td class="author">
+            <img class="gravatar" src="$comment->getGravatarUrl(40)" width="40" height="40">
+            <span class="authorName">
+              <o2 if "$comment->getWebSite()">
+                <a href="$comment->getWebSite()" target="_blank">$comment->getName()</a>
+              </o2:if>
+              <o2 else>
+                $comment->getName()
+              </o2:else>
+            </span>
+            <span class="authorEmail">$comment->getEmail()</span>
+          </td>
+
+          <td>
+            <div class="submitInfo">Submitted on <span class="date"><o2 dateFormat format="yyyy-MM-dd, HH:mm">$comment->getMetaCreateTime()</o2:dateFormat></span></div>
+            <div class="comment">$comment->getComment()</div>
+            <div class="controls">
+              <o2 ajaxLink setMethod="deleteComment" setParams="commentId=$comment->getId()" target="comment_$comment->getId()" where="delete" class="delete"
+                confirmMsg="Are you sure you want to delete this comment?" method="post">Delete</o2:ajaxLink> |
+              <o2 popupDialog setMethod="showReplyForm" setParams="commentId=$comment->getId()" submitText="Save" closeText="Close" width="400" height="400">Reply</o2:popupDialog>
+            </div>
+          </td>
+
+          <td class="commentedOnObject">
+            <o2 setVar "$url"><o2 objectUrl absolute="yes" objectId="$comment->getCommentedOnObject()->getId()" /></o2:setVar>
+            <o2 if "$url">
+              <a href="$url" target="_blank">$comment->getCommentedOnObject()->getMetaName()</a>
+            </o2:if>
+            <o2 else>
+              $comment->getCommentedOnObject()->getMetaName()
+            </o2:else>
+          </td>
+
+        </tr>
+      </o2:foreach>
+    </table>
+    <o2 paginationNavigation linkSeparator="&middot;" />
+  </o2:pagination>
+</div>
+
+<o2 ApplicationFrameFooter />
+
+<o2 footer />

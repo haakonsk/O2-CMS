@@ -1,0 +1,413 @@
+<html>
+<head>
+<o2 use Html/>
+<style type="text/css">
+  .dragHandle {width:10; height:10; position:absolute;border-style:solid;border-width:1;border-color:#000000;z-index:6}
+  .selection  {position:absolute; border:dotted; border-width: 1px; z-index:5; cursor: move}
+  .shade      {position:absolute; z-index:3; background:#000000; filter:alpha(opacity=40); -moz-opacity:0.4}
+  #thirdsHorizontal, #thirdsVertical {position: absolute; border: 1px dashed gray; z-index: 4}
+  #thirdsHorizontal {border-left-style: none; border-right-style: none}
+  #thirdsVerticall  {border-top-style: none; border-bottom-style: none}
+</style>
+<script type="text/javascript">
+
+  var selectionElm;
+  var selectionX,selectionY;
+  var dragOffsetX, dragOffsetY;
+  var imageLoader, imageLoaded=false;
+  var zoomFactor = 0;
+  var imageId = '$image->getId()';
+  var debug = '';
+
+  var resizeHandleElms = {};
+  var resizeHandleIds = ['x1','x2','y1','y2', 'x1y1','x1y2','x2y1','x2y2'];
+  function init() {
+    selectionElm = document.getElementById('selection');
+    for( var i=0; i<resizeHandleIds.length; i++ ) {
+      var id = resizeHandleIds[i];
+      resizeHandleElms[id] = document.getElementById('resizeHandle_'+id);
+    }
+    hideResizeHandles();
+    //  loadImage('<o2 urlMod setClass="Image-Editor" setMethod="previewCommands" setParams=""/>?id='+imageId);
+    loadImage('./previewCommands?id='+imageId);
+  }
+
+  function prepareDraw(elm, evt) {
+    var mouseX = evt.clientX ? evt.clientX+parseInt(document.body.scrollLeft) : evt.pageX;
+    var mouseY = evt.clientY ? evt.clientY+parseInt(document.body.scrollTop)  : evt.pageY;
+    selectionX = mouseX;
+    selectionY = mouseY;
+    selectionElm.style.left = mouseX;
+    selectionElm.style.top  = mouseY;
+    selectionElm.style.width  = 0;
+    selectionElm.style.height = 0;
+    selectionElm.style.display = 'block';
+    document.onmousemove = mm_draw;
+    parent.setScratchPad(  parseInt(selectionElm.style.width) + " x " + parseInt(selectionElm.style.height)  );
+  }
+  function mm_draw(evt) {
+    var mouseX = evt ? evt.pageX : event.clientX + parseInt(document.body.scrollLeft);
+    var mouseY = evt ? evt.pageY : event.clientY + parseInt(document.body.scrollTop);
+    if (mouseX > selectionX) {
+      selectionElm.style.left  = selectionX;
+      selectionElm.style.width = mouseX-selectionX;
+    }
+    else {
+      selectionElm.style.left  = mouseX;
+      selectionElm.style.width = selectionX-mouseX;
+    }
+    if (mouseY > selectionY) {
+      selectionElm.style.top    = selectionY;
+      selectionElm.style.height = mouseY-selectionY;
+    }
+    else {
+      selectionElm.style.top    = mouseY;
+      selectionElm.style.height = selectionY-mouseY;
+    }
+    window.status = '['+debug+'] ('+mouseX+','+mouseY+')';
+    parent.setScratchPad(  parseInt(selectionElm.style.width) + " x " + parseInt(selectionElm.style.height)  );
+  }
+
+
+  function prepareMove(evt) {
+    var mouseX = evt.clientX ? evt.clientX+parseInt(document.body.scrollLeft) : evt.pageX;
+    var mouseY = evt.clientY ? evt.clientY+parseInt(document.body.scrollTop)  : evt.pageY;
+    dragOffsetX = mouseX-parseInt(selectionElm.style.left); // opera uses some sort of reference in .style.<positionAttribute>, 
+    dragOffsetY = mouseY-parseInt(selectionElm.style.top);  // so the dragOffsets kept moving:)
+    debug=dragOffsetX+' '+dragOffsetY;
+    document.onmousemove = mm_move;
+  }
+  function mm_move(evt) {
+    var mouseX = evt ? evt.pageX : event.clientX+parseInt(document.body.scrollLeft);
+    var mouseY = evt ? evt.pageY : event.clientY+parseInt(document.body.scrollTop);
+    selectionElm.style.left = mouseX-dragOffsetX;
+    selectionElm.style.top  = mouseY-dragOffsetY;
+  }
+
+  var resizeX, resizeY, resizeHandleId;
+  var edges = {};
+  function prepareResize(resizeX, resizeY) {
+    window.resizeX = resizeX;
+    window.resizeY = resizeY;
+    resizeHandleId = (resizeX?resizeX:'') + (resizeY?resizeY:'');
+    var left   = parseInt(selectionElm.style.left  );
+    var top    = parseInt(selectionElm.style.top   );
+    var width  = parseInt(selectionElm.style.width );
+    var height = parseInt(selectionElm.style.height);
+    edges = {x1:left, y1:top, x2:left+width, y2:top+height};
+    hideResizeHandles();
+    resizeHandleElms[resizeHandleId].style.display = 'block';
+    document.onmousemove = mm_resize;
+  }
+  function mm_resize(evt) {
+    var mouseX = evt ? evt.pageX : event.clientX+parseInt(document.body.scrollLeft);
+    var mouseY = evt ? evt.pageY : event.clientY+parseInt(document.body.scrollTop);
+    if( resizeX ) {
+      edges[resizeX] = mouseX;
+      selectionElm.style.left  = edges['x1'];
+      selectionElm.style.width = edges['x2']-edges['x1'];
+      resizeHandleElms[resizeHandleId].style.left = mouseX-5;
+    }
+    if( resizeY ) {
+      edges[resizeY] = mouseY;
+      selectionElm.style.top    = edges['y1'];
+      selectionElm.style.height = edges['y2']-edges['y1'];
+      resizeHandleElms[resizeHandleId].style.top = mouseY-5;
+    }
+    parent.setScratchPad(  parseInt(selectionElm.style.width) + " x " + parseInt(selectionElm.style.height)  );
+  }
+
+
+
+
+
+
+
+  function getSelection() {
+    if( selectionElm.style.display == 'none' ) return;
+    var f = 1/zoomFactor;
+    return {left:Math.round(parseInt(selectionElm.style.left)*f),
+    top:Math.round(parseInt(selectionElm.style.top)*f),
+    width:Math.round(parseInt(selectionElm.style.width)*f),
+    height:Math.round(parseInt(selectionElm.style.height)*f)};
+  }
+  function clearSelection() {
+    hideResizeHandles();
+    hideShade();
+    selectionElm.style.display = 'none';
+  }
+
+
+  function mouseUp(evt) {
+    document.onmousemove = null; // XXX: reset to dragDrop handler
+    var sel = getSelection();
+    if( sel ) {
+      if( sel.left<0 ) {sel.width+=sel.left;sel.left = 0;}
+      if( sel.top<0  ) {sel.height+=sel.top;sel.top  = 0;}
+      if( sel.left+sel.width>imageLoader.width  ) sel.width  = imageLoader.width-sel.left;
+      if( sel.top+sel.height>imageLoader.height ) sel.height = imageLoader.height-sel.top;
+
+      selectionElm.style.left   = sel.left   * zoomFactor;
+      selectionElm.style.top    = sel.top    * zoomFactor;
+      selectionElm.style.width  = sel.width  * zoomFactor;
+      selectionElm.style.height = sel.height * zoomFactor;
+      if( sel.width>1 && sel.height>1 ) {
+        showResizeHandles();
+        showShade();
+      } else {
+        clearSelection();
+      }
+      parent.setScratchPad(  parseInt(selectionElm.style.width) + " x " + parseInt(selectionElm.style.height)  );
+    }
+  }
+
+  //XXX rewrite to use getSelection()
+  function showShade() {
+    var top    = parseInt(selectionElm.style.top);
+    var left   = parseInt(selectionElm.style.left);
+    var width  = parseInt(selectionElm.style.width);
+    var height = parseInt(selectionElm.style.height);
+    var imgWidth  = imageLoader.width  * zoomFactor;
+    var imgHeight = imageLoader.height * zoomFactor;
+
+    var leftElm = document.getElementById('leftShade');
+    leftElm.style.top=0;
+    leftElm.style.left=0;
+    leftElm.style.width=left;
+    leftElm.style.height=imgHeight;
+    leftElm.style.display = 'block';
+    var rightElm = document.getElementById('rightShade');
+    rightElm.style.top=0;
+    rightElm.style.left=left+width;
+    rightElm.style.width=imgWidth-(left+width);
+    rightElm.style.height=imgHeight;
+    rightElm.style.display = 'block';
+    var topElm = document.getElementById('topShade');
+    topElm.style.top=0;
+    topElm.style.left=left;
+    topElm.style.width=width;
+    topElm.style.height=top;
+    topElm.style.display = 'block';
+    var bottomElm = document.getElementById('bottomShade');
+    bottomElm.style.top=top+height;
+    bottomElm.style.left=left;
+    bottomElm.style.width=width;
+    bottomElm.style.height=imgHeight-(top+height);
+    bottomElm.style.display = 'block';
+
+    return; // remove to enable thirds view in selection
+
+    var thirdsVertical = document.getElementById('thirdsVertical');
+    thirdsVertical.style.display='block';
+    thirdsVertical.style.top = top;
+    thirdsVertical.style.left = Math.floor(width/3+left);
+    thirdsVertical.style.width = Math.floor(width/3);
+    thirdsVertical.style.height = height;
+
+    var thirdsHorizontal = document.getElementById('thirdsHorizontal');
+    thirdsHorizontal.style.display='block';
+    thirdsHorizontal.style.top = Math.floor(height/3+top);
+    thirdsHorizontal.style.left = left
+    thirdsHorizontal.style.width = width;
+    thirdsHorizontal.style.height = Math.floor(height/3);
+    
+  }
+
+  function hideShade() {
+    var shadeIds = ['leftShade','rightShade','topShade','bottomShade'];
+    for( var i=0; i<shadeIds.length; i++ ) {
+      document.getElementById(shadeIds[i]).style.display = 'none';
+    }
+    document.getElementById('thirdsHorizontal').style.display = 'none';
+    document.getElementById('thirdsVertical').style.display = 'none';
+  }
+
+  function hideResizeHandles() {
+    for( var id in resizeHandleElms ) {
+      resizeHandleElms[id].style.display = 'none';
+    }  
+  }
+  
+  function showResizeHandles() {
+    var x1 = parseInt(selectionElm.style.left);
+    var y1 = parseInt(selectionElm.style.top);
+    var x2 = x1 + parseInt(selectionElm.style.width);
+    var y2 = y1 + parseInt(selectionElm.style.height);
+    var centerX = (x2-x1)/2 + x1-5;
+    var centerY = (y2-y1)/2 + y1-5;
+
+    for( var id in resizeHandleElms ) {
+      resizeHandleElms[id].style.display = 'block';
+    }  
+    resizeHandleElms['x1'].style.left = x1-5;
+    resizeHandleElms['x1'].style.top = centerY;
+    resizeHandleElms['x2'].style.left = x2-5;
+    resizeHandleElms['x2'].style.top = centerY;
+    resizeHandleElms['y1'].style.left = centerX;
+    resizeHandleElms['y1'].style.top = y1-5;
+    resizeHandleElms['y2'].style.left = centerX;
+    resizeHandleElms['y2'].style.top = y2-5;
+
+    resizeHandleElms['x1y1'].style.left = x1-5;
+    resizeHandleElms['x1y1'].style.top = y1-5;
+    resizeHandleElms['x1y2'].style.left = x1-5;
+    resizeHandleElms['x1y2'].style.top = y2-5;
+    resizeHandleElms['x2y1'].style.left = x2-5;
+    resizeHandleElms['x2y1'].style.top = y1-5;
+    resizeHandleElms['x2y2'].style.left = x2-5;
+    resizeHandleElms['x2y2'].style.top = y2-5;
+  }
+
+  function getWindowWidth() {
+    if (window.innerWidth) {
+      //Non-IE
+      return window.innerWidth;
+    }
+    else if ( document.documentElement && document.documentElement.clientWidth ) {
+      //IE 6+ in 'standards compliant mode'
+      return document.documentElement.clientWidth;
+    }
+    else if ( document.body && document.body.clientWidth ) {
+      //IE 4 compatible
+      return document.body.clientWidth;
+    }
+  }
+
+  function getWindowHeight() {
+    if (window.innerHeight) {
+      //Non-IE
+      return window.innerHeight;
+    }
+    else if ( document.documentElement && document.documentElement.clientHeight ) {
+      //IE 6+ in 'standards compliant mode'
+      return document.documentElement.clientHeight;
+    }
+    else if ( document.body && document.body.clientHeight ) {
+      //IE 4 compatible
+      return document.body.clientHeight;
+    }
+  }
+
+  function getDocumentWidth() {
+    if (document.width) return document.width;
+    if (document.body.offsetWidth) return document.body.offsetWidth;
+    if (document.body.document) return document.body.document.width;
+  }
+  
+  function getDocumentHeight() {
+    if( document.height ) return document.height;
+    if (document.all) return document.body.offsetHeight;
+    if (document.layers) return document.body.document.height;
+  }
+
+  function updateOperations(operations,operationIx) {
+    var url = '';
+    for(var i=0; i<=operationIx; i++ ) {
+      if ( url!='' ) url += ';';
+      var op = operations[i];
+      url += op.operation;
+      for( var j=0; j<op.args.length; j++ ) {
+        url += ','+op.args[j];
+      }
+    }
+    //  url = '<o2 urlMod setClass="Image-Editor" setMethod="previewCommands" setParams=""/>?id='+imageId+'&cmds='+url;
+
+    alert('cmds: '+url);
+    url = './previewCommands?id='+imageId+'&cmds='+url;
+    loadImage(url);
+  }
+
+  function setZoom(factor) {
+    if ( !imageLoaded ) return alert("$lang->getString('o2.Image.Editor')");
+    if ( factor==0 ) {
+      factor = Math.min(getWindowWidth()/imageLoader.width, getWindowHeight()/imageLoader.height);
+    }
+    zoomFactor = factor;
+    var imgElm = document.getElementById('image');
+    imgElm.style.width  = imageLoader.width*zoomFactor;
+    imgElm.style.height = imageLoader.height*zoomFactor;
+    clearSelection();
+
+    document.getElementById('coverAll').style.width  = imageLoader.width*zoomFactor;
+    document.getElementById('coverAll').style.height = imageLoader.height*zoomFactor;
+  }
+
+  function loadImage(url) {
+    imageLoaded = false;
+    imageLoader = new Image();
+    imageLoader.onload = function() {
+      //    alert('image loaded: '+imageLoader.width+','+imageLoader.height);
+      document.getElementById('image').src = url;
+      imageLoaded = true;
+      clearSelection();
+      setZoom(zoomFactor);
+      hideInfo();
+    };
+    imageLoader.onerror = function() {
+      showInfo('<div style="font-family:arial; color: #808080; font-size:40px">$lang->getString("o2.Image.Editor.errorImageContainsErrors")</div>');
+    }
+    imageLoader.src = url;
+    showInfo('<div style="font-family:arial; color: #808080; font-size:40px">$lang->getString("o2.Image.Editor.msgLoading")</div>');
+  }
+  
+  function showInfo(msg) {
+    var elm = document.getElementById('info');
+    elm.innerHTML = msg;
+    elm.style.display = 'block';
+  }
+  
+  function hideInfo() {
+    document.getElementById('info').style.display = 'none';
+  }
+
+  function setSelectionSize(width, height) {
+    if (selectionElm.style.display == "none") {
+      selectionElm.style.display = 'block';
+      selectionElm.style.left   = 0;
+      selectionElm.style.top    = 0;
+    }
+    selectionElm.style.width  = width;
+    selectionElm.style.height = height;
+    mouseUp();
+  }
+
+  document.onmouseup = mouseUp; // XXX make prepare-methods init this (to avoid trouble with dragDrop)
+</script>
+
+</head>
+<body topmargin="0" leftmargin="0" bottommargin="0" rightmargin="0" style="margin: 0" background="/images/system/imageEditorBackground.gif" onload="init()" onselectstart="return false">
+
+
+<!--<div id="coverAll" style="position:absolute;left:0;top:0;width:100%;height:100%;z-index:5" onmousedown="prepareDraw(this, event);"></div>-->
+<div id="coverAll" style="position:absolute;left:0;top:0;width:100%;height:100%;z-index:5;" onmousedown="prepareDraw(this, event);event.cancelBubble=true;">
+<table border="0" style="width=100%; height=100%" id="inner" onmousedown="prepareDraw(this, event);event.cancelBubble=true;">
+<tr><td></td></tr>
+</table>
+</div>
+<img id="image" src="/images/system/pix.gif" ondragstart="return false">
+
+<div id="selection" class="selection" onmousedown="prepareMove(event);event.cancelBubble=true;"></div>
+<div id="info" style="display:none;position:absolute;left:0;top:0;z-index:40"></div>
+
+<div id="resizeHandle_x1" class="dragHandle" style="cursor: w-resize;" onmousedown="prepareResize('x1',false);event.cancelBubble=true;"><img src="/images/system/pix.gif"></div>
+<div id="resizeHandle_x2" class="dragHandle" style="cursor: e-resize;" onmousedown="prepareResize('x2',false);event.cancelBubble=true;"><img src="/images/system/pix.gif"></div>
+<div id="resizeHandle_y1" class="dragHandle" style="cursor: n-resize;" onmousedown="prepareResize(false,'y1');event.cancelBubble=true;"><img src="/images/system/pix.gif"></div>
+<div id="resizeHandle_y2" class="dragHandle" style="cursor: s-resize;" onmousedown="prepareResize(false, 'y2');event.cancelBubble=true;"><img src="/images/system/pix.gif"></div>
+
+<div id="resizeHandle_x1y1" class="dragHandle" style="cursor: w-resize;" onmousedown="prepareResize('x1','y1');event.cancelBubble=true;"><img src="/images/system/pix.gif"></div>
+<div id="resizeHandle_x1y2" class="dragHandle" style="cursor: w-resize;" onmousedown="prepareResize('x1','y2');event.cancelBubble=true;"><img src="/images/system/pix.gif"></div>
+<div id="resizeHandle_x2y1" class="dragHandle" style="cursor: w-resize;" onmousedown="prepareResize('x2','y1');event.cancelBubble=true;"><img src="/images/system/pix.gif"></div>
+<div id="resizeHandle_x2y2" class="dragHandle" style="cursor: w-resize;" onmousedown="prepareResize('x2','y2');event.cancelBubble=true;"><img src="/images/system/pix.gif"></div>
+
+
+
+<div id="leftShade"   class="shade"><img src="/images/system/pix.gif"></div>
+<div id="rightShade"  class="shade"><img src="/images/system/pix.gif"></div>
+<div id="topShade"    class="shade"><img src="/images/system/pix.gif"></div>
+<div id="bottomShade" class="shade"><img src="/images/system/pix.gif"></div>
+
+<div id="thirdsVertical" style="display:block"></div>
+<div id="thirdsHorizontal" style="display:block"></div>
+
+</body>
+</html>

@@ -1,0 +1,36 @@
+<div id="propertiesMenuItem" class="boxMenuBox">
+  <div class="inputWrapper">
+    <label for="article_authorText">$lang->getString("lblArticleAuthor")</label>
+    <o2 setVar "$author"><o2 if "$article->getText('authorText')">$article->getText('authorText')</o2:if><o2 else>$user->getFullName()</o2:else></o2:setVar>
+    <o2 input name="authorText" rule='required' ruleMsg="$lang->getString('errorMsg.articleMissingAuthor')" size="25" value="$author" multilingual="1" />
+  </div>
+  <div class="inputWrapper">
+    <label for="article_locationText">$lang->getString("lblArticleLocation")</label>
+    <o2 input name="locationText" size="25" value="$article->getText('locationText')"/>
+  </div>
+  <div class="inputWrapper">
+    <label for="article_createDate">$lang->getString("lblArticleCreateDate")</label>
+    <o2 setVar "$createDate"><o2 dateFormat format="yyyy-MM-dd">$article->getMetaCreateTime()</o2:dateFormat></o2:setVar>
+    <o2 input="text" name="createDate" onFocus="blur();" value="$createDate"/>
+  </div>
+  <div class="inputWrapper">
+    <label for="article_publishDateText">$lang->getString("lblArticlePublishDate")</label>
+    <o2 dateSelect name="publishDateText" value="$article->getPublishTime()" format="yyyy-MM-dd" noObject="1" />
+  </div>
+  <div class="inputWrapper">
+    <label for="article_unPublishDateText">$lang->getString("lblArticleUnPublishDate")</label>
+    <o2 dateSelect name="unPublishDateText" value="$article->getUnPublishTime()" format="yyyy-MM-dd" noObject="1" />
+  </div>
+  <div class="inputWrapper">
+    <o2 button onClick="resetDates()">Reset</o2:button>
+  </div>
+  <div class="inputWrapper">
+    <label>$lang->getString("lblArticleIndexing")</label>
+    <o2 setVar "$isSearchable"><o2 if "$article->isSearchable()">checked</o2:if></o2:setVar>
+    <o2 setVar "$isNotSearchable"><o2 if "!$article->isSearchable()">checked</o2:if></o2:setVar>
+    <input id="isSearchableYes" type="radio" name="isSearchable" value="1" $isSearchable>
+    <label class="radioLabel" for="isSearchableYes">$lang->getString("lblArticleIsSearchable")</label><br>
+    <input id="isSearchableNo" type="radio" name="isSearchable" value="0" $isNotSearchable>
+    <label class="radioLabel" for="isSearchableNo">$lang->getString("lblArticleIsNotSearchable")</label>
+  </div>
+</div>

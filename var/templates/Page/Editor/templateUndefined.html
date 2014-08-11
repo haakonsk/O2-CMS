@@ -1,0 +1,8 @@
+<o2 setVar "$className">$object->getMetaClassName()</o2:setVar>
+
+<o2 if "$templateMatch">
+  $lang->getString("o2.pageEditor.errorNoTemplateMatch", className => $className, templateMatch => $templateMatch)
+</o2:if>
+<o2 else>
+  $lang->getString("o2.pageEditor.errorNoTemplatesAssociatedWithClass", className => $className)
+</o2:else>

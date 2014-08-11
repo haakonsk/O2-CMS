@@ -1,0 +1,64 @@
+.tabLayer {
+  empty-cells     : show;
+  -moz-user-focus : ignore;
+}
+
+.tabLayerBody {
+  clear         : both;
+  border-left   : 1px solid #ddd;
+  border-right  : 1px solid #ddd;
+  border-bottom : 1px solid #ddd;
+  width         : 100%;
+  height        : 100%;
+}
+
+.tabLayerRow {
+  float         : left;
+  border-bottom : 1px solid #ddd;
+  width         : 100%;
+}
+
+.tabLayerTabItem,
+.tabLayerTabItemActive {
+  position        : relative;
+  float           : left;
+  text-decoration : none;
+  font-size       : 10px;
+  font-family     : verdana;
+  text-indent     : 10px;
+  padding-top     : 2px;
+  white-space     : nowrap;
+}
+
+.tabLayerTabItem {
+  background : url("/images/tablayer/tab-OFF.gif") no-repeat;
+  border     : 0px solid red;
+  cursor     : pointer;
+}
+
+.tabLayerTabItemActive {
+  background : url("/images/tablayer/tab-ON.gif") no-repeat;
+  border     : 0px solid green;
+}
+
+.tabLayerTabItem div,
+.tabLayerTabItemActive div {
+  float     : left;
+  min-width : 101px;
+  height    : 16px;
+  border    : 0px solid green;
+}
+
+.tabLayerCloseButton {
+  background : url("/images/tablayer/tab-close-button.gif") no-repeat;
+  height     : 16px;
+  width      : 16px;
+  border     : 0px;
+  float      : right;
+  z-index    : 10;
+}
+
+.tabLayerCloseButton:hover {
+  background-image : url("/images/tablayer/tab-close-button.gif");
+  border           : 0px solid red;
+}

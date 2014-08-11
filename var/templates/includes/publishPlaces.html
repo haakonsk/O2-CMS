@@ -1,0 +1,31 @@
+<o2 addCss>
+  .publishPlaces .activeAjaxTarget {
+    background : url("/images/system/ajaxLoaders/wheelThrobber_bg_transp_fg_black.gif") no-repeat center center white;
+    opacity    : 0.6;
+    z-index    : 2;
+  }
+</o2:addCss>
+
+<o2 addJs>
+  function handlePageChanged(result) {
+    var url       = top.getEditUrl(result.className, result.pageId);
+    var frameInfo = top.getFrameInfoByUrl(url);
+    if (frameInfo && confirm( frameInfo.frame.o2.lang.getString("o2.pageEditor.questionReloadPageFromOtherTab") )) {
+      top.switchToFrameId(frameInfo.frameId);
+      frameInfo.frame.o2RevertChanges();
+    }
+  }
+</o2:addJs>
+
+<ul class="publishPlaces">
+  <o2 foreach "$publishPlace in $publishPlaces">
+    <o2 setVar "$object">$publishPlace->{object}</o2:setVar>
+    <o2 setVar "$isDeleted"><o2 if "$object->isDeleted()" then="true" else="false" /></o2:setVar>
+    <li id="slot_$object->getId()_$publishPlace->{slotId}">
+      <o2 setVar "$deleteIconUrl"> <o2 iconUrl action="O2-action-delete" size="16" /> </o2:setVar>
+      <o2 ajaxLink type="image" src="$deleteIconUrl" setClass="Page-Editor" setMethod="unpublishObjectForSlot" setParams="pageId=$object->getId()&slotId=$publishPlace->{slotId}&className=$object->getMetaClassName()"
+        target="slot_$object->getId()_$publishPlace->{slotId}" where="delete" handler="handlePageChanged" method="post" />
+      <a href="javascript: top.openObject('$object->getMetaClassName()', $object->getId(), '$object->getMetaName()', $isDeleted)">$object->getMetaName()</a> ($publishPlace->{slotId})
+    </li>
+  </o2:foreach>
+</ul>

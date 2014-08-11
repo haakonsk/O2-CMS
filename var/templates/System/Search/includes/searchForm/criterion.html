@@ -1,0 +1,22 @@
+<o2 use Html::Form />
+<o2 use StringFormat />
+
+<o2 use I18N />
+<o2 setResourcePath>o2.System.Search</o2:setResourcePath>
+
+<o2 setVar "$criterionName"><o2 substitute from="<="     to="le"   >$criterionName</o2:substitute></o2:setVar>
+<o2 setVar "$criterionName"><o2 substitute from=">="     to="ge"   >$criterionName</o2:substitute></o2:setVar>
+<o2 setVar "$criterionName"><o2 substitute from="not in" to="notIn">$criterionName</o2:substitute></o2:setVar>
+
+<o2 setVar "$conf">^$config->get("query.criteriaOptions.$criterionName")</o2:setVar>
+
+<o2 if "$conf">
+  
+  <o2 foreach "$value in $values">
+    <o2 include "o2://var/templates/System/Search/includes/searchForm/criterionValue.html" conf="$conf" criterionName="$criterionName" value="$value" />
+  </o2:foreach>
+  <o2 if "!$values || !@{$values}">
+    <o2 include "o2://var/templates/System/Search/includes/searchForm/criterionValue.html" conf="$conf" criterionName="$criterionName" value="$conf->{default}" />
+  </o2:if>
+  
+</o2:if>

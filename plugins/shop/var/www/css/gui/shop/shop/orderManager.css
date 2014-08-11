@@ -1,0 +1,38 @@
+html {
+  background-color : #f3f3f3;
+}
+#frameBody > div {
+  padding-top : 10px;
+}
+label {
+  color       : #6f6f6f;
+  font-size   : 10px;
+  padding     : 2px;
+  white-space : nowrap;
+}
+.leftSide {
+  width : 600px;
+  vertical-align : top;
+}
+.rightSide {
+  vertical-align : top;
+}
+.searchForm .button {
+  text-align : center;
+}
+.searchForm input[type="text"], .searchForm select {
+  width : 170px;
+}
+.searchForm .dateSelect[type="text"] {
+  width : 150px;
+}
+.searchForm .button {
+  font-size : 10;
+  color     : #6f6f6f;
+}
+.button {
+  margin-left : 250px;
+}
+.application td.frameHeader {
+  height : 12px !important; /* Strange hack */
+}

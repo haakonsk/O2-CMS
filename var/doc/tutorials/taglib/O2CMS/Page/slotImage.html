@@ -1,0 +1,20 @@
+<o2 use O2Doc::Tutorial />
+
+<o2 docSection title="slotImage">
+  Display/edit an image. Default image is provided by the "field" attribute, which is the image id field. If an image has been dropped on the slotImage, this
+  image takes precedence. Either "width" or "height" must be specified. If only "width" or only "height" is given, the original width/height ratio is usually
+  maintained.
+  <o2 docSection title="Syntax">
+    <o2 docCode lang="o2ml">
+      <o2 slotImage field="id" width="400" height="" />
+    </o2:docCode>
+  </o2:docSection>
+
+  <o2 docSection title="Attributes">
+    <o2 docList class="attributes">
+      <o2 docListItem class="required">field  - name of the object field that returns the id of the image.</o2:docListItem>
+      <o2 docListItem class="optional">width  - width of the image,  in pixels. At least one of width, height must be given.</o2:docListItem>
+      <o2 docListItem class="optional">height - height of the image, in pixels. At least one of width, height must be given.</o2:docListItem>
+    </o2:docList>
+  </o2:docSection>
+</o2:docSection>

@@ -1,0 +1,25 @@
+<o2 addJs>
+  function setMetaParentId(parentId) {
+    var metaParentId = document.getElementById("object.metaParentId");
+    metaParentId.value = parentId;
+  }
+  function setPath(path) {
+    var pathDiv = document.getElementById("_o2path");
+    pathDiv.innerHTML = path;
+  }
+  function getPath() {
+    var pathDiv = document.getElementById("_o2path");
+    return pathDiv.innerHTML;
+  }
+  function setMetaId(id) {
+    document.getElementById("objectId").value = id;
+  }
+  function setMetaName(name) {
+    var metaName = document.getElementById("object.metaName");
+    metaName.value = name;
+  }
+  function getMetaName() {
+    var metaName = document.getElementById("object.metaName");
+    return metaName.value;
+  }
+</o2:addJs>

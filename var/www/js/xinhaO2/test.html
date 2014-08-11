@@ -1,0 +1,29 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+  <head>
+    <title>Xinha test</title>
+  </head>
+
+  <body onload="init();">
+    <form>
+      <textarea id="editor" name="editor" rows="10" cols="80" style="width:100%"></textarea>
+    </form>
+
+    <script language="javascript">
+      var _editor_url = "/js/xinha/";
+      var _editor_lang = "en";  
+    </script>
+    <script type="text/JavaScript" src="/js/xinha/htmlarea.js"></script>
+    <script type="text/JavaScript" src="o2_default_config.js"></script>
+
+    <script language="javascript">
+      var  xinha_plugins = [ 'ContextMenu','TableOperations','FindReplace', ];
+      var xinha_editors = [ 'editor' ];
+
+      function init() {
+        //alert(_editor_url);
+        xinha_init();
+      }
+    </script>
+  </body>
+</html>

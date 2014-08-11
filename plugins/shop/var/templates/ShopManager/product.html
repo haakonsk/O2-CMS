@@ -1,0 +1,57 @@
+<o2 use DateFormat />
+<o2 use NumberFormat />
+
+<o2 use I18N />
+<o2 setResourcePath>ShopManager</o2:setResourcePath>
+
+<o2 header noStyle />
+
+<o2 addCss>
+  td {
+    vertical-align : top;
+  }
+  .language {
+    text-decoration : underline;
+  }
+</o2:addCss>
+
+<o2 addCssFile file="gui/shopManager" />
+<o2 include "includes/multilingualValue.html" />
+
+<o2 include "includes/backLink.html" />
+
+<h1>$object->getMetaClassName()</h1>
+
+<table>
+  <tr>
+    <td>$lang->getString("lblName")</td>
+    <td><o2 call multilingualValue obj="$object" method="getName" /></td>
+  </tr>
+  <tr>
+    <td>$lang->getString("lblPriceIncVat")</td>
+    <td><o2 numberFormat "#,##0.00">$object->getPriceIncVat()</o2:numberFormat></td>
+  </tr>
+  <tr>
+    <td>$lang->getString("lblDescription")</td>
+    <td><o2 call multilingualValue obj="$object" method="getDescription" /></td>
+  </tr>
+  <tr>
+    <td>$lang->getString("lblIsActive")</td>
+    <td>$object->isActive()</td>
+  </tr>
+  <tr>
+    <td>$lang->getString("lblProductId")</td>
+    <td>$object->getProductId()</td>
+  </tr>
+  <tr>
+    <td>$lang->getString("lblProductType")</td>
+    <td>^$object->getProductType()->getMetaName()</td>
+  </tr>
+  <tr>
+    <td>$lang->getString("lblSummary")</td>
+    <td><o2 call multilingualValue obj="$object" method="getSummary" /></td>
+  </tr>
+  <o2 include "includes/metaInfo.html" />
+</table>
+
+<o2 footer />

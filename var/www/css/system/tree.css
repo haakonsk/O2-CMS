@@ -1,0 +1,51 @@
+.treeFolder, .treeFile {
+  font-family : verdana,arial,helvetica;
+  font-size   : 10px;
+}
+.treeFile {}
+.tree {
+  background : #FFFFFF;
+  display    : block;
+}
+a {
+  text-decoration : none    !important;
+  color           : #000000 !important;
+}
+.imagePreview {
+  border   : 2px solid gray;
+  position : absolute;
+  bottom   : 2px;
+  right    : 2px;
+  display  : none;
+}
+
+.belowTree {
+  white-space : nowrap;
+  padding-top : 5px;
+}
+.belowTree a {
+  color : #bbbbbb !important;
+}
+img#desktop {
+  padding-left  : 5px;
+  padding-right : 3px;
+}
+
+#top,
+#bottom {
+  position : fixed;
+  left     : 0;
+  width    : 100%;
+  height   : 30px;
+  z-index  : 1;
+}
+#top {
+  top : 21px;
+}
+#bottom {
+  bottom : 15px;
+}
+
+#reloadForm {
+  margin : 0;
+}

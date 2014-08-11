@@ -1,0 +1,10 @@
+<o2 function multilingualValue>
+  <o2 foreach "$locale in $object->getAvailableLocales()">
+    <o2 setVar "$dummy">$obj->setCurrentLocale($locale)</o2:setVar>
+    <o2 setVar "$value">$obj->$method()</o2:setVar>
+    <o2 if "$value">
+      <span class="language">$lang->getString("language.$locale")</span>:<br>
+      $value<br>
+    </o2:if>
+  </o2:foreach>
+</o2:function>

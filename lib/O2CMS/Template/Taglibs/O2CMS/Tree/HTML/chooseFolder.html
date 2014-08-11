@@ -1,0 +1,59 @@
+<o2 use Html::Ajax />
+
+<!-- start of chooseFolder.html -->
+<o2 addJsFile file="datadumper"/>
+<o2 addJs>
+  function setFolderId_<o2 out>$componentId</o2:out>(folderId) {
+    document.getElementById("folderId_iframe_$componentId").src = "/o2cms/System-FileDialog/listFolder?folderId=" + folderId + "&componentId=$componentId&viewMode=$viewMode&onObjectChangeMethod=$onObjectChangeMethod";
+  }
+
+  function updateComponent_<o2 out>$componentId</o2:out>(path, accepted) {
+    // update navigation line
+    var html = "";
+    for (var i = 0; i < path.length; i++) {
+      if (path[i].isContainer == 1) {
+        html += '/ <a href="javascript:setFolderId_<o2 out>$componentId</o2:out>(' + path[i].id + ')">' + path[i].name + "</a>";
+      }
+      else {
+        html += "/ " + path[i].name;
+      }
+    }
+    document.getElementById("folderId_path_$componentId").innerHTML = html;
+
+    // set selected objectId only if application accepted it
+    document.getElementById("$componentId").value = accepted ? path[path.length-1].id : "";
+  }
+
+  function createFolder_<o2 out>$componentId</o2:out>() {
+    var name = prompt("Name of new folder");
+    if (!name) {
+      return;
+    }
+    var folderId = document.getElementById("$componentId").value;
+    o2.ajax.call({
+      setClass  : "System-Tree",
+      setMethod : "createCategory",
+      setParams : { name : name, parentId : folderId },
+      handler   : "folderCreatedHandler_$componentId",
+      method    : "post"
+    });
+  }
+
+  function folderCreatedHandler_$componentId(args,error) {
+    setFolderId_$componentId(args.categoryId);
+  }
+</o2:addJs>
+
+<div style=" height:$height; border-style: solid; border-color: #808080; border-width:0">
+  <input type="hidden" name="$componentId" id="$componentId" value=""> <!-- set first when change callback method approves object-->
+  
+  <table width="100%">
+    <tr>
+      <td><div id="folderId_path_$componentId" style="padding:2px;"></div></td>
+      <td width="16"align="right"><a href="javascript:createFolder_<o2 out>$componentId</o2:out>()"><img src="/images/system/folderNew.gif" border="0" title="New folder" alt="New folder"></a></td>
+    </tr>
+  </table>
+  
+  <iframe id="folderId_iframe_$componentId" src="/o2cms/System-FileDialog/listFolder?folderId=$folderId&componentId=$componentId&viewMode=$viewMode&onObjectChangeMethod=$onObjectChangeMethod" style="width:100%;height:100%;"></iframe>
+</div>
+<!-- end of chooseFolder.html -->

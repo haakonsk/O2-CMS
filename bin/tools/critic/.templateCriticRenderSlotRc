@@ -1,0 +1,7 @@
+severity = 4
+
+## Disabling the following:
+[-RequireO2Tag]
+[-ProhibitSelfClosingHtmlTag]
+[-ProhibitHardTabs]
+[-ProhibitWindowsNewlines]

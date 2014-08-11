@@ -1,0 +1,8 @@
+<p>
+  $lang->getString('grids.tellAFriend.mailBodyPart1', email => $email)<br>
+  <a href="$url">$url</a>
+  <o2 if "$title">($title)</o2:if><br><br>
+  <o2 if "$comment">
+    $lang->getString('grids.tellAFriend.mailBodyPart2', email => $email, comment => $comment)
+  </o2:if>
+</p>

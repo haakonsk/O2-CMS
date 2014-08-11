@@ -1,0 +1,56 @@
+<o2 use Html::Form />
+
+<o2 use I18N />
+<o2 setResourcePath>ShopManager</o2:setResourcePath>
+
+<o2 addCss>
+  .o2Label {
+    vertical-align : top;
+  }
+</o2:addCss>
+
+<o2 addJs>
+  var TRANSACTION_SEARCH_FIELD_NAMES = new Array("transaction.id", "transaction.orderId", "transaction.externalId", "amountMin", "amountMax", "fromDate", "toDate", "transaction.status[]");
+</o2:addJs>
+
+<o2 ajaxForm setMethod="transactionSearch" target="transactionSearchResult">
+  <o2 input type="hidden" name="frame" value="transactionSearchResult" />
+  <o2 formTable>
+    <o2 input type="text" name="transaction.id"         label="$lang->getString('lblTransactionId')" onKeyUp="toggleDisableOtherFields(this, TRANSACTION_SEARCH_FIELD_NAMES)" />
+    <o2 input type="text" name="transaction.orderId"    label="$lang->getString('lblOrderId')"       onKeyUp="toggleDisableOtherFields(this, TRANSACTION_SEARCH_FIELD_NAMES)" />
+    <o2 input type="text" name="transaction.externalId" label="$lang->getString('lblExternalId')"    onKeyUp="toggleDisableOtherFields(this, TRANSACTION_SEARCH_FIELD_NAMES)" />
+    <o2 tr>
+      <td>$lang->getString("lblAmount")</td>
+      <td></td>
+      <td colspan="99">
+        <label for="amountMin">$lang->getString("minimumAmount") </label><input type="text" name="amountMin" id="amountMin" size="5">
+        <label for="amountMax">$lang->getString("maximumAmount") </label><input type="text" name="amountMax" id="amountMax" size="5">
+      </td>
+    </o2:tr>
+    <o2 tr>
+      <td>$lang->getString("lblDate")</td>
+      <td></td>
+      <td colspan="99">
+        <label for="fromDate">$lang->getString("lblFromDate") </label><o2 dateSelect name="fromDate" format="yyyy-MM-dd" value="$today" noObject="1" />
+        <label for="toDate"  >$lang->getString("lblToDate")   </label><o2 dateSelect name="toDate"   format="yyyy-MM-dd" noObject="1" />
+      </td>
+    </o2:tr>
+    <o2 select name="transaction.status[]" label="$lang->getString('lblStatus')" multiple="multiple">
+      <o2 foreach "$status in $transactionStatuses">
+        <o2 option value="$status">$lang->getString("transactionStatus_$status")</o2:option>
+      </o2:foreach>
+    </o2:select>
+    <o2 select name="numResultsPerPage" label="$lang->getString('lblNumResultsPerPage')">
+      <o2 option value="10"  />
+      <o2 option value="25"  />
+      <o2 option value="50"  />
+      <o2 option value="100" />
+    </o2:select>
+  </o2:formTable>
+  <p>
+    <o2 input type="submit" value="$lang->getString('btnSearch')" />
+    <o2 input type="reset"  value="$lang->getString('btnReset')"  onClick="enableAllFields(this.form, TRANSACTION_SEARCH_FIELD_NAMES)" />
+  </p>
+</o2:form>
+
+<div id="transactionSearchResult"></div>

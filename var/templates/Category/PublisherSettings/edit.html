@@ -1,0 +1,78 @@
+<o2 use Html::Form />
+<o2 use O2CMS::ApplicationFrame />
+
+<o2 use I18N />
+<o2 setResourcePath>o2.Category.PublisherSettings</o2:setResourcePath>
+
+<o2 header />
+
+<o2 encodeEntities off>
+  <o2 setVar $path></o2:setVar>
+  <o2 foreach "$directory in $categoryPath">
+    <o2 appendVar "$path" delimiter="/"><a href="./edit?categoryId=$directory->getId()">$directory->getMetaName()</a></o2:appendVar>
+  </o2:foreach>
+  <o2 ApplicationFrameHeader frameTitle="$lang->getString('frameTitle') $path" showCloseButton="1" useCloseAction="confirmClose" disableScrollBar="1" showSettingsButton="0"/>
+</o2:encodeEntities>
+
+<o2 addJs>
+  var properties = [];
+  function setIsInherited(isInherited, className, propertyName) {
+    var property = properties[propertyName+'.'+className];
+
+    var list = document.forms.form[propertyName+'.'+className];
+    if( !list ) {
+      return;//alert(propertyName+'.'+className+' not found');
+    }
+    list.disabled = isInherited;
+    var selectValue = isInherited ? property.inheritedValue : property.value;
+    for (var i=0; i < list.options.length; i++) {
+      if(list.options[i].value == selectValue) {
+        list.selectedIndex = i;
+      }
+    }
+  }
+</o2:addJs>
+
+<o2 form setMethod="save" method="post" name="form">
+  <input type="hidden" name="categoryId" value="$category->getId()">
+  <table cellpadding="2" cellspacing="0" border="0">
+    <tr>
+      <td style="font-weight:bold;">$lang->getString('headerClass')</td>
+      <td style="font-weight:bold;">$lang->getString('headerObjectTemplate')</td>
+      <td style="font-weight:bold;">$lang->getString('headerPageTemplate')</td>
+    </tr>
+    <o2 makeFlipper var="flipper" values="#dfdfdf,#FFFFFF"/>
+    <o2 foreach "$class in $classes">
+      <tr style="background: $flipper">
+        <td> $class->{name} <input type="hidden" name="classNames" value="$class->{className}"></td>
+        <o2 foreach "$property ('objectTemplateId','pageTemplateId')">
+          <td>
+            <o2 if "!($property eq 'objectTemplateId' && $class->{isPage})">
+              <o2 setVar "$checked"><o2 if "$class->{$property}->{isInherited}==1" then="checked" /></o2:setVar>
+              <o2 input type="checkbox" name="$property.$class->{className}.isInherited" checked="$class->{$property}->{isInherited}"
+                onchange="setIsInherited(this.checked, '$class->{className}', '$property')"
+                >$lang->getString('optionInherited')</o2:input>
+              <o2 setVar "$name">$property.$class->{className}</o2:setVar>
+              <o2 select name="$name" value="$class->{$property}->{value}">
+                <o2 option value="">$lang->getString('optionNone')</o2:option>
+                <o2 foreach "$template in $class->{$property}->{options}">
+                  <o2 option value="$template->getId()">$template->getMetaName()</o2:option>
+                </o2:foreach>
+              </o2:select>
+            </o2:input>
+            <o2 addJs where="here">
+              // remember current value and inherited value. Init input fields.
+              properties['$property.$class->{className}'] = {value:'$class->{$property}->{value}', isInherited:'$class->{$property}->{isInherited}', inheritedValue:'$class->{$property}->{inheritedValue}'};
+              setIsInherited( $class->{$property}->{isInherited} , '$class->{className}', '$property');
+            </o2:addJs>
+          </td>
+        </o2:foreach>
+      </tr>
+    </o2:foreach>
+    
+    <tr><td colspan="3" align="right"><o2 input type="submit" value="$lang->getString('btnSave')"/></td></tr>
+  </table>
+
+</o2:form>
+
+<o2 footer />

@@ -1,0 +1,81 @@
+<o2 use Html::Form /> 
+<o2 use StringFormat />
+
+ 
+<o2 function renderLevel>
+  <o2 foreach "$key => $value in $plds" sortBy="key">
+    <o2 setVar "$level"><o2 if "$level" then="$level" else="0" /></o2:setVar>
+    <o2 set "$level++" />
+    <o2 setVar "$paddingLeft"><o2 calc>20 * $level</o2:calc></o2:setVar>
+    <o2 setVar "$pathKey"><o2 if "$path" then="$path." else="" />$key</o2:setVar>
+    
+    <o2 if "ref $value eq 'HASH'">
+      <tr>
+        <td colspan="2" style="padding-left: <o2 out>$paddingLeft</o2:out>px;"><b>$pathKey</b>:</td>
+        <o2 call renderLevel plds="$value" path="$pathKey" level="$level" />
+      </tr>
+    </o2:if>
+    <o2 else>
+      <o2 encodeEntities off>
+        <o2 setVar "$value"><o2 substitute from="\$" to="&#36;" literalMatch="1">$value</o2:substitute></o2:setVar>
+      </o2:encodeEntities>
+      <tr>
+        <td valign="top" style="padding-left: <o2 out>$paddingLeft</o2:out>px"><b>$pathKey:</b></td><td>
+          <o2 encodeEntities off>
+            <o2 if "length ($value) > 40">
+              <o2 textarea name="$pathKey" value="$value" style="width:500px;height:100px;" />
+            </o2:if>
+            <o2 else>
+              <o2 input style="width:500px;" type="text" name="$pathKey" value="$value" />
+            </o2:else>
+          </o2:encodeEntities>
+        </td>
+      </tr>
+    </o2:else>
+    
+    <o2 set "$level--" />
+  </o2:foreach>
+</o2:function>
+
+
+<o2 header />
+
+<o2 if "$message">
+  <h1>
+    <font color="red"><b>$message</b></font>
+  </h1>
+</o2:if>
+
+<o2 form setMethod="saveFile" removeParam="file" method="post">
+  <table width="100%">
+    <tr>
+      <td align="right">
+        <o2 input type="submit" value=" Save changes " />
+        <o2 input type="reset"  value=" Undo all "     />
+      </td>
+    </tr>
+  </table><br>
+
+  <o2 input type="hidden" name="file" value="$file"/>
+  <o2 input type="hidden" name="path" value="$path"/>
+  <table border="0">
+    <tr>
+      <td colspan="2"><b><u>$topPath</u></b>:</td>
+    </tr>
+    <o2 call renderLevel plds="$plds" path="$topPath" />
+  </table>
+  <br>
+  <table width="100%">
+    <tr>
+      <td align="right">
+        <o2 input type="submit" value=" Save changes " />
+        <o2 input type="reset"  value=" Undo all "     />
+      </td>
+    </tr>
+  </table>
+
+  <o2 multiInput label="New language variables (newName=New value)" type="text" name="newFields[]" resizable="1" size="80" rearrangeable="1" />
+
+</o2:form>
+
+<o2 footer/>

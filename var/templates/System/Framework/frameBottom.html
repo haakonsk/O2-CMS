@@ -1,0 +1,43 @@
+<o2 use Html::Form/>
+
+<o2 header class="genericBar" onresize="realignTaskButtons()" />
+
+<o2 addJsFile  file="dragDrop"                         />
+<o2 addJsFile  file="componentBase"                    />
+<o2 addJsFile  file="gui/system/framework/frameBottom" />
+<o2 addCssFile file="gui/system/framework/frameBottom" />
+
+<o2 addJs where="onLoad">
+  var t = new Trashcan("trashcan");
+</o2:addJs>
+
+<table cellspacing="0" cellpadding="0" border="0" width="100%" height="100%">
+  <tr>
+    <td id="toolButton" class="toolButton" onClick="top.middleFrame.toggleMenu();"><div>$lang->getString("o2.desktop.btnStartMenu")</div></td>
+    <td id="showDesktopButton" width="16" class="showDesktopButton" onClick="top.switchToFrameId(0);" title="$lang->getString('o2.desktop.txtShowDesktopTooltip')"><div>&nbsp;</div></td>
+    <td width="90%" id="taskContainer">
+      <table border="0" cellpadding="0" cellspacing="0" id="tasks" height="100%" width="100%" class="taskBar">
+        <tr id="taskRow"></tr>
+      </table>
+    </td>
+    <td class="trashcan">
+      <div id="trashcan" component="Trashcan" dropId="-1">
+        <a href="javascript: top.openObject('O2CMS::Obj::Trashcan', top.getTrashcanId(), top.o2.lang.getString('o2.desktop.lblTrashcan'));">
+          <img src="/images/system/classIcons/O2CMS-Obj-Trashcan.gif" title="$lang->getString('o2.desktop.toolTipTrashcan')" alt="$lang->getString('o2.desktop.lblTrashcan')">
+        </a>
+      </div>
+    </td>
+  </tr>
+</table>
+
+<o2 footer/>
+
+
+<!--
+  <table celspacing=0 cellpadding=0 border=0 onClick="top.middleFrame.toggleMenu();" onMouseUp="this.className='buttonOn';" onMouseDown="this.className='buttonIn';" align=left id="12startMenuButton"><tr>
+  <td><img src="/images/system/tools_16.gif" width=16 height=16></td>
+  <td>&nbsp;<b>Tools</b></td>
+  </table>
+
+<div id="openedFrames">&nbsp;</div></td>
+-->

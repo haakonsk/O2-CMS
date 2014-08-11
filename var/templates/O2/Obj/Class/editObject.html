@@ -1,0 +1,19 @@
+<o2 use I18N />
+<o2 setResourcePath>o2.Universal.editObject.class</o2:setResourcePath>
+
+<h1>$lang->getString('headerEditClass') $object->getMetaName()</h1>
+
+<o2 formTable>
+  <tr>
+    <td>$lang->getString('objectIdIn') O2_OBJ_CLASS</td>
+    <td>$object->getId()</td>
+  </tr>
+  <tr>
+    <td>$lang->getString('lblClassName')</td>
+    <td>$object->getClassName()</td>
+  </tr>
+  <o2 input label="$lang->getString('lblMgrClassName')" name="object.managerClass" value="$object->getManagerClass()" rule="length:,128" ruleMsg="$lang->getString('errorMgrClassName')" size="60" />
+  <o2 input label="$lang->getString('lblEditUrl')"      name="object.editUrl"      value="$object->getEditUrl()"      rule="length:,128" ruleMsg="$lang->getString('errorEditUrl')"      size="60" />
+  <o2 input label="$lang->getString('lblEditTemplate')" name="object.editTemplate" value="$object->getEditTemplate()" rule="length:,128" ruleMsg="$lang->getString('errorEditTemplate')" size="60" />
+  <o2 input label="$lang->getString('lblNewUrl')"       name="object.newUrl"       value="$object->getNewUrl()"       rule="length:,128" ruleMsg="$lang->getString('errorNewUrl')"       size="60" />
+</o2:formTable>

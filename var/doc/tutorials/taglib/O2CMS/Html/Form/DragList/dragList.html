@@ -1,0 +1,36 @@
+<o2 use O2Doc::Tutorial />
+
+<o2 docSection title="dragList">
+  This is an element used mainly in the backend to drag from the tree menu on the left side over to a dragList in the main frame.
+  <o2 docSection title="Syntax">
+    <o2 docCode lang="o2ml">
+      <o2 addCss>
+        .dragList {
+          border : 1px dotted black;
+        }
+        .dragList:before {
+          content : "<Drag objects here>";
+        }
+      </o2:addCss>
+      
+      <o2 dragList id="attributeIds" label="Attributes" allowClass="O2::Obj::Image" />
+    </o2:docCode>
+    <o2 docCodeResult useModule="O2CMS::Html::Form::DragList" seeGeneratedHtmlAsDisplayed="1" seeGeneratedHtml="1" />
+  </o2:docSection>
+
+  <o2 docSection title="Attributes">
+    <o2 docList class="attributes">
+      <o2 docListItem class="optional">id</o2:docListItem>
+      <o2 docListItem class="optional">class</o2:docListItem>
+      <o2 docListItem class="optional">items                 - an array reference with the objects to appear in the dragList when the page is loaded.</o2:docListItem>
+      <o2 docListItem class="optional">allowClass [*]        - a comma-separated list of allowed classes. Objects of other classes can't be dropped on the dragList.
+      The default (*) allows all objects.</o2:docListItem>
+      <o2 docListItem class="optional">replace [yes]         - {yes, no} yes: replace item under mouse on drop (instead of adding).</o2:docListItem>
+      <o2 docListItem class="optional">reorganize [yes]      - {yes, no} yes: allow list to be reorganized by dragging items to a new position.</o2:docListItem>
+      <o2 docListItem class="optional">unique [yes]          - {yes, no} yes: do not add item if it already exists in list.</o2:docListItem>
+      <o2 docListItem class="optional">removeOnDragEnd [yes] - {yes, no} yes: remove item from list when dragged to another list.</o2:docListItem>
+      <o2 docListItem class="optional content">content       - <o2 docLink type="tag" id="objectItem" /> tags.</o2:docListItem>
+    </o2:docList>
+  </o2:docSection>
+
+</o2:docSection>

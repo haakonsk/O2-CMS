@@ -1,0 +1,46 @@
+<o2 use Html::Form />
+
+<o2 use I18N />
+<o2 setResourcePath>User.MemberManager</o2:setResourcePath>
+
+<o2 header bgColor="#f3f3f3" />
+
+<o2 form method="post" setMethod="save">
+  <o2 input type="hidden" name="memberId" value="$member->getId()" />
+  <o2 formTable>
+    <o2 tr>
+      <td>$lang->getString("memberId")</td>
+      <td>$member->getId()</td>
+    </o2:tr>
+    <o2 tr>
+      <td>$lang->getString("username")</td>
+      <td>$member->getUsername()</td>
+    </o2:tr>
+    <o2 input type="text" name="email"      label="$lang->getString('email')"      value="$member->getEmail()"      size="40" />
+    <o2 input type="text" name="firstname"  label="$lang->getString('firstname')"  value="$member->getFirstName()"  size="40" />
+    <o2 input type="text" name="middlename" label="$lang->getString('middlename')" value="$member->getMiddleName()" size="40" />
+    <o2 input type="text" name="lastname"   label="$lang->getString('lastname')"   value="$member->getLastName()"   size="40" />
+    <o2 tr>
+      <td>$lang->getString("status")</td>
+      <td>$member->getMetaStatus()</td>
+    </o2:tr>
+    <o2 input type="text" name="password" label="$lang->getString('password')" value="$member->getPassword()" size="40" />
+  </o2:formTable>
+
+  <o2 formTable class="memberAttributes" id="memberAttributes" cellspacing="1" border="0">
+    <o2 tr>
+      <th>$lang->getString("attributeName")</th>
+      <th>$lang->getString("attributeValue")</th>
+    </o2:tr>
+    <o2 foreach "$name => $value in $member->getAttributes()">
+      <o2 input type="text" name="attribute_$name" label="$name" value="$value" size="40" />
+    </o2:foreach>
+  </o2:formTable>
+
+  <p>
+    <o2 setVar "$displayMemberUrl"><o2 urlMod setMethod="showMemberInfo" /></o2:setVar>
+    <o2 input type="submit" value="$lang->getString('btnSubmitEditMember')" class="defaultButton" />
+    <o2 button href="$displayMemberUrl">$lang->getString('btnCancelEditMember')</o2:button>
+  </p>
+
+</o2:form>

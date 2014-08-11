@@ -1,0 +1,82 @@
+<o2 use DateFormat />
+<o2 use NumberFormat />
+
+<o2 use I18N />
+<o2 setResourcePath>ShopManager</o2:setResourcePath>
+
+<o2 header noStyle />
+
+<o2 addCssFile file="gui/shopManager" />
+
+<o2 include "includes/backLink.html" />
+
+<h1>$object->getMetaClassName()</h1>
+
+<table>
+  <tr>
+    <td>$lang->getString("lblCustomer")</td>
+    <td><o2 link setParam="query=$object->getCustomerId()" title="$object->getCustomerId()">^$object->getCustomerFullName()</o2:link></td>
+  </tr>
+  <tr>
+    <td>$lang->getString("lblAmountIncVatIncSubOrderLines")</td>
+    <td><o2 numberFormat "#,##0.00">$object->getPriceIncVatIncSubOrderLines()</o2:numberFormat></td>
+  </tr>
+  <tr>
+    <td>$lang->getString("lblAmountIncVatExSubOrderLines")</td>
+    <td><o2 numberFormat "#,##0.00">$object->getPriceIncVatExSubOrderLines()</o2:numberFormat></td>
+  </tr>
+
+  <o2 if "$object->getUnitPriceIncVat() && (!$object->can('getReservationPeriodIds') || !$object->getReservationPeriodIds())">
+    <tr>
+      <td>$lang->getString("lblUnitPrice")</td>
+      <td><o2 numberFormat "#,##0.00">$object->getUnitPriceIncVat()</o2:numberFormat></td>
+    </tr>
+  </o2:if>
+
+  <tr>
+    <td>$lang->getString("lblCount")</td>
+    <td>$object->getCount()</td>
+  </tr>
+  <tr>
+    <td>$lang->getString("lblOrderId")</td>
+    <td><o2 link setParam="query=$object->getOrderId()">$object->getOrderId()</o2:link></td>
+  </tr>
+  <tr>
+    <td>$lang->getString("lblProduct")</td>
+    <td><o2 link setParam="query=$object->getProductId()" title="$object->getProductId()">$object->getProduct()->getMetaName()</o2:link></td>
+  </tr>
+
+  <o2 include "includes/metaInfo.html" />
+</table>
+
+<o2 include "includes/orderLineReceiptLink.html" />
+
+<o2 setVar "$reservationPeriods"></o2:setVar>
+<o2 if "$object->can('getReservationPeriods')">
+  <o2 setVar "$reservationPeriods" forceType="array">$object->getReservationPeriods()</o2:setVar>
+</o2:if>
+<o2 if "$reservationPeriods && @{$reservationPeriods}">
+  <h2>$lang->getString("hdrReservationPeriods")</h2>
+  <table>
+    <tr>
+      <th>$lang->getString("lblPricePerDayIncVat")</th>
+      <th>$lang->getString("lblStartDate")</th>
+      <th>$lang->getString("lblEndDate")</th>
+    </tr>
+    <o2 foreach "$reservationPeriod in $reservationPeriods">
+      <tr>
+        <td class="price"><o2 numberFormat "#,##0.00">$reservationPeriod->getUnitPriceIncVat()</o2:numberFormat></td>
+        <td class="date" >$reservationPeriod->getStartDate('yyyy.MM.dd')</td>
+        <td class="date" >$reservationPeriod->getEndDate('yyyy.MM.dd')</td>
+      </tr>
+    </o2:foreach>
+  </table>
+</o2:if>
+
+<o2 setVar "$extraInfos" forceType="hash">$object->getExtraInfos()</o2:setVar>
+<o2 include "includes/extraInfos.html" extraInfos="$extraInfos" />
+
+<o2 setVar "$orderLines" forceType="array">$object->getSubOrderLines()</o2:setVar>
+<o2 include "includes/orderLines.html" orderLines="$orderLines" title="$lang->getString('hdrSubOrderLines')" />
+
+<o2 footer />

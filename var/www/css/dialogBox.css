@@ -1,0 +1,64 @@
+/*
+ * This is the CSS file for:
+ * - QuestionBox
+ * - InfoBox
+ * - WarnBox
+ * - AboutBox
+ * 
+*/
+
+.dialogButton {
+  background-image  : url("/images/system/button_background_1px_not_active.gif");
+  background-repeat : repeat-x;
+  border            : 1px solid #767675;
+  text-decoration   : none;
+}
+
+.dialogButton:hover {
+  background-image  : url("/images/system/button_background_1px_active.gif");
+  background-repeat : repeat-x;
+  background-Color  : red;
+}
+
+/* *********************************************************************** */
+.questionBox {
+  background : white;
+}
+
+.questionBoxTextCell {
+  vertical-align : top;
+  padding-top    : 10px;
+}
+
+.questionBoxIconCell {
+  width               : 60px;
+  height              : 60px;
+  background-Image    : url('/images/system/quest_32.gif');
+  background-repeat   : no-repeat;
+  background-position : center center;
+}
+/* *********************************************************************** */
+.messageBox {
+  background : white;
+}
+
+.messageBoxTextCell {
+  vertical-align : top;
+  padding-top    : 10px;
+}
+
+.messageBoxIconCell {
+  width               : 60px;
+  height              : 60px;
+  background-Image    : url('/images/system/about_32.gif');
+  background-repeat   : no-repeat;
+  background-position : center 20px;
+}
+
+.errorBoxIconCell {
+  width               : 60px;
+  height              : 60px;
+  background-Image    : url('/images/system/close_32.gif');
+  background-repeat   : no-repeat;
+  background-position : center 20px;
+}

@@ -1,0 +1,55 @@
+<o2 use Html::Form />
+
+<o2 use I18N />
+<o2 setResourcePath>Shop.OrderTypeEditor</o2:setResourcePath>
+
+<o2 header bgColor="#f3f3f3"/>
+
+<o2 form setMethod="saveOrderType">
+  <input type="hidden" name="orderType.id" value="$orderType->getId()">
+  <o2 setVar "$redStar"><font color="#FF0000">*</font></o2:setVar>
+  <table border="0" cellpadding="4" cellspacing="0" style="background-color:#e9e9e9;">
+    <tr>
+      <td class="tblHeader" colspan="3">
+        <b>
+          <o2 if "$orderType->getId()">$lang->getString("headerChangeOrderType")</o2:if>
+          <o2 else>$lang->getString("headerNewOrderType")</o2:else>
+        </b>
+      </td>
+    </tr>
+    <tr>
+      <td width="35%" class="cell2">$lang->getString("lblName") <o2 encodeEntities off>$redStar</o2:encodeEntities></td>
+      <td class="cell2" width="2%">:</td>
+      <td width="63%" class="cell2"><o2 input size="30" name="orderType.metaName" rule="required" ruleMsg="$lang->getString('ruleMsgNameMissing')" value="$orderType->getMetaName()" class="input" style="width:270px;" /></td>
+    </tr>
+    <tr>
+      <td class="cell2">$lang->getString("lblOrderClassName") <o2 encodeEntities off>$redStar</o2:encodeEntities></td>
+      <td class="cell2">:</td>
+      <td class="cell2"><o2 input size="30" rule="required" ruleMsg="$lang->getString('ruleMsgOrderClassNameMissing')" name="orderType.orderClassName" value="$orderType->getOrderClassName()" class="input" style="width:270px;" /></td>
+    </tr>
+    <tr>
+      <td class="cell2">$lang->getString("lblOrderGuiClassName") <o2 encodeEntities off>$redStar</o2:encodeEntities></td>
+      <td class="cell2">:</td>
+      <td class="cell2"><o2 input size="30" rule="required" ruleMsg="$lang->getString('ruleMsgOrderGuiClassNameMissing')" name="orderType.orderGuiClassName" value="$orderType->getOrderGuiClassName()" class="input" style="width:270px;" /></td>
+    </tr>
+    <tr>
+      <td class="cell2">$lang->getString("lblOrderTemplatesDirectory") <o2 encodeEntities off>$redStar</o2:encodeEntities></td>
+      <td class="cell2">:</td>
+      <td class="cell2"><o2 input size="30" rule="required" ruleMsg="$lang->getString('ruleMsgOrderTemplatesDirectoryMissing')" name="orderType.orderTemplatesDirectory" value="$orderType->getOrderTemplatesDirectory()" class="input" style="width:270px;" /></td>
+    </tr>
+    <tr>
+      <td class="cell2">$lang->getString("lblReceiptGuiClassName") <o2 encodeEntities off>$redStar</o2:encodeEntities></td>
+      <td class="cell2">:</td>
+      <td class="cell2"><o2 input size="30" rule="required" ruleMsg="$lang->getString('ruleMsgReceiptGuiClassNameMissing')" name="orderType.receiptGuiClassName" value="$orderType->getReceiptGuiClassName()" class="input" style="width:270px;" /></td>
+    </tr>
+    <tr>
+      <td class="cell2">$lang->getString("lblReceiptTemplatesDirectory") <o2 encodeEntities off>$redStar</o2:encodeEntities></td>
+      <td class="cell2">:</td>
+      <td class="cell2"><o2 input size="30" rule="required" ruleMsg="$lang->getString('ruleMsgReceiptTemplatesDirectoryMissing')" name="orderType.receiptTemplatesDirectory" value="$orderType->getReceiptTemplatesDirectory()" class="input" style="width:270px;" /></td>
+    </tr>
+    <tr>
+      <td class="cell2" align="center" colspan="3"><o2 input type="submit" value="$lang->getString('btnSave')" style="font-size:10px;color:#6f6f6f;"/></td>
+    </tr>
+  </table><br>
+  <div>$lang->getString('msgRequiredFieldsInfo') <o2 encodeEntities off>$redStar</o2:encodeEntities></div>
+</o2:form>

@@ -1,0 +1,11 @@
+<o2 use Html::Form />
+<o2 multilingualController object="$object" />
+
+<b>Video title:</b><br>
+<o2 input name="object.title" value="$object->getTitle()" rule="" ruleMsg="Error in title" size="30" multilingual="1" /><br>
+
+<b>Video tree name:</b><br>
+<o2 input name="metaName" value="$object->getMetaName()" rule="required" ruleMsg="Error in name" size="30" onchange="setMetaName(this.value);"/><br>
+
+<b>Video description</b><br>
+<o2 input name="object.description" value="$object->getDescription()" size="30" multilingual="1" /><br>

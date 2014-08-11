@@ -1,0 +1,30 @@
+<o2 use Html::Form />
+<o2 use Html::Ajax />
+
+<o2 addCssFile file="gui/comments" />
+
+<o2 if "!$objectId">
+  <o2 setVar "$objectId"><o2 if "$page" then="$page->getId()" else="$object->getId()" /></o2:setVar>
+</o2:if>
+
+<o2 ajaxForm method="post" setDispatcherPath="o2" setMethod="previewComment" setClass="Comments" id="commentForm" target="newComment" where="replace"
+  ruleHandler="ruleHandler" errorMessageHandler="ignoreErrors">
+  <o2 if "!$isChanging">
+    <h4>Write a new comment</h4>
+  </o2:if>
+
+  <fieldset>
+    <o2 input type="hidden" name="objectId"       value="$objectId"       />
+    <o2 input type="hidden" name="commentPageUrl" value="$commentPageUrl" />
+    
+
+    <o2 input type="text"  name="name"    label="Name*"    value="$q->{name}"    rule="required" ruleMsg="Name is required" />
+    <o2 input type="email" name="email"   label="E-mail"   value="$q->{email}"   />
+    <o2 input type="url"   name="webSite" label="Web site" value="$q->{webSite}" />
+    <o2 textarea           name="comment" label="Comment*" value="$q->{comment}" rule="required" ruleMsg="Comment is required" />
+    
+    <p>
+      <o2 input type="submit" value="Preview comment..." />
+    </p>
+  </fieldset>
+</o2:ajaxForm>

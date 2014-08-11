@@ -1,0 +1,58 @@
+<o2 use Html::Form />
+<o2 use O2CMS::Tree />
+
+<o2 use Js::Lang />
+<o2 addJsLangFile file="o2/article/objectManager" />
+
+<o2 use I18N />
+<o2 setResourcePath>o2.article.objectManager</o2:setResourcePath>
+
+<o2 header />
+
+<o2 addJsFile  file="article/objectManager" />
+<o2 addCssFile file="article/objectManager" />
+
+
+<style>
+  #fileUploadUploader {
+    background: url('/js/uploadify/uploadifyButton.png') no-repeat;
+  }
+</style>
+
+<o2 form>
+  <o2 contentGroup title="$lang->getString('titleInsertLinkOrImage')">
+    <div class="folderSelection">
+      <o2 chooseFolder id="folderId" height="442" folderId="$q->{parentId}" onObjectChangeMethod="objectChanged" viewMode="thumbnails"/>
+    </div>
+    <div class="buttonRow">
+      <table cellspacing="0" cellpadding="0" border="0" width="100%">
+        <tr>
+          <td><o2 fileUpload id="fileUpload" name="file" parentId="$q->{parentId}" onAllComplete="function(){ reloadFolder(); }"/></td>
+          <td>
+            <o2 select name="target" label="$lang->getString('labelTarget')" value="$defaultLinkTarget">
+              <o2 option value="">$lang->getString("optionTargetNone")</o2:option>
+              <o2 option value="_blank">$lang->getString("optionTargetBlank") (_blank)</o2:option>
+              <o2 option value="_self" >$lang->getString("optionTargetSelf")  (_self)</o2:option>
+              <o2 option value="_top"  >$lang->getString("optionTargetTop")   (_top)</o2:option>
+            </o2:select>
+          </td>
+          <td align="right">
+            <o2 input type="button" value="$lang->getString('btnOk')" id="insertObjectButton" onclick="insertObject(currentFile, this.form.target.value)"/>
+            <o2 input type="button" value="$lang->getString('btnCancel')" onclick="window.close()" />
+          </td>
+        </tr>
+      </table>
+    </div>
+  </o2:contentGroup>
+</o2:form>
+
+<script>
+  function updateParentId ( parentId ) {
+    var currentData = $('#fileUpload').uploadifySettings('scriptData');
+    alert( currentData.parentId );
+  }
+</script>
+
+<iframe src="about:blank" id="saveFrame" name="saveFrame"></iframe>
+
+<o2 footer/>

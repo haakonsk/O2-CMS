@@ -1,0 +1,35 @@
+<o2 use Html/>
+<o2 use DataDumper/>
+
+<o2 use Js::Lang />
+<o2 addJsLangFile file="o2/desktop" />
+<o2 addJsLangFile file="o2/Category/Manager" />
+
+<o2 setVar "$versionFrom">o2.version</o2:setVar>
+<o2 setVar "$version">$config->get($versionFrom)</o2:setVar>
+
+<o2 header title="O2 Evolution TM $version" omitBody />
+
+<o2 addJs where="pre">
+  var classes        = <o2 dump "$classes"/>;
+  var trashcanId     = "$trashcanId";
+  var imageRootUrl   = "$config->get('o2.adminImageRootUrl')";
+  var o2CustomerRoot = "$ENV->{O2CUSTOMERROOT}";
+</o2:addJs>
+
+<o2 addJsFile file="util/urlMod"                         />
+<o2 addJsFile file="windowUtil"                          />
+<o2 addJsFile file="datadumper"                          />
+<o2 addJsFile file="numbersAndStrings"                   />
+<o2 addJsFile file="openwindow"                          />
+<o2 addJsFile file="gui/system/framework/setupFramework" />
+<o2 addJsFile file="componentBase"                       />
+<o2 addJsFile file="system/scrollbars/frameScrollbars"   />
+
+<frameset rows="33,*,25" frameborder="0" framespacing="0" marginheight="0" marginwidth="0">
+  <frame src="<o2 urlMod setClass='System-Framework' setMethod='setupTop'/>"    class="frameWithBorder" name="topFrame"    scrolling="no" noresize marginwidth="0" marginheight="0"></frame>
+  <frame src="<o2 urlMod setClass='System-Framework' setMethod='setupMiddle'/>" class="frameWithBorder" name="middleFrame" scrolling="no" noresize marginwidth="0" marginheight="0"></frame>
+  <frame src="<o2 urlMod setClass='System-Framework' setMethod='setupBottom'/>"                         name="bottomFrame" scrolling="no" noresize marginwidth="0" marginheight="0"></frame>
+</frameset>
+
+<o2 footer/>

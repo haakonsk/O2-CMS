@@ -1,0 +1,43 @@
+<o2 use Html::Form/>
+
+<o2 use I18N />
+<o2 setResourcePath>o2.Url.editUrl</o2:setResourcePath>
+
+<o2 setVar "$icon"><o2 iconUrl action="O2CMS-Obj-Url" size="48" /></o2:setVar>
+
+<o2 addCss>
+  #editObjectWrapper h2 {
+    background-image: url("/images/icons/o2default/O2CMS/Obj/Url/O2CMS-Obj-Url-48.png");
+  }
+</o2:addCss>
+
+<o2 setVar "$newWindow">0</o2:setVar>
+<o2 if "$object->getNewWindow()">
+  <o2 setVar "$newWindow">$object->getNewWindow() </o2:setVar>
+</o2:if>
+<o2 setVar "$currentLocale">$object->getCurrentLocale()</o2:setVar>
+
+<h2>$lang->getString('hdrEditUrl')</h2>
+<p class="helpText">$lang->getString('helpText')</p>
+
+<p>
+  <label for="url">$lang->getString('lblUrlTitle'):</label>
+  <o2 input id="url" name="object.url" value="$object->getUrl()" rule="required" ruleMsg="$lang->getString('errorInUrl')" />
+  <span>$lang->getString('msgUrlTitle')</span>
+</p>
+
+<p>
+  <label for="name">$lang->getString('lblUrlName')</label>
+  <o2 input id="name" name="name" value="$object->getMetaName()" rule="required" ruleMsg="$lang->getString('errorInName')" onchange="setMetaName(this.value); this.form['object.$currentLocale.title'].value = this.value;" />
+  <span>$lang->getString('msgUrlName')</span>
+</p>
+
+<o2 input type="hidden" name="object.$currentLocale.title" value="" />
+
+<div class="editObjectInputWrapper">
+  <o2 radioGroup label="$lang->getString('lblUrlBehaviour')" name="object.newWindow" value="$newWindow" display="inline">
+    <o2 radio value="0" label="$lang->getString('lblNewWindowNo')"  />
+    <o2 radio value="1" label="$lang->getString('lblNewWindowYes')" />
+  </o2:radioGroup>
+  <span class="infoText">$lang->getString('msgUrlBehaviour')</span>
+</div>

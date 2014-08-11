@@ -1,0 +1,227 @@
+<o2 use Html::Form />
+<o2 use O2CMS::Html::TabLayer/>
+<o2 use DateFormat/>
+<o2 use O2CMS::Publisher/>
+<o2 use StringFormat />
+
+<o2 use I18N />
+<o2 setResourcePath>o2.propertiesDialog</o2:setResourcePath>
+
+<o2 addJsFile file="ajax"/>
+<o2 addJsFile file="o2escape"/>
+<o2 addJsFile file="progressbar" />
+
+<o2 header />
+
+<o2 if "$reloadTree">
+  <o2 addJs where="pre">
+    top.reloadTree();
+  </o2:addJs>
+</o2:if>
+
+<o2 addCss>
+  div.o2RadioGroup {
+    display : inline;
+  }
+  .tab {
+    min-height       : 100%;
+    background-color : #ddd;
+  }
+  #generalTab td {
+    white-space : nowrap;
+  }
+  #generalTab td + td {
+    white-space : normal;
+  }
+  .localesEnabled {
+    color : black;
+  }
+  .localesDisabled {
+    color : #999;
+  }
+</o2:addCss>
+
+<o2 tabLayer name="properties" style="height:400px;width:600px;">
+  <o2 addTab name="$lang->getString('tabs.general')" contentId="generalTab" selected />
+  <o2 addTab name="$lang->getString('tabs.locales')" contentId="localesTab" />
+  <o2 if "$object->getMetaClassName() eq 'O2CMS::Obj::Site'">
+    <o2 addTab name="$lang->getString('tabs.cache')" contentId="cacheTab" />
+  </o2:if>
+</o2:tabLayer>
+
+<div id="generalTab" class="tab">
+  <o2 if "$object->isa('O2::Obj::Object::Query')">
+    <o2 multilingualController object="$object" />
+  </o2:if>
+  <o2 form method="post" action="updateObjectProperties">
+    <input type="hidden" name="objectId" value="$q->{objectId}">
+    <table>
+      <tr>
+        <td align="middle"><img src="<o2 iconUrl size='32' class='$object->getMetaClassName()'/>" width="32" height="32"></td>
+        <td colspan="2"><b>$object->getMetaClassName()</b></td>
+      </tr>
+      <o2 encodeEntities off>
+        <o2 setVar "$metaName"><o2 substitute from="\'" to="&#39;">$object->getMetaName()</o2:substitute></o2:setVar>
+        <o2 setVar "$metaName"><o2 substitute from='\"' to="&quot;">$metaName</o2:substitute></o2:setVar>
+        <tr>
+          <td>$lang->getString('general.lblObjectName')</td>
+          <td>:</td>
+          <td><o2 input type="text" name="name" value="$metaName" accesskey="n" /></td>
+        </tr>
+      </o2:encodeEntities>
+      <o2 if "$object->isa('O2::Obj::Object::Query')">
+        <tr>
+          <td>$lang->getString('general.lblObjectTitle')</td>
+          <td>:</td>
+          <td><o2 input type="text" name="title" value="$object->getTitle()" multilingual="1" /></td>
+        </tr>
+      </o2:if>
+      <tr>
+        <td>$lang->getString('general.lblObjectIsIndexable')</td>
+        <td>:</td>
+        <td>
+          <o2 radioGroup name="allowIndexing" value="$allowIndexingValue">
+            <o2 radio value="inherit" label="$lang->getString('general.options.inherit')" />
+            <o2 radio value="yes"     label="$lang->getString('general.options.yes')"     />
+            <o2 radio value="no"      label="$lang->getString('general.options.no')"      />
+          </o2:radioGroup>
+          &nbsp;$lang->getString('general.objectIsIndexable.description')
+        </td>
+      </tr>
+      <o2 if "$object->isa('O2CMS::Obj::Directory')">
+        <tr>
+          <td>$lang->getString('general.lblDirectoryEncoding')</td>
+          <td>:</td>
+          <td>
+            <o2 select name="directoryEncoding" value="$directoryEncodingValue">
+              <o2 option value="inherit"   >$lang->getString('general.options.inherit')</o2:option>
+              <o2 option value="utf-8"     >$lang->getString('general.directoryEncoding.options.utf8')</o2:option>
+              <o2 option value="iso-8859-1">$lang->getString('general.directoryEncoding.options.iso88591')</o2:option>
+            </o2:select>
+            &nbsp;$lang->getString('general.directoryEncoding.description')
+          </td>
+        </tr>
+      </o2:if>
+      <o2 setVar "$objectUrl"><o2 objectUrl absolute="yes" objectId="$object->getId()"/></o2:setVar>
+      <o2 if "$objectUrl =~ m/^http/">
+        <tr>
+          <td>$lang->getString('general.lblObjectUrl')</td>
+          <td>:</td>
+          <td><a href="$objectUrl" target="_blank">$objectUrl</a></td>
+        </tr>
+      </o2:if>
+      <tr>
+        <td>$lang->getString('general.lblObjectId')</td>
+        <td>:</td>
+        <td>$object->getId()</td>
+      </tr>
+      <tr>
+        <td>$lang->getString('general.lblObjectType')</td>
+        <td>:</td>
+        <td>$object->getMetaClassName()</td>
+      </tr>
+      <tr>
+        <td>$lang->getString('general.lblObjectOwner')</td>
+        <td>:</td>
+        <td>
+          <o2 if "$object->getMetaOwnerId()">$ownerName ($object->getMetaOwnerId())</o2:if>
+          <o2 else>$lang->getString('general.lblNoOwner')</o2:else>
+        </td>
+      </tr>
+      <tr>
+        <td>$lang->getString('general.lblObjectStatus')</td>
+        <td>:</td>
+        <td>$object->getMetaStatus()</td>
+      </tr>
+      <tr>
+        <td>$lang->getString('general.lblObjectCreated')</td>
+        <td>:</td>
+        <td><o2 dateFormat format="long">$object->getMetaCreateTime()</o2:dateFormat></td>
+      </tr>
+      <tr>
+        <td>$lang->getString('general.lblObjectChanged')</td>
+        <td>:</td>
+        <td><o2 dateFormat format="long">$object->getMetaChangeTime()</o2:dateFormat></td>
+      </tr>
+    </table>
+    <center><p><input type="submit" value="$lang->getString('general.btnSave')"></p></center>
+  </o2:form>
+</div>
+
+
+<div id="localesTab" class="tab">
+  <b>$lang->getString('o2.propertiesDialog.general.lblAvailableLocales')</b>:<br>
+  <o2 form id="availableLocalesForm" action="updateLocales">
+    <input type="hidden" name="objectId" value="$q->{objectId}">
+    <o2 setVar "$locale">$context->getLocale</o2:setVar>
+    
+    <o2 addJs>
+      var inheritedLocales = <o2 encodeEntities off>$availableLocales</o2:encodeEntities>;
+      var availableLocalesCondition = '$availableLocalesCondition';
+      function toggleLocales() {
+        var elms      = document.getElementById('availableLocalesForm').getElementsByTagName('INPUT');
+        var localeDiv = document.getElementById('availableLocalesDiv');
+        var availableLocalesConditionCheckbox = document.getElementById('availableLocalesConditionId');
+
+        var checkBoxEnabled = true;
+        if (availableLocalesCondition == 'inherited') {
+           availableLocalesConditionCheckbox.value = 'direct';
+           availableLocalesConditionCheckbox.checked = true;
+           availableLocalesCondition = 'direct';
+           localeDiv.className = 'localesDisabled';
+           checkBoxEnabled = true;
+        }
+        else {
+          availableLocalesConditionCheckbox.value = 'inherited';
+          availableLocalesConditionCheckbox.checked = false;
+          availableLocalesCondition = 'inherited';
+          localeDiv.className = 'localesEnabled';
+          checkBoxEnabled = false;
+        }
+        for (var i = 0; i < elms.length; i++) {
+          if (elms[i].name == 'selectedLocales[]') {
+            elms[i].disabled = checkBoxEnabled;
+            var doCheck = false;
+            for (var n = 0; n < inheritedLocales.length; n++) {
+              if (elms[i].value == inheritedLocales[n]) {
+                doCheck = true;
+              }
+            }
+            elms[i].checked = doCheck;
+          }
+        }
+      }
+    </o2:addJs>
+
+    <o2 input type="checkbox" id="availableLocalesConditionId" name="availableLocalesCondition" value="$availableLocalesCondition" onClick="toggleLocales()"> $lang->getString('o2.propertiesDialog.general.lblInheritAvailableLocales')</o2:input><br>
+    <br>
+
+    <div id="availableLocalesDiv" class="localesEnabled">
+      
+      <o2 checkboxGroup name="selectedLocales[]">
+        <o2 multiInput rearrangeable="1">
+          <o2 foreach "$locale in $systemWideLocales">
+            <o2 row>
+              <o2 cell>
+                <div style="width: 130px">
+                  <o2 checkbox value="$locale" label="$localeLanguageNames->{$locale}" />
+                </div>
+              </o2:cell>
+            </o2:row>
+          </o2:foreach>
+        </o2:multiInput>
+      </o2:checkboxGroup>
+      
+    </div>
+    <center><p><input type="submit" value="$lang->getString('o2.propertiesDialog.general.btnSave')"></p></center>
+    <o2 addJs where="post">
+      toggleLocales();
+      // We need to switch the state the first time, so that it can be toggled to the right value
+    </o2:addJs>
+  </o2:form>
+</div>
+
+<o2 setVar "$cacheAdminUrl"><o2 urlMod setMethod="cacheAdministration" /></o2:setVar>
+<o2 div id="cacheTab" class="tab" src="$cacheAdminUrl" />
+
+<o2 footer />

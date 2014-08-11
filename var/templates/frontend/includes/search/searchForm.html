@@ -1,0 +1,7 @@
+<o2 use Html::Form />
+
+<o2 form setDispatcherPath="o2" setClass="Search-Search" setMethod="init">
+  <o2 input type="hidden" name="pageTemplatePath" value="/Templates/pages/applicationPage.html" />
+  <o2 input name="query" value="$q->{query}" />
+  <o2 input type="submit" value="$lang->getString('includes.search.btnSubmit')" />
+</o2:form>

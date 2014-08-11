@@ -1,0 +1,13 @@
+<o2 use StringFormat />
+
+<o2 header />
+
+<o2 setVar "$error"><o2 substitute from='"' to="'">$error</o2:substitute></o2:setVar>
+
+<o2 addJs where="onLoad">
+  top.displayError("Error saving object:<br>\n$error");
+</o2:addJs>
+
+<!--Put debug info here if you want.-->
+
+<o2 footer />

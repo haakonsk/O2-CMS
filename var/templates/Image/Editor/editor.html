@@ -1,0 +1,293 @@
+<o2 use Html::Form />
+<o2 use Html::Ajax />
+<o2 use DateFormat />
+
+<o2 use I18N />
+<o2 setResourcePath>o2.Image.Editor</o2:setResourcePath>
+
+<o2 addJsFile file="openwindow"/>
+<o2 addJsFile file="componentBase"/>
+
+<o2 header/>
+
+<o2 addCss>
+  #editor {
+    width        : 99%;
+    height       : 90%;
+    padding-left : 5px;
+    padding-top  : 5px;
+  }
+  .popupForm {
+    display    : none;
+    position   : absolute;
+    top        : 60px;
+    right      : 10px;
+    background : white;
+    padding    : 0 10px 10px 10px;
+    border     : 2px solid black;
+  }
+  .exifDescription {
+    display   : block;
+    max-width : 300px;
+    overflow  : scroll;
+  }
+</o2:addCss>
+
+<o2 addJs where="pre">
+  function ImageEditor(componentId) {
+    this.id = componentId;
+    var elm = document.getElementById(this.id);
+    elm.innerHTML = '<iframe id="'+this.id+'_editor" style="width:98%;height:90%" frameborder="0" src="/o2cms/Image-Editor/image?id=$image->getId()"></iframe>';
+    this.operations = [];
+    this.operationIx = -1;
+  }
+
+  ImageEditor.prototype.getEditorFrame = function() {
+    return document.getElementById(this.id + "_editor").contentWindow;
+  }
+
+  ImageEditor.prototype.setZoom = function(factor) {
+    this.getImageWindow().setZoom(factor);
+  }
+
+  ImageEditor.prototype.addOperation = function(operation,args) {
+    this.operations[this.operations.length] = {operation:operation, args:args};
+    this.operationIx++;
+    this.reloadImage();
+  }
+
+  ImageEditor.prototype.canUndo = function() {
+    return this.operationIx>=0;
+  }
+  ImageEditor.prototype.canRedo = function() {
+    return this.operations[this.operationIx+1] != null;
+  }
+
+  ImageEditor.prototype.undo = function() {
+    if( !this.canUndo() ) return;
+    this.operationIx--;
+    this.reloadImage();
+  }
+  ImageEditor.prototype.redo = function() {
+    if( !this.canRedo() ) return;
+    this.operationIx++;
+    this.reloadImage();
+  }
+
+  ImageEditor.prototype.cropToSelection = function() {
+    var selection = this.getImageWindow().getSelection();
+    if( !selection ) return alert("$lang->getString('errorAreaNotSelected')");
+    this.addOperation('crop',[selection.left, selection.top, selection.width, selection.height]);
+  }
+  ImageEditor.prototype.rotate = function(degrees) {
+    this.addOperation('rotate',[degrees]);
+  }
+  ImageEditor.prototype.grayscale = function() {
+    this.addOperation('grayscale',[]);
+  }
+
+  ImageEditor.prototype.reloadImage = function() {
+    this.getImageWindow().loadImage('<o2 urlMod setMethod="Image-Editor" setMethod="previewCommands" setParams=""/>?id='+'$image->getId()'+'&cmds='+this._getOperationParameter());
+  }
+
+  ImageEditor.prototype._getOperationParameter = function() {
+    var cmd = "";
+    for (var i = 0; i <= this.operationIx; i++) {
+      if (cmd != "") {
+        cmd += ";";
+      }
+      var op = this.operations[i];
+      cmd += op.operation;
+      for (var j = 0; j < op.args.length; j++) {
+        cmd += "," + op.args[j];
+      }
+    }
+    return cmd;
+  }
+
+  ImageEditor.prototype.getImageWindow = function() {
+    var iframe = document.getElementById(this.id+"_editor");
+    return iframe.contentWindow ? iframe.contentWindow : iframe.contentDocument.window;
+  }
+
+  ImageEditor.prototype.save = function() {
+    var args = {
+      parentId : "$image->getMetaParentId()",
+      filename : "$image->getMetaName()",
+      fileId   : "$image->getId()",
+      saveAsId : "$image->getId()"
+    };
+    this.doSaveAs(args);
+  }
+  ImageEditor.prototype.saveAs = function() {
+    var parentId = "$image->getMetaParentId()";
+    var filename = "copy of $image->getMetaName()";
+    o2.openWindow.openWindow({
+      url : "/o2cms/System-FileDialog/saveAsDialog?folderId=" + parentId + "&filename=" + filename
+    });
+  }
+
+  function saveAsDialogCallback(parentId, filename) {
+    var args = {
+      parentId : parentId,
+      filename : filename,
+      fileId   : "$image->getId()",
+      saveAsId : null
+    };
+    getComponentById("editor").doSaveAs(args);
+    return true;
+  }
+
+  ImageEditor.prototype.doSaveAs = function(params) {
+    params.cmds = this._getOperationParameter();
+    o2.ajax.call({
+      setClass  : "Image-Editor",
+      setMethod : "saveAs",
+      setParams : params,
+      handler   : "doSaveAsCallback",
+      method    : "post"
+    });
+  }
+
+  function doSaveAsCallback(params) {
+    if (params.usedByDescription) {
+      var message = 'Are you sure you want to overwrite "$image->getMetaName()".\nIt is used by:\n' + params.usedByDescription;
+      if (!confirm(message)) {
+        return;
+      }
+      // ignore usedBy, and call save again with same parameters
+      getComponentById("editor").doSaveAs({
+        parentId     : params.parentId,
+        filename     : params.filename,
+        fileId       : params.fileId,
+        saveAsId     : params.saveAsId,
+        ignoreUsedBy : 1
+      });
+      return;
+    }
+    top.reloadTreeFolder(params.parentId);
+  }
+
+  function setScratchPad(str) {
+    document.getElementById("scratchPad").innerHTML = str;
+  }
+
+  function setSelectionSize(width, height) {
+    getComponentById("editor").getEditorFrame().setSelectionSize(width, height);
+    document.getElementById("selectionSizeForm").style.display = "none";
+  }
+
+  function toggleShowSizeSelection() {
+    toggleShowElement( document.getElementById("selectionSizeForm") );
+  }
+
+  function toggleShowMetaInfo() {
+    toggleShowElement( document.getElementById("metaInfo") );
+  }
+
+  function toggleShowElement(elm) {
+    elm.style.display = elm.style.display === "block"  ?  ""  :  "block";
+  }
+</o2:addJs>
+
+<o2 use O2CMS::ApplicationFrame />
+<o2 ApplicationFrameHeader frameTitle="$lang->getString('titleImageEditor') '$image->getMetaName()'" showCloseButton="1" useCloseAction="confirmClose" disableScrollBar="1" showSettingsButton="0" objectId="$image->getId()" />
+
+
+<o2 use O2CMS::Html::PopupMenu/>
+<o2 PopupMenu menuId="zoomMenu" element="zoomButton">
+  <o2 addMenuItem name="$lang->getString('btnFitWindow')" icon="/images/system/zoomi_16.gif" width="80px" action="getComponentById('editor').setZoom(0);"   />
+  <o2 addMenuItem name="200%" icon="/images/system/zoomi_16.gif" width="80px" action="getComponentById('editor').setZoom(2);"   />
+  <o2 addMenuItem name="100%" icon="/images/system/zoomi_16.gif" width="80px" action="getComponentById('editor').setZoom(1);"   />
+  <o2 addMenuItem name="50%"  icon="/images/system/zoomi_16.gif" width="80px" action="getComponentById('editor').setZoom(0.5);" />
+  <o2 addMenuItem name="10%"  icon="/images/system/zoomi_16.gif" width="80px" action="getComponentById('editor').setZoom(0.1);" />
+</o2:PopupMenu>
+
+
+<o2 use O2CMS::Html::ToolBarMenu />
+<o2 toolBarMenu>
+  <o2 addItem name="$lang->getString('btnCrop')"        icon="/images/system/crop_16.gif"        width="80px"  action="getComponentById('editor').cropToSelection()" />
+  <o2 addItem name="$lang->getString('btnRotateLeft')"  icon="/images/system/rotateLeft_16.gif"  width="110px" action="getComponentById('editor').rotate(-90);"      />
+  <o2 addItem name="$lang->getString('btnRotateRight')" icon="/images/system/rotateRight_16.gif" width="100px" action="getComponentById('editor').rotate(90);"       />
+  <o2 comment>
+    <o2 addItem name="Rotate 180" icon="/images/system/rotateRight_16.gif"  width="80px"  action="getComponentById('editor').rotate(180);" />
+    <o2 addItem name="Grayscale" icon="/images/system/grayscaleImage_16.gif" width="90px" action="getComponentById('editor').grayscale()"/>
+    <o2 addSeparator />
+  </o2:comment>
+  <o2 addItem id="zoomButton" name="$lang->getString('btnZoom')" icon="/images/system/zoomi_16.gif" width="65px" action="" />
+  <o2 comment>
+    <o2 addSeparator />
+  </o2:comment>
+  <o2 addItem name="$lang->getString('btnUndo')" icon="/images/system/undo_16.gif" width="60px" action="getComponentById('editor').undo();"/>
+  <o2 addItem name="$lang->getString('btnRedo')" icon="/images/system/redo_16.gif" width="70px" action="getComponentById('editor').redo();"/>
+  <o2 comment>
+    <o2 addSeparator />
+  </o2:comment>
+  <o2 addItem name="$lang->getString('btnSave')"         icon="/images/system/save_16.gif"         width="60px"  action="getComponentById('editor').save();"/>
+  <o2 addItem name="$lang->getString('btnSaveAndClose')" icon="/images/system/saveAndClose_16.gif" width="120px" action="getComponentById('editor').save(); top.displayMessage('Image Saved'); top.closeFrame(window.name);" />
+  <o2 addItem name="$lang->getString('btnSaveAs')"       icon="/images/system/savas_16.gif"        width="90px"  action="getComponentById('editor').saveAs();"/>
+  <o2 addSeparator />
+  <o2 addItem name="0 x 0" width="40px" id="scratchPad" action="toggleShowSizeSelection();" />
+  <o2 addSeparator />
+  <o2 addItem name="$lang->getString('metaInfo')" icon="/images/system/about_16.gif" width="90px" action="toggleShowMetaInfo();" />
+</o2:toolBarMenu>
+
+<o2 form method="get" id="selectionSizeForm" class="popupForm">
+  <p>$lang->getString("lblSelectionSize")</p>
+  <o2 input type="text" name="width"  size="3" />
+  x
+  <o2 input type="text" name="height" size="3" />
+  <o2 input type="button" value="$lang->getString('btnApply')"  onClick="setSelectionSize(this.form.width.value, this.form.height.value);" />
+  <o2 input type="button" value="$lang->getString('btnCancel')" onClick="this.form.style.display = 'none';" />
+</o2:form>
+
+<o2 ajaxForm setMethod="saveMetaInfo" id="metaInfo" onSuccess="toggleShowMetaInfo();" class="popupForm" method="post">
+
+  <o2 multilingualController object="$image" />
+
+  <o2 input type="hidden" name="imageId" value="$image->getId()" />
+  <o2 formTable>
+    
+    <o2 setVar "$exifTitle"      >$image->getExifTitle()</o2:setVar>
+    <o2 setVar "$exifDescription">$image->getExifDescription()</o2:setVar>
+    
+    <o2 input type="text" name="name"          label="$lang->getString('lblName')"          value="$image->getMetaName()"                       />
+    <o2 input type="text" name="title"         label="$lang->getString('lblTitle')"         value="$image->getTitle()"         multilingual="1" />
+    <o2 input type="text" name="alternateText" label="$lang->getString('lblAlternateText')" value="$image->getAlternateText()" multilingual="1" />
+    <o2 if "$exifTitle">
+      <tr>
+        <td>$lang->getString('lblExifTitle')</td>
+        <td>$exifTitle</td>
+      </tr>
+    </o2:if>
+    <o2 textarea name="description" label="$lang->getString('lblDescription')" value="$image->getDescription()" multilingual="1" />
+    <o2 if "$exifDescription">
+      <tr>
+        <td>$lang->getString('lblExifDescription')</td>
+        <td class="exifDescription">$exifDescription</td>
+      </tr>
+    </o2:if>
+    <o2 input type="text" name="artist" label="$lang->getString('lblArtist')" value="$image->getExifArtist()" />
+    <o2 setVar "$time">$image->getExifDateAndTime()</o2:setVar>
+    <o2 if "$time">
+      <tr>
+        <td>$lang->getString("lblExifTime")</td>
+        <td><o2 dateFormat>$time</o2:dateFormat></td>
+      </tr>
+    </o2:if>
+  </o2:formTable>
+  <o2 input type="submit" value="$lang->getString('btnSave')" />
+  <o2 input type="button" value="$lang->getString('btnCancel')" onClick="this.form.style.display = 'none';" />
+
+  <o2 setVar "$publishPlaces" forceType="array">$image->getPublishPlaces()</o2:setVar>
+  <o2 include "o2://var/templates/includes/publishPlaces.html" publishPlaces="$publishPlaces" />
+
+</o2:ajaxForm>
+
+<div id="editor" component="ImageEditor"></div>
+
+<o2 addJs where="post">
+  setTimeout("getComponentById('editor')", 1000);
+</o2:addJs>
+
+<o2 footer />

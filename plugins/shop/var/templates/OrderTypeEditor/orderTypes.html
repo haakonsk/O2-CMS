@@ -1,0 +1,79 @@
+<o2 use Html::Ajax />
+
+<o2 use I18N />
+<o2 setResourcePath>Shop.OrderTypeEditor</o2:setResourcePath>
+
+<o2 header />
+
+<o2 use O2CMS::ApplicationFrame />
+<o2 appendVar "$path">$lang->getString('o2.desktop.btnStartMenu')</o2:appendVar>
+<o2 appendVar "$path" delimiter=", ">$lang->getString('o2.applicationNames.o2ShopFolder')</o2:appendVar>
+<o2 appendVar "$path" delimiter=", ">$lang->getString('o2.applicationNames.o2Shop.orderTypeEditor')</o2:appendVar>
+<o2 ApplicationFrameHeader frameTitle="$lang->getString('headerOrderTypeEditor')" showCloseButton="1" useCloseAction="" disableScrollBar="1" showSettingsButton="0" path="$path" />
+
+<o2 addJs where="pre">
+  function deleteOrderType(deleteUrl) {
+    if (confirm("$lang->getString('questionDeleteOrderType')")) {
+      document.location.href = deleteUrl;
+    }
+  }
+</o2:addJs>
+
+<o2 addCss>
+  .container {
+    background : #dddddd;
+  }
+  .orderType {}
+</o2:addCss>
+
+<p><font color="#FF0000"><b>$message</b></font></p>
+
+<table border="0" cellpadding="0" cellspacing="0" style="padding-left:10px;">
+  <tr>
+    <td valign="top">
+
+      <table border="0" cellpadding="4" cellspacing="1" style="background-color:#e9e9e9;">
+
+        <tr>
+          <td class="tblHeader" colspan="2">$lang->getString('lblInfoPageTypeName')</td>
+          <td class="tblHeader">$lang->getString('lblOrderTypeId')</td>
+          <td class="tblHeader">$lang->getString('lblOrderClassName')</td>
+          <td class="tblHeader">$lang->getString('lblEdit')</td>
+          <td class="tblHeader">$lang->getString('lblDelete')</td>
+          <td class="tblHeader">$lang->getString('lblCopy')</td>
+        </tr>
+
+        <o2 foreach "$orderType in $orderTypes">
+          <tr>
+            <td class="cell" colspan="2">$orderType->getMetaName()</td>
+            <td class="cell" style="text-align:center;">$orderType->getId()</td>
+            <td class="cell">$orderType->getOrderClassName()<br></td>
+            <td class="cell"><o2 input type="button" value="$lang->getString('btnEdit')" ajaxEvent="onclick" setMethod="editOrderType" setParam="orderTypeId=$orderType->getId()" target="orderTypeEditor" style="font-size:10px;color:#6f6f6f;" /></td>
+            <td class="cell">
+              <o2 if "!$orderType->{subTypes}">
+                <o2 setVar "$deleteUrl"><o2 urlMod setMethod="deleteOrderType" setParam="orderTypeId=$orderType->getId()" /></o2:setVar>
+                <o2 input type="button" value="$lang->getString('btnDelete')" onClick="deleteOrderType('$deleteUrl')" target="orderTypeEditor" style="font-size:10px;color:#6f6f6f;" />
+              </o2:if>
+              <o2 else><br></o2:else>
+            </td>
+            <td class="cell"><o2 input type="button" value="$lang->getString('btnCopy')" ajaxEvent="onclick" setMethod="editOrderType" setParam="orderTypeId=$orderType->getId()&action=copy" target="orderTypeEditor" style="font-size:10px;color:#6f6f6f;" /></td>
+          </tr>
+        </o2:foreach>
+
+        <tr>
+          <td class="cell2" colspan="7" align="center">
+            <o2 input type="button" value="$lang->getString('btnNewOrderType')" ajaxEvent="onClick" setMethod="newOrderType" target="orderTypeEditor" style="font-size:10px;color:#6f6f6f;" />
+          </td>
+        </tr>
+
+      </table>
+
+      <td>&nbsp;&nbsp;</td>
+
+    </td>
+    <td valign="top" id="orderTypeEditor"></td>
+  </tr>
+
+</table>
+
+<o2 footer />

@@ -1,0 +1,23 @@
+<o2 addCssFile file="gui/comments" />
+
+<o2 if "!$comments">
+  <o2 if "$page && $page->getId()"><o2 setVar "$commentedObject">$page</o2:setVar></o2:if>
+  <o2 else                        ><o2 setVar "$commentedObject">$object</o2:setVar></o2:else>
+  <o2 setVar "$comments">$commentedObject->getComments()</o2:setVar>
+</o2:if>
+<o2 setVar "$numComments">@{$comments}</o2:setVar>
+
+<h3>There
+  <o2 if    "$numComments == 0">are no comments</o2:if>
+  <o2 elsif "$numComments == 1">is 1 comment:</o2:elsif>
+  <o2 else                     >are $numComments comments:</o2:else>
+</h3>
+
+<div class="comments" id="commentsFor_$objectId">
+  <o2 foreach "$_comment in $comments">
+    <o2 include "o2://var/templates/Comments/comment.html" comment="$_comment" />
+  </o2:foreach>
+  <div id="newComment"></div>
+</div>
+
+<o2 include "o2://var/templates/Comments/commentForm.html" objectId="$objectId" commentPageUrl="$cgi->getCurrentUrl()" />

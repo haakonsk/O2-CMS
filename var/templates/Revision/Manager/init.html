@@ -1,0 +1,119 @@
+<o2 use Html/>
+<o2 use DateFormat/>
+
+<o2 use I18N />
+<o2 setResourcePath>o2.revisionManager</o2:setResourcePath>
+
+<o2 use Js::Lang />
+<o2 addJsLangFile file="o2.revisionManager" />
+
+<o2 header disableScrollbars="1" />
+
+<o2 addJsFile file="util/urlMod" />
+<o2 addCss>
+  table.datagrid th {
+    border-left : 1px solid black;
+  }
+  table.datagrid tr.active {
+    background-color : #c0c0ff;
+  }
+  table.datagrid tr {
+    cursor : pointer;
+  }
+</o2:addCss>
+
+<o2 use O2CMS::Html::ToolBarMenu />
+<o2 toolBarMenu>
+  <o2 addItem name="$lang->getString('toolBarMenu.btnRestore')" icon="/images/system/checkin_16.gif" width="100px" action="restore()" />
+  <o2 addItem name="$lang->getString('btnDiff')" width="100px" icon="/images/system/copy_16.gif"
+    action="openDiff()" />
+</o2:toolBarMenu>
+
+<o2 if "$totalNumRevisions > 0">
+  <o2 pagination numPerPage="10" elements="$gui->getRevisions($srcObjectId, $skip, $limit)" totalNumResults="$totalNumRevisions">
+    <o2 table width="100%" class="datagrid" _rowSelectAble="1" _autoResize="0">
+      <tr>
+        <th>$lang->getString("lblMetaName")</th>
+        <th>$lang->getString("lblRevision")</th>
+        <th>$lang->getString("lblUsername")</th>
+        <th>$lang->getString("lblDate")</th>
+      </tr>
+      <o2 foreach "$revision in $paginationResults">
+        <tr onClick="selectId( this, $revision->getId() )">
+          <td>$revision->getMetaName()</td>
+          <td align="middle">$revision->getId()</td>
+          <td align="middle">$revision->getOwner()->getFullName()</td>
+          <td align="middle" value="$revision->getMetaCreateTime()"><o2 dateFormat>$revision->getMetaCreateTime()</o2:dateFormat></td>
+        </tr>
+      </o2:foreach>
+    </o2:table>
+    <p>
+      $lang->getString("numResults", from => $paginationFirstIndex, to => $paginationLastIndex, total => $totalNumRevisions)
+      <o2 paginationNavigation />
+    </p>
+  </o2:pagination>
+</o2:if>
+<o2 else>
+  <p>$lang->getString("lblNoRevisionsExists")</p>
+</o2:else>
+
+<o2 addJs>
+  var selectedId;
+  var callBackWindow;
+
+  function selectId(rowElm, objectId) {
+    inactivateRows(rowElm);
+    o2.addClassName(rowElm, "active");
+    selectedId = objectId;
+  }
+
+  function inactivateRows(rowElm) {
+    var tableElm = rowElm.parentNode;
+    for (var i = 0; i < tableElm.childNodes.length; i++) {
+      var elm = tableElm.childNodes[i];
+      if (elm.nodeType !== 3) {
+        o2.removeClassName(elm, "active");
+      }
+    }
+  }
+
+  function restore() {
+    if (!selectedId) {
+      return alert("$lang->getString('msgMustSelectARow')");
+    }
+
+    // do we need to perform a callback?
+    if (callBackWindow && callBackWindow.preRestore && !callBackWindow.preRestore(selectedId)) {
+      callBackWindow = null;
+      return false;
+    }
+    continueRestore();
+  }
+
+  function continueRestore() {
+    <o2 setVar "$objectId">$srcObjectId</o2:setVar>
+    top.getCurrentFrame().location.href = "<o2 urlMod setMethod='restore2Revision' setParams="objectId=$objectId&revisionId="/>" + selectedId;
+    top.hideRevisionDialog();
+  }
+
+  function callPreRestoreFunction(callBack) {
+    callBackWindow = callBack;
+  }
+
+  function noWriteAccessToObject() {
+    alert("$lang->getString('msgNoWriteAccessToObject')");
+  }
+  
+  function openDiff() {
+    if (!selectedId) {
+      return alert("$lang->getString('msgMustSelectARow')");
+    }
+    top.openInFrame(
+      o2.urlMod.urlMod({ setMethod : 'revisionDiff', setParam : 'revisionId=' + selectedId }),
+      '/images/system/copy_16.gif',
+      o2.lang.getString('o2.revisionManager.diffApplicationName', { name : '$srcObject->getMetaName()' })
+    );
+  }
+</o2:addJs>
+
+<o2 footer/>

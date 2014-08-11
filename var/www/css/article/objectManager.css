@@ -1,0 +1,29 @@
+body {
+  background : ButtonFace;
+}
+
+.folderSelection {
+  height : 486px;
+}
+
+.o2Select {
+  margin-bottom : 12px;
+}
+
+.buttons {
+  text-align : right;
+}
+
+#fileUploadDiv,
+#progressBar {
+  display : none;
+}
+
+iframe#saveFrame {
+  position   : absolute;
+  visibility : hidden;
+  top        : 0px;
+  border     : 1px red solid;
+  height     : 0px;
+  width      : 0px;
+}

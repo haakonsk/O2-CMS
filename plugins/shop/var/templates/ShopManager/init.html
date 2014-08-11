@@ -1,0 +1,61 @@
+<o2 use O2CMS::ApplicationFrame />
+<o2 use O2CMS::Html::TabLayer />
+
+<o2 addJsFile file="DOMUtil" />
+
+<o2 addCss>
+  body {
+    height : 100%;
+  }
+  .tabLayerBody {
+    border-bottom : 0;
+  }
+</o2:addCss>
+
+<o2 addJs>
+  function toggleDisableOtherFields(elm, fieldNames) {
+    for (var i = 0; i < fieldNames.length; i++) {
+      var field = elm.form[ fieldNames[i] ];
+      field.disabled = elm.value && elm !== field ? true : false;
+    }
+  }
+
+  function enableAllFields(form, fieldNames) {
+    for (var i = 0; i < fieldNames.length; i++) {
+      var field = form[ fieldNames[i] ];
+      field.disabled = false;
+    }
+  }
+</o2:addJs>
+
+<o2 header noStyle />
+
+<o2 addCssFile file="gui/shopManager" />
+
+<o2 appendVar "$path">$lang->getString('o2.desktop.btnStartMenu')</o2:appendVar>
+<o2 appendVar "$path" delimiter=", ">$lang->getString('o2.applicationNames.o2ShopManager')</o2:appendVar>
+<o2 ApplicationFrameHeader frameTitle="$lang->getString('o2.applicationNames.o2ShopManager')" showCloseButton="1" useCloseAction="" disableScrollBar="1" showSettingsButton="0" path="$path" />
+
+<o2 tabLayer> 
+
+  <o2 addTab name="$lang->getString('ShopManager.generalSearch')" selected="1">
+    <o2 include "includes/generalSearch.html" />
+  </o2:addTab>
+
+  <o2 addTab name="$lang->getString('ShopManager.orderSearch')">
+    <o2 include "includes/orderSearch.html" />
+  </o2:addTab>
+
+  <o2 addTab name="$lang->getString('ShopManager.transactionSearch')">
+    <o2 include "includes/transactionSearch.html" />
+  </o2:addTab>
+
+  <o2 addTab name="$lang->getString('ShopManager.crm')">
+    <o2 include "includes/crm.html" />
+  </o2:addTab>
+
+</o2:tabLayer>
+
+<o2 ApplicationFrameFooter />
+
+<o2 footer />

@@ -1,0 +1,27 @@
+<o2 use Html />
+<o2 use Html::Form />
+<o2 use O2CMS::Publisher />
+
+<o2 header/>
+
+<o2 if "$query">
+  <p>You got $numHits hits</p>
+</o2:if>
+
+<table>
+  <o2 foreach "$result in $results">
+    <tr>
+      <td>Tittel :</td>
+      <td>
+        <a href="<o2 objectUrl objectId='$result->getId()'/>">$result->getMetaName()</a>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top" colspan="2">
+        <o2 encodeEntities off><o2 if "$result->isa('O2CMS::Obj::Article')" then="$result->getTextWithoutImages('section_frontPageText')" /></o2:encodeEntities>
+     </td>
+   </tr>
+  </o2:foreach>
+</table>
+
+<o2 footer/>

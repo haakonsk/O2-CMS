@@ -1,0 +1,71 @@
+<o2 use Html::Form />
+<o2 use O2CMS::Tree />
+<o2 use DataDumper />
+
+<o2 use I18N />
+<o2 setResourcePath>o2.System.FileDialog</o2:setResourcePath>
+
+<o2 header bgColor="#D4D0C8" title="$lang->getString('titleSaveAs')"/>
+
+<o2 addJs where="pre">
+  var callBackId="$q->{callBackId}";
+
+  if (!window.opener) {
+    alert("$lang->getString('errorMustBePopup')");
+  } 
+  else if (window.opener._globalSaveAsDialogCallback && callBackId != '') {
+    //ok, this is good
+  }
+  else if (!window.opener.saveAsDialogCallback) {
+    alert("$lang->getString('errorNoCallback')");
+  }
+
+  function fileChanged(file) {
+    return file.isContainer==1 ? true : false;
+  }
+
+  function save() {
+    var folderId = document.forms['fileForm'].folderId.value;
+    var filename = document.forms['fileForm'].filename.value;
+
+    if (!folderId          ) return alert("$lang->getString('errorNoFolder')");
+    if (filename.length==0 ) return alert("$lang->getString('errorNoFilename')");
+    if ((callBackId != '' && window.opener._globalSaveAsDialogCallback(callBackId,folderId, filename) ) 
+       || (window.opener.saveAsDialogCallback && window.opener.saveAsDialogCallback(folderId, filename) ) ) { 
+      self.close();
+    }
+  }
+</o2:addJs>
+
+<form name="fileForm">
+
+  <o2 contentGroup title="$lang->getString('titleSaveAs')">
+    <table border="1">
+      <tr>
+        <td colspan="2">
+          <div style="width:370; height:160; border-style: solid; border-color: #808080; border-width:0">
+            <o2 chooseFolder folderId="$q->{folderId}" id="folderId" onObjectChangeMethod="fileChanged"/>
+          </div>
+          <br><br>
+        </td>
+      </tr>
+      <tr>
+        <td style="width:100px;">$lang->getString('lblFilename'):</td>
+        <td style="width:270px;text-align:right"><input type="text" name="filename" value="$q->{filename}" style="width:270px"></td>
+      </tr>
+      <tr>
+        <td colspan="2" align="right">
+          <o2 input type="button" value="$lang->getString('btnCancel')" onclick="window.close()" />
+          <o2 input type="button" value="$lang->getString('btnSave')"   onclick="save()"         />
+        </td>
+      </tr>
+    </table>
+  </o2:contentGroup>
+
+</form>
+
+<o2 addJs where="here">
+  document.forms.fileForm.filename.focus()
+</o2:addJs>
+
+<o2 footer />

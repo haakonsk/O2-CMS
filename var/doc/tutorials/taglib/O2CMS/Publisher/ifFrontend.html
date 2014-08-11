@@ -1,0 +1,20 @@
+<o2 use O2Doc::Tutorial />
+
+<o2 docSection title="ifFrontend, ifBackend">
+  ifFrontend checks if the page is an O2 frontend page. ifBackend checks if the page is a backend page.
+  ifFrontend and ifBackend are often used in a frontpage template in order to display something either in the frontend or backend, but not in the other.
+  <o2 docSection title="Syntax">
+
+    <o2 docCode lang="o2ml">
+      <o2 ifFrontend>
+        This is the frontend
+      </o2:ifFrontend>
+      <o2 ifBackend>
+        This is the backend
+      </o2:ifBackend>
+    </o2:docCode>
+    <o2 docCodeResult useModule="O2CMS::Publisher" seeGeneratedHtmlAsDisplayed="0" />
+
+  </o2:docSection>
+
+</o2:docSection>

@@ -1,0 +1,19 @@
+<o2 use Html::Form/>
+
+<img src="$object->getIconUrl()">$object->getName()<br>
+
+Latitude: $object->getLatitude()<br>
+Longutude: $object->getLongitude()<br>
+Xml url: <a target="_blank" href="$object->getXmlUrl()">$object->getXmlUrl()</a><br>
+
+
+<b>$lang->getString("o2.territory.metaName"):</b><br>
+<o2 input name="name" value="$object->getMetaName()" rule="required" ruleMsg="$lang->getString("o2.territory.errorInMetaName")" size="30" onchange="setMetaName(this.value)"/><br>
+
+
+<b>$lang->getString("o2.territory.code"):</b><br>
+<o2 input name="object.code" value="$object->getCode()" rule="required" ruleMsg="$lang->getString('o2.territory.errorInCode')" size="30"/><br>
+
+
+<b>$lang->getString("o2.territory.codePath"):</b><br>
+$object->getCodePath()<br>

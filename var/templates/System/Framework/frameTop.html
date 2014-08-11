@@ -1,0 +1,102 @@
+<o2 use Html::Form />
+<o2 use Html::Locale />
+
+<o2 addJsFile file="dragDrop"/>
+
+<o2 header bgColor="#eee" />
+
+<o2 addCss>
+  .topBar {
+    height        : 33px;
+    background    : url("/images/system/topbar_bg.png") repeat-x;
+    border-bottom : 1px solid #767676;
+    border-top    : 1px solid #767676;
+  }
+  .topBar img {
+    vertical-align : middle;
+  }
+  .topBar table td {
+    padding : 2px;
+  }
+  #consoleLink {
+    cursor : pointer;
+  }
+  a {
+    text-decoration : none;
+    color           : #FFF;
+  }
+  a:hover {
+    text-decoration : none;
+    color           : #000;
+  }
+  .desktopIcon {
+    float               : left;
+    cursor              : pointer;
+    background-repeat   : no-repeat;
+    background-position : top center;
+    height              : 40px;
+    width               : 50px;
+    padding-top         : 34px;
+    text-align          : center;
+  }
+  td.localeSwitch {
+    padding-right : 5px;
+  }
+  .o2Logo {
+    vertical-align : middle;
+  }
+  .o2Logo img {
+    margin-left : 3px;
+  }
+  #message {
+    padding-left : 30px;
+  }
+  #messageMoreInfo {
+    position   : absoulte;
+    visibility : hidden;
+  }
+  .info {
+    background : url("/images/system/about_16.gif") #ccf no-repeat 10px center;
+  }
+  .error {
+    background : url("/images/system/close_16.gif") #fcb no-repeat 10px center;
+  }
+</o2:addCss>
+
+<o2 addJs where="pre">
+  function reloadFrameOrPage() {
+    if (confirm("$lang->getString('o2.desktop.questionReloadDesktop')")) {
+      top.document.location.reload();
+    }
+    else {
+      document.location.reload();
+    }
+  }
+</o2:addJs>
+
+<table cellspacing="0" cellpadding="0" border="0" width="100%" class="topBar">
+  <tr>
+    <td class="o2Logo"><img src="/images/o2logo/o2_logo_47x22.gif"></td>
+    <td id="message"></td>
+    <td>
+
+     <table align="right" cellspacing="0" cellpadding="0" border="0">
+        <tr>
+          <td class="localeSwitch"><o2 localeSwitch object="$installation" type="flag" useBackendLocales="1" onSuccess="reloadFrameOrPage();" /></td>
+          <td>$lang->getString("o2.desktop.lblLoggedInAsUser", name => $user->getFullName())</td>
+          <td></td>
+          <td>[ <b><o2 link setClass="System-Login" setMethod="logout" target="_top">$lang->getString('o2.desktop.lblLogout')</o2:link></b> ]</td>
+          <o2 if "$user->getUsername() eq 'admin'">
+            <o2 setVar "$url"><o2 urlMod setClass="System-Console" setMethod="init" /></o2:setVar>
+            <td id="consoleLink" onClick="top.openInFrame('$url', '/images/system/smicn_16.gif', '$lang->getString('o2.applications.system.console.applicationName') ');">
+              <img src="/images/system/flag_16.gif">
+            </td>
+          </o2:if>
+        </tr>
+      </table>
+
+    </td>
+  </tr>
+</table>
+
+<o2 footer />

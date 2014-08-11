@@ -1,0 +1,32 @@
+.pollForm {
+  display : inline;
+}
+.o2RadioGroup {
+  margin : 10px;
+}
+.o2RadioGroup label {
+  margin-left : 6px;
+}
+.poll_error {
+  color : red;
+}
+.poll_info {
+  color : green;
+}
+
+.pollResult .bar {
+  height     : 10px;
+  background : red;
+  border     : 1px solid black;
+}
+.pollResult .label {
+  white-space : nowrap;
+}
+/*
+.pollResult .label,
+.pollResult .barContainer {
+  width         : 50%;
+  float         : left;
+  margin-bottom : 3px;
+}
+*/

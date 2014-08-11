@@ -1,0 +1,34 @@
+<o2 use Html::Form />
+
+<o2 use I18N />
+<o2 setResourcePath>o2.authManager</o2:setResourcePath>
+
+<o2 include "header.html" disableScrollbars="1" />
+
+<o2 form name="userForm" autocomplete="off" setMethod="saveUser" method="post">
+  <input type="hidden" name="userId" value="$user->getId()">
+  
+  <o2 formTable>
+    <o2 input name="firstName" label="$lang->getString('editUser.firstnameLabel')" rule="regex:/^.{0,20}$/" ruleMsg="$lang->getString('errMsg.invalidFirstname')" value="$user->getFirstName()" />
+    <o2 input name="username"  label="$lang->getString('editUser.usernameLabel')"  rule="regex:/^.{5,12}$/" ruleMsg="$lang->getString('errMsg.invalidUsername')"  value="$user->getUsername()" disabled="$user->getId() > 0" />
+    <o2 input name="lastName"  label="$lang->getString('editUser.lastnameLabel')"  rule="regex:/^.{0,20}$/" ruleMsg="$lang->getString('errMsg.invalidLastname')"  value="$user->getLastName()" />
+    
+    <o2 setVar "$passwordRule">regex:/^.{4,100}$/</o2:setVar>
+    <o2 if "$user->getId() > 0"><o2 appendVar "$passwordRule">:notRequired</o2:appendVar></o2:if>
+    
+    <o2 input type="password"  label="$lang->getString('editUser.password1Label')" name="password"  rule="$passwordRule"   ruleMsg="$lang->getString('errMsg.invalidPassword')" />
+    <o2 input type="password"  label="$lang->getString('editUser.password2Label')" name="password2" rule="repeat:password" ruleMsg="$lang->getString('errMsg.invalidRepeatedPassword')" />
+    <o2 radioGroup name="status" label="$lang->getString('editUser.statusLabel')" value="$user->getMetaStatus()">
+      <o2 radio label="$lang->getString('editUser.statusLabelActive')"   value="active"   />
+      <o2 radio label="$lang->getString('editUser.statusLabelInactive')" value="inactive" />
+    </o2:radioGroup>
+  </o2:formTable>
+  
+  <p>
+    <o2 setVar "$saveBtnLabel"><o2 if "$user->getId() != 0" then="$lang->getString('editUser.saveChangesButton')" else="$lang->getString('editUser.saveButton')" /></o2:setVar>
+    <o2 input id="submitBtn" type="submit" value="$saveBtnLabel" />
+    <o2 input type="button" onclick="resetForm()" value="$lang->getString('editUser.resetButton')" />
+  </p>
+</o2:form>
+
+<o2 include "footer.html" />
