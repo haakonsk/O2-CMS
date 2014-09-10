@@ -159,7 +159,7 @@ sub getObjectTemplateIdsByContentId {
 sub getObjectTemplatesByContentId {
   my ($obj, $objectId) = @_;
   my @ids = $obj->getObjectTemplateIdsByContentId($objectId);
-  returns $context->getObjectsByIds(@ids);
+  return $context->getObjectsByIds(@ids);
 }
 #-------------------------------------------------------------------------------
 1;
