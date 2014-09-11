@@ -174,4 +174,18 @@ sub containsProduct {
   return 0;
 }
 #--------------------------------------------------------------------
+sub delete {
+  my ($obj) = @_;
+  foreach my $item (@{ $obj->getItems() }) {
+    $item->delete();
+  }
+}
+#--------------------------------------------------------------------
+sub deletePermanently {
+  my ($obj) = @_;
+  foreach my $item (@{ $obj->getItems() }) {
+    $item->deletePermanently();
+  }
+}
+#--------------------------------------------------------------------
 1;
