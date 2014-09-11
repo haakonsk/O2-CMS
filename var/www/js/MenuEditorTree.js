@@ -62,8 +62,8 @@ MenuEditorTree.prototype.nameClick = function(id) {
   var item = this.items[id];
   if( !item ) return;
   var html = '<table padding=2 width=100%><tr><td colspan=2><font style="font-weight:bold;color:#777;">' + o2.lang.getString('o2.menuEditor.headerOptions') + ' : "'+item.name+'" (id:'+item.id+')</font></td></tr>';
-  html += '<tr><td width=3%><input type="checkbox" onchange="getComponentById(\''+this.id+'\').changeVisible('+id+',this.checked)" '+(item.visible==1?'checked':'')+'"></td><td width=97%> ' + o2.lang.getString('o2.menuEditor.visible') + '<td<font style="color:#777;"></tr>';
-  html += '<tr><td width=3%><input type="checkbox" onchange="getComponentById(\''+this.id+'\').changeExpandable('+id+',this.checked)" '+(item.expandable==1?'checked':'')+'"></td><td width=97%<font style="color:#777;"> ' + o2.lang.getString('o2.menuEditor.expandable') + '<td></tr>';
+  html += '<tr><td width=3%><input type="checkbox" onchange="getComponentById(\''+this.id+'\').changeVisible('+id+',this.checked)" '+(item.visible==1?'checked':'')+'></td><td width=97%> ' + o2Lang.getString('o2.menuEditor.visible') + '<td<font style="color:#777;"></tr>';
+  html += '<tr><td width=3%><input type="checkbox" onchange="getComponentById(\''+this.id+'\').changeExpandable('+id+',this.checked)" '+(item.expandable==1?'checked':'')+'></td><td width=97%<font style="color:#777;"> ' + o2Lang.getString('o2.menuEditor.expandable') + '<td></tr>';
   html += '<tr><td colspan=2<font style="color:#777;">' + o2.lang.getString('o2.menuEditor.description') + '</td></tr><tr><td colspan=2><textarea onchange="getComponentById(\''+this.id+'\').changeDescription('+id+',this.value)" class="descriptionTextArea">'+item.description+'</textarea><td></tr></table>';
   var elm = document.getElementById('itemInfo_'+this.id);
   elm.innerHTML = html;
@@ -138,7 +138,7 @@ MenuEditorTree.prototype.removeItemById = function(id) {
   var elm = document.getElementById(this.id+'_f'+ id);
   elm.style.display = 'none';
 //  delete this.items[id];
-  this.items[id].deleted = 1; // insert "deleted" flag in menu item structure
+  this.items[id].deleted = 1; // insert "deleted" flag in menu item structure. The "save" method in MenuEditor.pm checks for the "deleted" attribute.
 }
 
 function _debug(msg) {
