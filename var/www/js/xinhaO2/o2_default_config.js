@@ -59,7 +59,8 @@ xinha_init = xinha_init ? xinha_init : function()
   if (xinha_config == null) {
     xinha_config = new HTMLArea.Config();
   }
-  xinha_config.statusBar = false;
+  xinha_config.statusBar     = false;
+  xinha_config.stripBaseHref = false;
   // xinha_config.autofocus = true;
   // xinha_config.SpellChecker.utf8_to_entities = false;
   // xinha_editors.editor.config.SpellChecker.utf8_to_entities = false;
