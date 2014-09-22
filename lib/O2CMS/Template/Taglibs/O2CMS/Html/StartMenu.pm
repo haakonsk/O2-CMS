@@ -54,7 +54,7 @@ sub _buildMenu {
 #--------------------------------------------------------------------------------------------
 sub _buildMenuItem {
   my ($obj, $menuItem) = @_;
-  my $name    = "\$lang->getString('$menuItem->{name}')";
+  my $name    = $context->getLang()->getString( $menuItem->{name} );
   my $action  = '';
   my $dragId  = '';
   my $iconUrl = $menuItem->{icon};
@@ -64,10 +64,12 @@ sub _buildMenuItem {
     $dragId    = "startMenu_$obj->{_menuItem}";
     $iconUrl   = $context->getSingleton('O2::Image::IconManager')->getIconUrl( $menuItem->{iconClass}, 24 ) if $menuItem->{iconClass};
     $iconUrl ||= $menuItem->{icon};
+    my $jsName = $name;
+    $jsName    =~ s{'}{&apos;}xmsg;
     $action
       = exists $menuItem->{popupWindow}
-      ? "top.openInWindow({ url : '$menuItem->{action}', width : '$menuItem->{popupWindow}->{width}', height : '$menuItem->{popupWindow}->{height}' }, '$iconUrl', '$name' )"
-      : "top.openInFrame( '$menuItem->{action}','$iconUrl','$name' );"
+      ? "top.openInWindow({ url : '$menuItem->{action}', width : '$menuItem->{popupWindow}->{width}', height : '$menuItem->{popupWindow}->{height}' }, '$iconUrl', '$jsName' )"
+      : "top.openInFrame( '$menuItem->{action}','$iconUrl','$jsName' );"
       ;
   }
   
