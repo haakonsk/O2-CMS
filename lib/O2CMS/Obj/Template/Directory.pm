@@ -38,7 +38,7 @@ sub getChildIds {
   my @files;
   foreach my $file (keys %files) {
     if ( $files{$file} ) {
-      my $directory = $obj->getManager()->getObjectByPath($file);
+      my $directory = $obj->getManager()->getObjectByPath($file, includeTrashedObjects => 1);
       if (!$directory) {
         # auto create directory with same default templateClass
         $directory = $obj->getManager()->newObject();
@@ -49,7 +49,7 @@ sub getChildIds {
         $directory->setPath(          $file                    );
         $directory->save();
       }
-      push @files, $directory;
+      push @files, $directory unless $directory->isTrashed();
     }
     else {
       my $template = $context->getSingleton('O2CMS::Mgr::TemplateManager')->getObjectByPath($file);
@@ -61,7 +61,7 @@ sub getChildIds {
         $template->setPath(         $file         );
         $template->save();
       }
-      push @files, $template;
+      push @files, $template unless $template->isTrashed();
     }
   }
   @files = sort { $a->getMetaName() cmp $b->getMetaName() } @files;

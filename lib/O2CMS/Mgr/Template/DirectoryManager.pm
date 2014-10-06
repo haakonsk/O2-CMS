@@ -21,9 +21,12 @@ sub initModel {
 }
 #-------------------------------------------------------------------------------
 sub getObjectByPath {
-  my ($obj, $path) = @_;
+  my ($obj, $path, %params) = @_;
+  my %searchParams;
+  $searchParams{metaStatus} = { like => '%' } if $params{includeTrashedObjects};
   my @objects = $obj->objectSearch(
     path => $path,
+    %searchParams,
   );
   return unless @objects;
   return $objects[0];
