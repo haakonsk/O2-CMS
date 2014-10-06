@@ -6,14 +6,9 @@ use base 'O2CMS::Backend::Gui';
 
 use O2 qw($context $cgi $db);
 
-# Log entries older than this number of days will be deleted:
-my $MAX_AGE_ERRORS     = 180; # Errors may cause strange bugs that we may not notice before long after they occurred, so we shouldn't delete them too early.
-my $MAX_AGE_NOT_ERRORS =  14; # Less important and we don't want the tables to grow too big.
-
 #------------------------------------------------------------------
 sub init { 
   my ($obj) = @_;
-  $obj->_deleteOldLogEntries();
   my ($query, $placeHolders) = $obj->_buildQuery('select count(*)');
   $obj->display(
     'showConsole.html',
@@ -95,13 +90,6 @@ sub deleteAllRowsBut {
   my ($obj) = @_;
   $db->sql('delete from O2_CONSOLE_LOG where id not in (' . $obj->getParam('ids') . ')');
   $obj->init();
-}
-#------------------------------------------------------------------
-sub _deleteOldLogEntries {
-  my ($obj) = @_;
-  $db->sql( "delete from O2_CONSOLE_LOG where logType != 'error' and timestamp < ?", time - $MAX_AGE_NOT_ERRORS*24*60*60 );
-  $db->sql( "delete from O2_CONSOLE_LOG where logType  = 'error' and timestamp < ?", time - $MAX_AGE_ERRORS*24*60*60     );
-  return 1;
 }
 #------------------------------------------------------------------
 1;
