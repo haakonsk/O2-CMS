@@ -107,7 +107,7 @@ sub renderPage {
   $obj->{parser}->pushProperty('currentTemplate', $path);
   my $mainTmpl = $obj->{page}->getTemplateRef();
   ${$mainTmpl} = 'Missing main template' unless $mainTmpl;
-  ${$mainTmpl} = '<o2 use O2CMS::Page pageRenderer="$pageRenderer"/>' . ${$mainTmpl};
+  ${$mainTmpl} = '<o2 use Html /><o2 use O2CMS::Page pageRenderer="$pageRenderer"/>' . ${$mainTmpl};
   $obj->{parser}->parse($mainTmpl);
   $obj->{parser}->popProperty('currentTemplate');
   $obj->_includeGoogleAnalyticsCode($mainTmpl);
