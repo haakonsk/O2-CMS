@@ -81,11 +81,6 @@ sub deletePermanently {
   $obj->SUPER::deletePermanently();
 }
 #-----------------------------------------------------------------------------
-sub isActive {
-  my ($obj) = @_;
-  return $obj->getIsActive();
-}
-#-----------------------------------------------------------------------------
 sub save {
   my ($obj) = @_;
 
