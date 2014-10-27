@@ -107,7 +107,8 @@ sub getUrl {
 sub getSite {
   my ($obj) = @_;
   $obj->_loadCategories();
-  return $obj->{categories}->[1];
+  return $obj->{categories}->[1] if @{ $obj->{categories} };
+  return $context->getSingleton('O2CMS::Mgr::SiteManager')->getSiteByHostname( $context->getEnv('HTTP_HOST') );
 }
 #-------------------------------------------------------------------------------
 # returns webcategory where page resides
