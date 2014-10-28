@@ -14,7 +14,7 @@ system <<"END";
 
   sudo apt-get -y install libperlmenu-perl;
   sudo apt-get -y install mysql-server;
-  sudo apt-get -y install subversion;
+  sudo apt-get -y install git;
   sudo apt-get -y install memcached;
   sudo apt-get -y install perlmagick; # Image::Magick
   sudo apt-get -y install swish-e;
@@ -43,10 +43,10 @@ system <<"END";
   sudo cpanm Locale::Util;
 
   if [ ! -d o2-fw/trunk ]; then
-    svn co svn+ssh://svn.redpill-linpro.com/var/lib/svn/ext/o2-fw/trunk o2-fw/trunk;
+    git clone https://github.com/haakonsk/O2-Framework o2-fw/trunk;
   fi;
   if [ ! -d o2-cms/trunk ]; then
-    svn co svn+ssh://svn.redpill-linpro.com/var/lib/svn/ext/o2-cms/trunk o2-cms/trunk;
+    git clone https://github.com/haakonsk/O2-CMS o2-cms/trunk;
   fi;
 
   if [ ! -d /www ]; then
